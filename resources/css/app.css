@@ -1,0 +1,150 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+@source '../views';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   Generation PUSH — Design Tokens
+   Palette: Orange #E8631A / Noir #1A1A1A / Blanc #FFFFFF
+   ========================================================================== */
+
+@theme {
+    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-success: #22C55E;
+    --color-info: #2563EB;
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+:root {
+    color-scheme: light;
+    --background: #FFFFFF;
+    --foreground: #1A1A1A;
+    --card: #F8F9FA;
+    --card-foreground: #1A1A1A;
+    --popover: #FFFFFF;
+    --popover-foreground: #1A1A1A;
+    --primary: #E8631A;
+    --primary-foreground: #FFFFFF;
+    --secondary: #F8F9FA;
+    --secondary-foreground: #1A1A1A;
+    --muted: #6B7280;
+    --muted-foreground: #6B7280;
+    --accent: #E8631A;
+    --accent-foreground: #FFFFFF;
+    --destructive: #EF4444;
+    --border: #E5E7EB;
+    --input: #F3F4F6;
+    --ring: #E8631A;
+    --chart-1: #E8631A;
+    --chart-2: #2563EB;
+    --chart-3: #22C55E;
+    --chart-4: #F59E0B;
+    --chart-5: #8B5CF6;
+    --radius: 0.75rem;
+    --sidebar: #FFFFFF;
+    --sidebar-foreground: #1A1A1A;
+    --sidebar-accent: #F8F9FA;
+    --sidebar-accent-foreground: #E8631A;
+    --sidebar-border: #E5E7EB;
+}
+
+.dark {
+    color-scheme: dark;
+    --background: #0F0F0F;
+    --foreground: #FFFFFF;
+    --card: #1A1A1A;
+    --card-foreground: #FFFFFF;
+    --popover: #1A1A1A;
+    --popover-foreground: #FFFFFF;
+    --primary: #E8631A;
+    --primary-foreground: #0F0F0F;
+    --secondary: #2A2A2A;
+    --secondary-foreground: #FFFFFF;
+    --muted: #6B7280;
+    --muted-foreground: #9CA3AF;
+    --accent: #E8631A;
+    --accent-foreground: #FFFFFF;
+    --destructive: #FF6B6B;
+    --border: #333333;
+    --input: #2A2A2A;
+    --ring: #E8631A;
+    --chart-1: #E8631A;
+    --chart-2: #60A5FA;
+    --chart-3: #34D399;
+    --chart-4: #FBBF24;
+    --chart-5: #A78BFA;
+    --sidebar: #0F0F0F;
+    --sidebar-foreground: #FFFFFF;
+    --sidebar-accent: #2A2A2A;
+    --sidebar-accent-foreground: #E8631A;
+    --sidebar-border: #333333;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground antialiased;
+    }
+
+    /* Tailwind ne met PAS cursor:pointer sur les <button> par défaut (contrairement
+       aux navigateurs qui l'appliquent parfois de façon incohérente). On le force
+       globalement ici pour que tous les boutons de l'admin (partout, pas seulement
+       le topbar) aient le bon curseur. */
+    button:not(:disabled),
+    [role="button"]:not(:disabled),
+    input[type="submit"]:not(:disabled),
+    input[type="button"]:not(:disabled) {
+        cursor: pointer;
+    }
+    button:disabled,
+    [role="button"][aria-disabled="true"] {
+        cursor: not-allowed;
+    }
+}
+
+@layer utilities {
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+}
