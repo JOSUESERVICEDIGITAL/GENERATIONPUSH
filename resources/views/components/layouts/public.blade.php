@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ $title ?? 'Generation PUSH — La communauté des leaders africains' }}</title>
+    <meta name="description" content="{{ $metaDescription ?? 'Generation PUSH forme et connecte les leaders africains de demain.' }}">
+
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800" rel="stylesheet" />
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="font-sans antialiased bg-white text-[#1A1A1A]">
+
+    <x-front.navbar />
+
+    {{ $slot }}
+
+    <x-front.footer />
+
+    <x-flash-toasts />
+
+</body>
+</html>

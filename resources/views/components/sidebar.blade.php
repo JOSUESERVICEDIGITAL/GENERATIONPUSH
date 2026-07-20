@@ -75,6 +75,9 @@
                 ['label' => __('nav.newsletter'), 'href' => route('admin.communications.newsletter.index'), 'match' => 'admin/communications/newsletter*'],
                 ['label' => __('nav.sms'), 'href' => route('admin.communications.sms.index'), 'match' => 'admin/communications/sms*'],
                 ['label' => __('nav.notifications'), 'href' => route('admin.communications.notifications.index'), 'match' => 'admin/communications/notifications*'],
+                ['label' => 'Contact', 'href' => route('admin.communications.messages.index'), 'match' => 'admin/communications/messages*'],
+                ['label' => 'Chat interne', 'href' => route('admin.communications.chat.index'), 'match' => 'admin/communications/chat*'],
+                ['label' => 'Abonnés', 'href' => route('admin.communications.subscribers.index'), 'match' => 'admin/communications/subscribers*'],
             ],
         ],
         [
@@ -94,6 +97,17 @@
                 ['label' => __('nav.sponsors'), 'href' => route('admin.partners.sponsors.index'), 'match' => 'admin/partners/sponsors*'],
                 ['label' => __('nav.testimonials'), 'href' => route('admin.partners.testimonials.index'), 'match' => 'admin/partners/testimonials*'],
                 ['label' => __('nav.team'), 'href' => route('admin.partners.team.index'), 'match' => 'admin/partners/team*'],
+            ],
+        ],
+        [
+            'label' => __('nav.pages'),
+            'icon' => 'globe',
+            'match' => 'admin/pages*',
+            'children' => [
+                ['label' => __('nav.page_home'), 'href' => route('admin.pages.home.edit'), 'match' => 'admin/pages/home*'],
+                ['label' => __('nav.page_navigation'), 'href' => route('admin.pages.navigation.index'), 'match' => 'admin/pages/navigation*'],
+                ['label' => __('nav.page_footer'), 'href' => route('admin.pages.footer.index'), 'match' => 'admin/pages/footer*'],
+                ['label' => 'Pages personnalisées', 'href' => route('admin.pages.custom.index'), 'match' => 'admin/pages/custom*'],
             ],
         ],
     ];

@@ -2,10 +2,44 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Front\AboutController;
+use App\Http\Controllers\Front\ProgramController;
+use App\Http\Controllers\Front\EventController;
+use App\Http\Controllers\Front\BlogController;
+use App\Http\Controllers\Front\ShopController;
+use App\Http\Controllers\Front\ContactController;
+use App\Http\Controllers\Front\NewsletterSubscriptionController;
+use App\Http\Controllers\Front\CustomPageController;
+use App\Http\Controllers\Front\ChatController;
 
-Route::get('/', function () {
-    return view('welcome');
+
+
+Route::get('/', \App\Http\Controllers\Front\HomeController::class)->name('front.home');
+
+Route::get('/a-propos', AboutController::class)->name('front.about');
+Route::get('/programmes', [ProgramController::class, 'index'])->name('front.programs');
+Route::get('/evenements', [EventController::class, 'index'])->name('front.events');
+
+
+Route::get('/blog', [BlogController::class, 'index'])->name('front.blog.index');
+Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('front.blog.show');
+
+Route::get('/boutique', [ShopController::class, 'index'])->name('front.shop.index');
+Route::get('/boutique/{product:slug}', [ShopController::class, 'show'])->name('front.shop.show');
+
+Route::get('/contact', [ContactController::class, 'index'])->name('front.contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('front.contact.store');
+
+
+
+Route::post('/newsletter', [NewsletterSubscriptionController::class, 'store'])->name('front.newsletter.store');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/mes-messages', [ChatController::class, 'index'])->name('front.chat.index');
+    Route::post('/mes-messages', [ChatController::class, 'store'])->name('front.chat.store');
+    Route::put('/mes-messages/{message}', [ChatController::class, 'update'])->name('front.chat.update');
+    Route::delete('/mes-messages/{message}', [ChatController::class, 'destroy'])->name('front.chat.destroy');
 });
+Route::get('/page/{slug}', [CustomPageController::class, 'show'])->name('front.page.show');
 
 Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
@@ -19,3 +53,5 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+

@@ -17,6 +17,39 @@
         ->sortBy('date')
         ->take(5);
 
+    // Notifications : flux réel des derniers événements notables (pas de démo statique)
+    $recentActivity = collect()
+        ->concat(\App\Models\User::latest()->take(3)->get()->map(fn ($u) => [
+            'icon' => 'users', 'color' => 'text-accent bg-accent/10',
+            'text' => "Nouvel utilisateur : {$u->name}",
+            'date' => $u->created_at, 'url' => route('admin.users.index'),
+        ]))
+        ->concat(\App\Models\ContactMessage::where('status', 'new')->latest()->take(3)->get()->map(fn ($m) => [
+            'icon' => 'mail', 'color' => 'text-blue-600 bg-blue-500/10',
+            'text' => "Message de {$m->name}",
+            'date' => $m->created_at, 'url' => route('admin.communications.messages.index'),
+        ]))
+        ->concat(\App\Models\Order::latest()->take(3)->get()->map(fn ($o) => [
+            'icon' => 'shopping-bag', 'color' => 'text-green-600 bg-green-500/10',
+            'text' => "Nouvelle commande {$o->order_number}",
+            'date' => $o->created_at, 'url' => route('admin.shop.orders.index'),
+        ]))
+        ->concat(\App\Models\Transaction::where('status', 'completed')->latest()->take(3)->get()->map(fn ($t) => [
+            'icon' => 'dollar-sign', 'color' => 'text-green-600 bg-green-500/10',
+            'text' => 'Paiement reçu : ' . number_format($t->amount, 2) . ' $',
+            'date' => $t->created_at, 'url' => route('admin.payments.transactions.index'),
+        ]))
+        ->concat(\App\Models\ChatMessage::where('is_from_admin', false)->whereNull('read_by_admin_at')->with('user')->latest()->take(3)->get()->map(fn ($c) => [
+            'icon' => 'send', 'color' => 'text-purple-600 bg-purple-500/10',
+            'text' => 'Chat : ' . ($c->user->name ?? 'Membre') . ' — ' . \Illuminate\Support\Str::limit($c->content, 40),
+            'date' => $c->created_at, 'url' => route('admin.communications.chat.show', $c->user_id),
+        ]))
+        ->sortByDesc('date')
+        ->take(6);
+
+    $unreadCount = \App\Models\ContactMessage::where('status', 'new')->count()
+        + \App\Models\ChatMessage::where('is_from_admin', false)->whereNull('read_by_admin_at')->count();
+
     $quickCreateLinks = [
         ['label' => 'Utilisateur', 'url' => route('admin.users.create'), 'icon' => 'users'],
         ['label' => 'Formation', 'url' => route('admin.programs.formations.index'), 'icon' => 'book-open'],
@@ -106,9 +139,12 @@
                 <button
                     type="button"
                     @click="agendaOpen = !agendaOpen"
-                    class="hidden md:flex p-2 rounded-lg hover:bg-secondary text-foreground cursor-pointer"
+                    class="hidden md:flex p-2 rounded-lg hover:bg-secondary text-foreground cursor-pointer relative"
                 >
                     <x-icon name="calendar" class="w-5 h-5" />
+                    @if ($upcomingEvents->isNotEmpty())
+                        <span class="absolute -top-1 -end-1 min-w-[18px] h-[18px] px-1 rounded-full bg-accent text-white text-[10px] font-bold flex items-center justify-center">{{ $upcomingEvents->count() }}</span>
+                    @endif
                 </button>
 
                 <div
@@ -150,7 +186,9 @@
             <div class="relative" x-data="{ notifOpen: false }" @click.outside="notifOpen = false">
                 <button type="button" @click="notifOpen = !notifOpen" class="p-2 rounded-lg hover:bg-secondary text-foreground relative cursor-pointer">
                     <x-icon name="bell" class="w-5 h-5" />
-                    <span class="absolute top-1 end-1 w-2 h-2 bg-destructive rounded-full"></span>
+                    @if ($unreadCount > 0)
+                        <span class="absolute -top-1 -end-1 min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-white text-[10px] font-bold flex items-center justify-center">{{ $unreadCount > 9 ? '9+' : $unreadCount }}</span>
+                    @endif
                 </button>
 
                 <div
@@ -165,24 +203,19 @@
                         <p class="font-semibold text-foreground text-sm">{{ __('nav.notifications') }}</p>
                     </div>
                     <div class="max-h-72 overflow-y-auto divide-y divide-border">
-                        <a href="{{ route('admin.users.index') }}" class="p-4 flex gap-3 hover:bg-secondary/50 transition-colors duration-200 cursor-pointer">
-                            <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                                <x-icon name="users" class="w-4 h-4 text-accent" />
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-sm text-foreground">Nouvel utilisateur inscrit</p>
-                                <p class="text-xs text-muted-foreground mt-0.5">Il y a 5 min</p>
-                            </div>
-                        </a>
-                        <a href="{{ route('admin.payments.transactions.index') }}" class="p-4 flex gap-3 hover:bg-secondary/50 transition-colors duration-200 cursor-pointer">
-                            <div class="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                                <x-icon name="dollar-sign" class="w-4 h-4 text-green-600" />
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-sm text-foreground">Nouveau paiement reçu</p>
-                                <p class="text-xs text-muted-foreground mt-0.5">Il y a 2h</p>
-                            </div>
-                        </a>
+                        @forelse ($recentActivity as $activity)
+                            <a href="{{ $activity['url'] }}" class="p-4 flex gap-3 hover:bg-secondary/50 transition-colors duration-200 cursor-pointer">
+                                <div class="w-8 h-8 rounded-full {{ $activity['color'] }} flex items-center justify-center shrink-0">
+                                    <x-icon :name="$activity['icon']" class="w-4 h-4" />
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm text-foreground truncate">{{ $activity['text'] }}</p>
+                                    <p class="text-xs text-muted-foreground mt-0.5">{{ $activity['date']->diffForHumans() }}</p>
+                                </div>
+                            </a>
+                        @empty
+                            <p class="p-4 text-sm text-muted-foreground">{{ __('nav.no_new_notifications') }}</p>
+                        @endforelse
                     </div>
                     <div class="p-3 border-t border-border text-center">
                         <a href="{{ route('admin.communications.notifications.index') }}" class="text-xs font-medium text-accent hover:underline cursor-pointer">{{ __('nav.view_all_notifications') }}</a>

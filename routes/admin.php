@@ -20,12 +20,18 @@ use App\Http\Controllers\Admin\Content\CategoryController;
 use App\Http\Controllers\Admin\Media\GalleryController;
 use App\Http\Controllers\Admin\Media\VideoController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\Pages\HomePageController;
+use App\Http\Controllers\Admin\Pages\MenuItemController;
 use App\Http\Controllers\Admin\Partners\SponsorController;
 use App\Http\Controllers\Admin\Partners\TestimonialController;
 use App\Http\Controllers\Admin\Partners\TeamMemberController;
 use App\Http\Controllers\Admin\Communications\NewsletterController;
 use App\Http\Controllers\Admin\Communications\SmsController;
 use App\Http\Controllers\Admin\Communications\NotificationController;
+use App\Http\Controllers\Admin\Communications\ContactMessageController;
+use App\Http\Controllers\Admin\Communications\NewsletterSubscriberController;
+use App\Http\Controllers\Admin\Communications\ChatController as AdminChatController;
+use App\Http\Controllers\Admin\Pages\CustomPageController;
 use App\Http\Controllers\Admin\Shop\ProductController;
 use App\Http\Controllers\Admin\Shop\OrderController;
 use Illuminate\Support\Facades\Route;
@@ -233,6 +239,26 @@ Route::middleware(['auth', 'verified'])
                 Route::delete('/', 'bulkDestroy')->name('bulk-destroy');
                 Route::post('/{notification}/send', 'send')->name('send');
             });
+
+            Route::name('messages.')->prefix('messages')->controller(ContactMessageController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/{message}/read', 'markRead')->name('read');
+                Route::delete('/{message}', 'destroy')->name('destroy');
+            });
+
+            Route::name('subscribers.')->prefix('subscribers')->controller(NewsletterSubscriberController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::delete('/{subscriber}', 'destroy')->name('destroy');
+            });
+
+            Route::name('chat.')->prefix('chat')->controller(AdminChatController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{user}', 'show')->name('show');
+                Route::post('/{user}/reply', 'reply')->name('reply');
+                Route::post('/{user}/toggle', 'toggleAccess')->name('toggle');
+                Route::put('/messages/{message}', 'updateMessage')->name('messages.update');
+                Route::delete('/messages/{message}', 'destroyMessage')->name('messages.destroy');
+            });
         });
 
         // --- Médias -----------------------------------------
@@ -279,6 +305,23 @@ Route::middleware(['auth', 'verified'])
                 Route::delete('/{member}', 'destroy')->name('destroy');
                 Route::delete('/', 'bulkDestroy')->name('bulk-destroy');
             });
+        });
+
+        // --- Pages (édition du frontoffice) ------------------------------------
+        Route::name('pages.')->prefix('pages')->group(function () {
+            Route::get('home', [HomePageController::class, 'edit'])->name('home.edit');
+            Route::put('home', [HomePageController::class, 'update'])->name('home.update');
+
+            Route::get('navigation', [MenuItemController::class, 'navigation'])->name('navigation.index');
+            Route::get('footer', [MenuItemController::class, 'footer'])->name('footer.index');
+            Route::post('navigation', [MenuItemController::class, 'store'])->name('navigation.store');
+            Route::post('footer', [MenuItemController::class, 'store'])->name('footer.store');
+            Route::put('navigation/{menuItem}', [MenuItemController::class, 'update'])->name('navigation.update');
+            Route::put('footer/{menuItem}', [MenuItemController::class, 'update'])->name('footer.update');
+            Route::delete('navigation/{menuItem}', [MenuItemController::class, 'destroy'])->name('navigation.destroy');
+            Route::delete('footer/{menuItem}', [MenuItemController::class, 'destroy'])->name('footer.destroy');
+
+            Route::resource('custom', CustomPageController::class);
         });
 
         Route::get('settings', SettingController::class)->name('settings.index');

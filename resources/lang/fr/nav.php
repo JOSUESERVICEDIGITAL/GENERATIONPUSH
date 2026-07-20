@@ -39,6 +39,10 @@ return [
     'sponsors' => 'Sponsors',
     'testimonials' => 'Témoignages',
     'team' => 'Équipe',
+    'pages' => 'Pages',
+    'page_home' => 'Page d\'accueil',
+    'page_navigation' => 'Navigation',
+    'page_footer' => 'Pied de page',
     'settings' => 'Paramètres',
     'logout' => 'Déconnexion',
 

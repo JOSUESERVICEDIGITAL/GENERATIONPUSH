@@ -1,0 +1,10 @@
+// À ajouter dans routes/web.php (avant la route générique /page/{slug} qui doit rester en dernier) :
+
+use App\Http\Controllers\Front\ChatController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/mes-messages', [ChatController::class, 'index'])->name('front.chat.index');
+    Route::post('/mes-messages', [ChatController::class, 'store'])->name('front.chat.store');
+    Route::put('/mes-messages/{message}', [ChatController::class, 'update'])->name('front.chat.update');
+    Route::delete('/mes-messages/{message}', [ChatController::class, 'destroy'])->name('front.chat.destroy');
+});

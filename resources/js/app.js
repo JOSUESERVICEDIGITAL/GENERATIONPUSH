@@ -18,13 +18,6 @@ iziToast.settings({
     theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
 });
 
-/**
- * Helper global utilisable partout (Blade inline scripts, Alpine, JS custom) :
- *   notify('success', 'Enregistré avec succès.')
- *   notify('error', 'Une erreur est survenue.')
- *   notify('info', 'Information.')
- *   notify('warning', 'Attention.')
- */
 window.notify = function (type, message, title = null) {
     const options = { message };
 
@@ -48,5 +41,45 @@ window.notify = function (type, message, title = null) {
             break;
     }
 };
+
+/**
+ * Directive x-reveal : anime un élément (fade + translate) quand il entre
+ * dans le viewport au scroll. Utilisation :
+ *   <div x-reveal>...</div>
+ *   <div x-reveal.delay.200>...</div>   (délai en ms)
+ *   <div x-reveal="'up'">...</div>      (direction: up | down | left | right | zoom)
+ */
+Alpine.directive('reveal', (el, { expression, modifiers }, { evaluate }) => {
+    const direction = expression ? evaluate(expression) : 'up';
+    const delayModifierIndex = modifiers.indexOf('delay');
+    const delay = delayModifierIndex !== -1 ? parseInt(modifiers[delayModifierIndex + 1] || '0', 10) : 0;
+
+    const hiddenTransforms = {
+        up: 'translateY(24px)',
+        down: 'translateY(-24px)',
+        left: 'translateX(24px)',
+        right: 'translateX(-24px)',
+        zoom: 'scale(0.95)',
+    };
+
+    el.style.opacity = '0';
+    el.style.transform = hiddenTransforms[direction] || hiddenTransforms.up;
+    el.style.transition = `opacity 700ms ease-out ${delay}ms, transform 700ms ease-out ${delay}ms`;
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0) translateX(0) scale(1)';
+                    observer.unobserve(el);
+                }
+            });
+        },
+        { threshold: 0.15 }
+    );
+
+    observer.observe(el);
+});
 
 Alpine.start();

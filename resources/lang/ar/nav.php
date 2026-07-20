@@ -39,6 +39,10 @@ return [
     'sponsors' => 'الرعاة',
     'testimonials' => 'الشهادات',
     'team' => 'الفريق',
+    'pages' => 'الصفحات',
+    'page_home' => 'الصفحة الرئيسية',
+    'page_navigation' => 'التنقل',
+    'page_footer' => 'التذييل',
     'settings' => 'الإعدادات',
     'logout' => 'تسجيل الخروج',
 

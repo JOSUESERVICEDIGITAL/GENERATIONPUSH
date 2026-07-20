@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             ContentSeeder::class,
             GallerySeeder::class,
             VideoSeeder::class,
+            PagesSeeder::class,
+            CustomPageSeeder::class,
         ]);
     }
 }

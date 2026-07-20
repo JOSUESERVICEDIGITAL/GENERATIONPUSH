@@ -39,6 +39,10 @@ return [
     'sponsors' => 'Sponsors',
     'testimonials' => 'Testimonials',
     'team' => 'Team',
+    'pages' => 'Pages',
+    'page_home' => 'Homepage',
+    'page_navigation' => 'Navigation',
+    'page_footer' => 'Footer',
     'settings' => 'Settings',
     'logout' => 'Logout',
 
