@@ -1,0 +1,12 @@
+// Remplace la ligne existante :
+//   Route::get('/blog', [BlogController::class, 'index'])->name('front.blog.index');
+//   Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('front.blog.show');
+// par ce bloc complet (mêmes routes + les nouvelles pour l'engagement) :
+
+Route::get('/blog', [BlogController::class, 'index'])->name('front.blog.index');
+Route::get('/mes-articles-sauvegardes', [BlogController::class, 'bookmarked'])->name('front.blog.bookmarked')->middleware('auth');
+Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('front.blog.show');
+Route::post('/blog/{post:slug}/like', [BlogController::class, 'toggleLike'])->name('front.blog.like');
+Route::post('/blog/{post:slug}/bookmark', [BlogController::class, 'toggleBookmark'])->name('front.blog.bookmark');
+Route::post('/blog/{post:slug}/rate', [BlogController::class, 'rate'])->name('front.blog.rate');
+Route::post('/blog/{post:slug}/read-time', [BlogController::class, 'trackReadTime'])->name('front.blog.read-time');

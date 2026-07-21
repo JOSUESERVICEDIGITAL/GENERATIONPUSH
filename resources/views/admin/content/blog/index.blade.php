@@ -119,6 +119,7 @@
                                     <th class="px-6 py-3 text-left font-semibold text-foreground">Article</th>
                                     <th class="px-6 py-3 text-left font-semibold text-foreground">Catégorie</th>
                                     <th class="px-6 py-3 text-left font-semibold text-foreground">Vues</th>
+                                    <th class="px-6 py-3 text-left font-semibold text-foreground">Engagement</th>
                                     <th class="px-6 py-3 text-left font-semibold text-foreground">Statut</th>
                                     <th class="px-6 py-3 text-left font-semibold text-foreground">Date</th>
                                     <th class="px-6 py-3 text-left font-semibold text-foreground">Actions</th>
@@ -157,6 +158,13 @@
                                         </td>
                                         <td class="px-6 py-4">{{ $post->views }}</td>
                                         <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3 text-xs text-muted-foreground">
+                                                <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5 text-red-500" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> {{ $post->likes_count }}</span>
+                                                <span class="flex items-center gap-1"><x-icon name="star" class="w-3.5 h-3.5 text-yellow-500" style="fill: currentColor" /> {{ $post->averageRating() ?: '—' }}</span>
+                                                <span class="flex items-center gap-1"><x-icon name="calendar" class="w-3.5 h-3.5" /> {{ $post->averageReadLabel() }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
                                             <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $post->status === 'published' ? 'bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-800/50 dark:text-gray-400' }}">
                                                 {{ $post->statusLabel() }}
                                             </span>
@@ -179,7 +187,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="px-6 py-8 text-center text-muted-foreground">Aucun article trouvé</td>
+                                        <td colspan="8" class="px-6 py-8 text-center text-muted-foreground">Aucun article trouvé</td>
                                     </tr>
                                 @endforelse
                             </tbody>

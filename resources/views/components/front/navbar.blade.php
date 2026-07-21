@@ -61,6 +61,9 @@
                             <a href="{{ route('front.chat.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors duration-200">
                                 <x-icon name="send" class="w-4 h-4 text-muted-foreground" /> Mes messages
                             </a>
+                            <a href="{{ route('front.blog.bookmarked') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors duration-200">
+                                <x-icon name="file-text" class="w-4 h-4 text-muted-foreground" /> Articles sauvegardés
+                            </a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-destructive/10 text-destructive transition-colors duration-200 text-start cursor-pointer">

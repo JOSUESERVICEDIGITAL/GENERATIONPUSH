@@ -44,7 +44,16 @@
                             @endif
                             <h3 class="font-bold text-lg text-[#1A1A1A] mt-1 group-hover:text-accent transition-colors duration-200 line-clamp-2">{{ $post->title }}</h3>
                             <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ $post->excerpt }}</p>
-                            <p class="text-xs text-gray-400 mt-3">{{ $post->published_at?->translatedFormat('d F Y') }} · {{ $post->views }} vues</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <p class="text-xs text-gray-400">{{ $post->published_at?->translatedFormat('d F Y') }} · {{ $post->estimatedReadingTime() }} min</p>
+                                <div class="flex items-center gap-3 text-xs text-gray-400">
+                                    <span class="flex items-center gap-1"><x-icon name="eye" class="w-3.5 h-3.5" /> {{ $post->views }}</span>
+                                    <span class="flex items-center gap-1"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> {{ $post->likes_count }}</span>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-accent group-hover:gap-2 transition-all duration-200">
+                                Lire la suite <x-icon name="chevron-right" class="w-3.5 h-3.5" />
+                            </span>
                         </a>
                     @endforeach
                 </div>

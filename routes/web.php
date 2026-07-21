@@ -22,7 +22,12 @@ Route::get('/evenements', [EventController::class, 'index'])->name('front.events
 
 
 Route::get('/blog', [BlogController::class, 'index'])->name('front.blog.index');
+Route::get('/mes-articles-sauvegardes', [BlogController::class, 'bookmarked'])->name('front.blog.bookmarked')->middleware('auth');
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('front.blog.show');
+Route::post('/blog/{post:slug}/like', [BlogController::class, 'toggleLike'])->name('front.blog.like');
+Route::post('/blog/{post:slug}/bookmark', [BlogController::class, 'toggleBookmark'])->name('front.blog.bookmark');
+Route::post('/blog/{post:slug}/rate', [BlogController::class, 'rate'])->name('front.blog.rate');
+Route::post('/blog/{post:slug}/read-time', [BlogController::class, 'trackReadTime'])->name('front.blog.read-time');
 
 Route::get('/boutique', [ShopController::class, 'index'])->name('front.shop.index');
 Route::get('/boutique/{product:slug}', [ShopController::class, 'show'])->name('front.shop.show');

@@ -20,6 +20,7 @@ class BlogController extends Controller
 
         $posts = Post::query()
             ->with('category')
+            ->withCount(['likes', 'bookmarks'])
             ->when($search !== '', fn ($query) => $query->where('title', 'like', "%{$search}%"))
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($categoryId, fn ($query) => $query->where('category_id', $categoryId))
