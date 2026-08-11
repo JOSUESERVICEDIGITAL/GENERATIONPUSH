@@ -34,6 +34,7 @@ class InvoiceSeeder extends Seeder
                 'status' => 'pending',
                 'issued_at' => now()->subDays(5),
                 'due_at' => now()->addDays(10),
+                
             ],
             [
                 'amount' => 79.00,
