@@ -10,7 +10,6 @@ class InvoiceSeeder extends Seeder
 {
     public function run(): void
     {
-        // Éviter les utilisateurs Admin et garder une sélection stable
         $users = User::where('role', '!=', 'Admin')
             ->orderBy('id')
             ->take(4)
@@ -34,7 +33,6 @@ class InvoiceSeeder extends Seeder
                 'status' => 'pending',
                 'issued_at' => now()->subDays(5),
                 'due_at' => now()->addDays(10),
-                
             ],
             [
                 'amount' => 79.00,
@@ -53,29 +51,47 @@ class InvoiceSeeder extends Seeder
 
             $issuedAt = $row['issued_at'];
 
-            // Cherche une facture existante pour cet utilisateur
-            // à la même date, même si l'heure est différente.
+            /*
+             * Chercher une facture existante pour cet utilisateur
+             * à la même date.
+             */
             $invoice = Invoice::where('user_id', $user->id)
                 ->whereDate('issued_at', $issuedAt->toDateString())
                 ->first();
 
+            /*
+             * Si elle n'existe pas, on la crée.
+             */
             if (!$invoice) {
-                // Création uniquement si elle n'existe pas.
-                // Le numéro de facture ne sera donc jamais
-                // régénéré lors des prochains seeders.
                 $invoice = new Invoice();
 
-                $invoice->invoice_number = Invoice::nextInvoiceNumber();
+                $invoice->invoice_number = $this->getNextAvailableInvoiceNumber();
                 $invoice->user_id = $user->id;
                 $invoice->issued_at = $issuedAt;
             }
 
-            // Mise à jour des données de la facture
+            /*
+             * Mise à jour des informations.
+             */
             $invoice->amount = $row['amount'];
             $invoice->status = $row['status'];
             $invoice->due_at = $row['due_at'];
 
             $invoice->save();
         }
+    }
+
+    /**
+     * Génère un numéro de facture réellement disponible.
+     */
+    private function getNextAvailableInvoiceNumber(): string
+    {
+        $number = 1;
+
+        while (Invoice::where('invoice_number', sprintf('INV-%05d', $number))->exists()) {
+            $number++;
+        }
+
+        return sprintf('INV-%05d', $number);
     }
 }
