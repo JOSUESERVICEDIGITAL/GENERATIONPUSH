@@ -1,6 +1,6 @@
 <x-guest-layout :title="'Connexion — Generation PUSH'">
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-[#1A1A1A]">Content de te revoir 👋</h1>
+        <h1 class="text-2xl font-bold text-[#1A1A1A]">Content de te revoir</h1>
         <p class="text-gray-500 text-sm mt-1">Connecte-toi pour accéder à ton espace.</p>
     </div>
 

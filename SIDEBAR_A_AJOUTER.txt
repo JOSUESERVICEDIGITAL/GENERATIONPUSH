@@ -1,0 +1,11 @@
+Dans resources/views/components/sidebar.blade.php :
+
+1) Dans le groupe "Pages" (children), après la ligne "Pages personnalisées", ajoute :
+
+['label' => 'Devenir Partenaire', 'href' => route('admin.pages.engagement.edit', 'partner'), 'match' => 'admin/pages/engagement/partner*'],
+['label' => 'Devenir Bénévole', 'href' => route('admin.pages.engagement.edit', 'volunteer'), 'match' => 'admin/pages/engagement/volunteer*'],
+
+
+2) Dans le groupe "Communications" (children), après la ligne "Abonnés" (ou "Contact"), ajoute :
+
+['label' => 'Candidatures', 'href' => route('admin.communications.applications.index'), 'match' => 'admin/communications/applications*'],

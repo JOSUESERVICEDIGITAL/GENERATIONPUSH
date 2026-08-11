@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
             VideoSeeder::class,
             PagesSeeder::class,
             CustomPageSeeder::class,
+            FounderSeeder::class,
+            AboutDropdownSeeder::class,
         ]);
     }
 }

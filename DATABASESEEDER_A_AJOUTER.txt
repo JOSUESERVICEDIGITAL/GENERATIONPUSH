@@ -1,0 +1,5 @@
+Dans database/seeders/DatabaseSeeder.php, ajoute dans le tableau passé à $this->call([...]) :
+
+EngagementPageSeeder::class,
+
+(pour qu'il se relance automatiquement avec php artisan migrate:fresh --seed)

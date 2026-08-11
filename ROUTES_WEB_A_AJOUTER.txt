@@ -1,0 +1,7 @@
+// À ajouter dans routes/web.php (avant la route /page/{slug} qui doit rester en dernier) :
+
+use App\Http\Controllers\Front\EngagementController;
+
+Route::get('/devenir-partenaire', [EngagementController::class, 'partner'])->name('front.partner');
+Route::get('/devenir-benevole', [EngagementController::class, 'volunteer'])->name('front.volunteer');
+Route::post('/candidature', [EngagementController::class, 'store'])->name('front.engagement.store');

@@ -1,6 +1,6 @@
 <x-guest-layout :title="'Rejoindre — Generation PUSH'">
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-[#1A1A1A]">Rejoins la communauté 🚀</h1>
+        <h1 class="text-2xl font-bold text-[#1A1A1A]">Rejoins la communauté </h1>
         <p class="text-gray-500 text-sm mt-1">Crée ton compte en quelques secondes.</p>
     </div>
 

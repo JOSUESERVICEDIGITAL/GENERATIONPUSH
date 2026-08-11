@@ -108,6 +108,7 @@
                 ['label' => __('nav.page_navigation'), 'href' => route('admin.pages.navigation.index'), 'match' => 'admin/pages/navigation*'],
                 ['label' => __('nav.page_footer'), 'href' => route('admin.pages.footer.index'), 'match' => 'admin/pages/footer*'],
                 ['label' => 'Pages personnalisées', 'href' => route('admin.pages.custom.index'), 'match' => 'admin/pages/custom*'],
+                ['label' => 'Fondatrice', 'href' => route('admin.pages.founder.edit'), 'match' => 'admin/pages/founder*'],
             ],
         ],
     ];

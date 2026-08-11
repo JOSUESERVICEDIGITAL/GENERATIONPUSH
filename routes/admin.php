@@ -34,6 +34,9 @@ use App\Http\Controllers\Admin\Communications\ChatController as AdminChatControl
 use App\Http\Controllers\Admin\Pages\CustomPageController;
 use App\Http\Controllers\Admin\Shop\ProductController;
 use App\Http\Controllers\Admin\Shop\OrderController;
+use App\Http\Controllers\Admin\Pages\FounderController;
+use App\Http\Controllers\Admin\Pages\EngagementPageController;
+use App\Http\Controllers\Admin\Communications\ApplicationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -321,8 +324,14 @@ Route::middleware(['auth', 'verified'])
             Route::delete('navigation/{menuItem}', [MenuItemController::class, 'destroy'])->name('navigation.destroy');
             Route::delete('footer/{menuItem}', [MenuItemController::class, 'destroy'])->name('footer.destroy');
 
+            Route::get('engagement/{type}', [EngagementPageController::class, 'edit'])->name('engagement.edit');
+            Route::put('engagement/{type}', [EngagementPageController::class, 'update'])->name('engagement.update');
             Route::resource('custom', CustomPageController::class);
+            Route::get('founder', [FounderController::class, 'edit'])->name('founder.edit');
+            Route::put('founder', [FounderController::class, 'update'])->name('founder.update');
+            Route::post('founder/photos', [FounderController::class, 'storePhoto'])->name('founder.photos.store');
+            Route::delete('founder/photos/{photo}', [FounderController::class, 'destroyPhoto'])->name('founder.photos.destroy');
         });
 
-        Route::get('settings', SettingController::class)->name('settings.index');
+       Route::get('settings', SettingController::class)->name('settings.index');
     });

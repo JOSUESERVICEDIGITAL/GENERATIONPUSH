@@ -37,6 +37,23 @@
         </div>
     </section>
 
+    <!-- Bannière Fondatrice -->
+    <section class="py-16 bg-[#1A1A1A] relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-transparent"></div>
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center gap-8 text-center sm:text-start" x-data x-reveal>
+            <div class="w-20 h-20 rounded-full bg-accent/20 border-2 border-accent flex items-center justify-center shrink-0">
+                <x-icon name="quote" class="w-8 h-8 text-accent" />
+            </div>
+            <div class="flex-1">
+                <h2 class="text-xl sm:text-2xl font-bold text-white">À l'origine de Generation PUSH</h2>
+                <p class="text-gray-400 text-sm mt-1">Découvre le parcours, la biographie et la mission de notre fondatrice.</p>
+            </div>
+            <a href="{{ route('front.founder') }}" class="shrink-0 px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:opacity-90 transition-all duration-200 whitespace-nowrap">
+                Découvrir sa page →
+            </a>
+        </div>
+    </section>
+
     <!-- Valeurs -->
     <section class="py-20 md:py-28 bg-[#F8F9FA]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

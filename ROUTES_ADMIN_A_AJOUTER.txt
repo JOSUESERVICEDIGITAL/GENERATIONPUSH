@@ -1,0 +1,21 @@
+1) Ajoute ces imports en haut de routes/admin.php :
+
+use App\Http\Controllers\Admin\Pages\EngagementPageController;
+use App\Http\Controllers\Admin\Communications\ApplicationController;
+
+
+2) Dans le groupe Route::name('pages.')->prefix('pages')->group(function () { ... }),
+   ajoute (par exemple juste avant Route::resource('custom', ...)) :
+
+Route::get('engagement/{type}', [EngagementPageController::class, 'edit'])->name('engagement.edit');
+Route::put('engagement/{type}', [EngagementPageController::class, 'update'])->name('engagement.update');
+
+
+3) Dans le groupe Route::name('communications.')->prefix('communications')->group(function () { ... }),
+   ajoute (par exemple juste avant la fermeture du groupe) :
+
+Route::name('applications.')->prefix('applications')->controller(ApplicationController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::put('/{application}/status', 'updateStatus')->name('status');
+    Route::delete('/{application}', 'destroy')->name('destroy');
+});
