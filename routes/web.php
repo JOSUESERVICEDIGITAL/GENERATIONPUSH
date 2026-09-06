@@ -10,8 +10,8 @@ use App\Http\Controllers\Front\ShopController;
 use App\Http\Controllers\Front\ContactController;
 use App\Http\Controllers\Front\NewsletterSubscriptionController;
 use App\Http\Controllers\Front\CustomPageController;
-    use App\Http\Controllers\Front\FounderController as FrontFounderController;
-    use App\Http\Controllers\Front\EngagementController;
+use App\Http\Controllers\Front\FounderController as FrontFounderController;
+use App\Http\Controllers\Front\EngagementController;
 
 
 use App\Http\Controllers\Front\ChatController;
@@ -53,9 +53,15 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::get('/devenir-partenaire', [EngagementController::class, 'partner'])->name('front.partner');
-Route::get('/devenir-benevole', [EngagementController::class, 'volunteer'])->name('front.volunteer');
-Route::post('/candidature', [EngagementController::class, 'store'])->name('front.engagement.store');
+Route::get('/devenir-partenaire', [EngagementController::class, 'partner'])
+    ->name('front.partner');
+
+Route::get('/devenir-benevole', [EngagementController::class, 'volunteer'])
+    ->name('front.volunteer');
+
+Route::post('/nous-rejoindre', [EngagementController::class, 'store'])
+    ->name('front.engagement.store');
+
 
 Route::get('/page/{slug}', [CustomPageController::class, 'show'])->name('front.page.show');
 
@@ -70,4 +76,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+require __DIR__ . '/admin.php';
 require __DIR__ . '/auth.php';

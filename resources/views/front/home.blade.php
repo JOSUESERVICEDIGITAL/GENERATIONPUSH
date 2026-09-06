@@ -259,34 +259,49 @@
 
     <!-- ============ NOUS REJOINDRE AUTREMENT ============ -->
 <section class="py-20 md:py-28 bg-[#F8F9FA]">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-2xl mx-auto mb-14" x-data x-reveal>
-            <p class="text-accent font-semibold text-sm uppercase tracking-wide mb-3">Nous rejoindre autrement</p>
-            <h2 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">Partenaire ou bénévole ?</h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center" x-data x-reveal.delay.0>
-                <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
-                    <x-icon name="award" class="w-6 h-6 text-accent" />
-                </div>
-                <h3 class="font-bold text-lg text-[#1A1A1A] mb-2">Devenir partenaire</h3>
-                <p class="text-sm text-gray-600 mb-6">Entreprise, institution ou organisation : associe ta marque à une communauté de plus de 2500 jeunes leaders.</p>
-                <a href="{{ route('front.partner') }}" class="inline-block px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:opacity-90 transition-all duration-200">
-                    Devenir partenaire
-                </a>
-            </div>
-            <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center" x-data x-reveal.delay.100>
-                <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
-                    <x-icon name="users-round" class="w-6 h-6 text-accent" />
-                </div>
-                <h3 class="font-bold text-lg text-[#1A1A1A] mb-2">Devenir bénévole</h3>
-                <p class="text-sm text-gray-600 mb-6">Donne de ton temps et de tes compétences pour accompagner la prochaine génération de leaders.</p>
-                <a href="{{ route('front.volunteer') }}" class="inline-block px-6 py-3 rounded-lg border-2 border-accent text-accent font-semibold hover:bg-accent hover:text-white transition-all duration-200">
-                    Devenir bénévole
-                </a>
-            </div>
-        </div>
+   <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center">
+    <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
+        <x-icon name="award" class="w-6 h-6 text-accent" />
     </div>
+
+    <h3 class="font-bold text-lg text-[#1A1A1A] mb-2">Devenir partenaire</h3>
+
+    <p class="text-sm text-gray-600 mb-6">
+        Entreprise, institution ou organisation : associe ta marque à une communauté de plus de 2500 jeunes leaders.
+    </p>
+
+    {{-- <a href="{{ route('front.engagement.create', ['type' => 'partner']) }}"
+       class="inline-block px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:opacity-90 transition-all duration-200">
+        Devenir partenaire
+    </a> --}}
+    <a href="{{ route('front.partner') }}"
+   class="inline-block px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:opacity-90 transition-all duration-200">
+    Devenir partenaire
+</a>
+</div>
+
+<div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center"
+     x-data
+     x-reveal.delay.100>
+    <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
+        <x-icon name="users-round" class="w-6 h-6 text-accent" />
+    </div>
+
+    <h3 class="font-bold text-lg text-[#1A1A1A] mb-2">Devenir bénévole</h3>
+
+    <p class="text-sm text-gray-600 mb-6">
+        Donne de ton temps et de tes compétences pour accompagner la prochaine génération de leaders.
+    </p>
+
+    {{-- <a href="{{ route('front.engagement.create', ['type' => 'volunteer']) }}"
+       class="inline-block px-6 py-3 rounded-lg border-2 border-accent text-accent font-semibold hover:bg-accent hover:text-white transition-all duration-200">
+        Devenir bénévole
+    </a> --}}
+    <a href="{{ route('front.volunteer') }}"
+   class="inline-block px-6 py-3 rounded-lg border-2 border-accent text-accent font-semibold hover:bg-accent hover:text-white transition-all duration-200">
+    Devenir bénévole
+</a>
+</div>
 </section>
 
     <!-- ============ NEWSLETTER ============ -->

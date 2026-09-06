@@ -16,11 +16,20 @@ class UpdateEngagementPageRequest extends FormRequest
         return [
             'title' => ['nullable', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:3000'],
-            'benefits' => ['nullable', 'string', 'max:2000'],
-            'image' => ['nullable', 'image', 'max:6144'],
-            'cta_label' => ['nullable', 'string', 'max:100'],
+            'description' => ['nullable', 'string'],
+            'benefits' => ['nullable', 'string'],
+            'cta_label' => ['nullable', 'string', 'max:255'],
+
             'is_visible' => ['nullable', 'boolean'],
+
+            'image' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:5120',
+            ],
+
+            'form_content' => ['nullable', 'array'],
         ];
     }
 }
