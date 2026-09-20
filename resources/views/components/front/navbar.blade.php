@@ -227,22 +227,20 @@
                             </div>
 
 
-                            {{-- Tableau de bord Admin --}}
-                            @if ($navUser->role === 'Admin')
+                         {{-- =================================================
+     MON ESPACE
+================================================== --}}
+<a
+    href="{{ route('front.my-space') }}"
+    class="flex items-center gap-3 px-4 py-3 text-sm font-medium hover:bg-secondary transition-colors duration-200"
+>
+    <x-icon
+        name="layout-dashboard"
+        class="w-4 h-4 text-[#E8631A]"
+    />
 
-                                <a
-                                    href="{{ route('admin.dashboard') }}"
-                                    class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-secondary transition-colors duration-200"
-                                >
-                                    <x-icon
-                                        name="layout-dashboard"
-                                        class="w-4 h-4 text-muted-foreground"
-                                    />
-
-                                    <span>Tableau de bord</span>
-                                </a>
-
-                            @endif
+    <span>Mon espace</span>
+</a>
 
 
                             {{-- Profil --}}
@@ -450,16 +448,12 @@
 
                     <div class="flex flex-col gap-2">
 
-                        @if ($navUser->role === 'Admin')
-
-                            <a
-                                href="{{ route('admin.dashboard') }}"
-                                class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border"
-                            >
-                                Tableau de bord
-                            </a>
-
-                        @endif
+                       <a
+    href="{{ route('front.my-space') }}"
+    class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-[#E8631A] text-[#E8631A] hover:bg-[#E8631A] hover:text-white transition-colors duration-200"
+>
+    Mon espace
+</a>
 
                         <a
                             href="{{ route('profile.edit') }}"

@@ -8,6 +8,7 @@ use App\Models\Masterclass;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,5 +38,97 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
+
+         Gate::define('member.dashboard', function ($user) {
+        return $user
+            && $user->role === 'Member'
+            && $user->status === 'active';
+    });
+
+    Gate::define('member.profile', function ($user) {
+        return $user
+            && $user->role === 'Member'
+            && $user->status === 'active';
+    });
+
+    Gate::define('member.messages', function ($user) {
+        return $user
+            && $user->role === 'Member'
+            && $user->status === 'active'
+            && $user->chat_enabled;
+    });
+
+    Gate::define('member.bookmarks', function ($user) {
+        return $user
+            && $user->role === 'Member'
+            && $user->status === 'active';
+    });
+    Gate::define('member.dashboard', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.profile', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.messages', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active'
+        && $user->chat_enabled;
+});
+
+Gate::define('member.notifications', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.bookmarks', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.formations', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.events', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.reservations', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.orders', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.payments', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
+
+Gate::define('member.settings', function ($user) {
+    return $user
+        && $user->role === 'Member'
+        && $user->status === 'active';
+});
     }
+    
 }

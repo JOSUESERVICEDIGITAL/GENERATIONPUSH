@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Alias du middleware administrateur
         $middleware->alias([
             'admin.only' => \App\Http\Middleware\AdminOnly::class,
+            'member' => \App\Http\Middleware\EnsureMember::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

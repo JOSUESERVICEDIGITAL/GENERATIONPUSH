@@ -14,6 +14,8 @@ use App\Http\Controllers\Front\CustomPageController;
 use App\Http\Controllers\Front\FounderController as FrontFounderController;
 use App\Http\Controllers\Front\EngagementController;
 use App\Http\Controllers\Front\ChatController;
+use App\Http\Controllers\Front\MySpaceController;
+
 
 
 /*
@@ -348,12 +350,33 @@ Route::middleware([
 });
 
 
+
+
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | AUTHENTIFICATION
 |--------------------------------------------------------------------------
 */
-require __DIR__ . '/front/shop.blade.php';
 
+
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/mon-espace', [MySpaceController::class, 'index'])
+        ->name('front.my-space');
+
+});
+
+
+
+
+
+
+require __DIR__ . '/front/shop.blade.php';
+require __DIR__ . '/member.php';
 
 require __DIR__ . '/auth.php';
