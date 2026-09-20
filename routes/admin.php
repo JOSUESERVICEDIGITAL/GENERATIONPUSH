@@ -70,11 +70,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth', 'verified'])
-    ->prefix('admin')
+Route::prefix('admin')
     ->name('admin.')
     ->group(function () {
-
 
         // ================================================================
         // DASHBOARD
@@ -684,58 +682,175 @@ Route::middleware(['auth', 'verified'])
                     });
             });
 
+// ================================================================
+// BOUTIQUE
+// ================================================================
 
-        // ================================================================
-        // BOUTIQUE
-        // ================================================================
+Route::name('shop.')
+    ->prefix('shop')
+    ->group(function () {
 
-        Route::name('shop.')
-            ->prefix('shop')
+        /*
+        |--------------------------------------------------------------------------
+        | PRODUITS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::name('products.')
+            ->prefix('products')
+            ->controller(ProductController::class)
             ->group(function () {
 
-                // PRODUITS
-                Route::name('products.')
-                    ->prefix('products')
-                    ->controller(ProductController::class)
-                    ->group(function () {
+                Route::get('/', 'index')
+                    ->name('index');
 
-                        Route::get('/', 'index')
-                            ->name('index');
+                Route::post('/', 'store')
+                    ->name('store');
 
-                        Route::post('/', 'store')
-                            ->name('store');
+                Route::put('/{product}', 'update')
+                    ->name('update');
 
-                        Route::put('/{product}', 'update')
-                            ->name('update');
+                Route::delete('/{product}', 'destroy')
+                    ->name('destroy');
 
-                        Route::delete('/{product}', 'destroy')
-                            ->name('destroy');
-
-                        Route::delete('/', 'bulkDestroy')
-                            ->name('bulk-destroy');
-                    });
-
-
-                // COMMANDES
-                Route::name('orders.')
-                    ->prefix('orders')
-                    ->controller(OrderController::class)
-                    ->group(function () {
-
-                        Route::get('/', 'index')
-                            ->name('index');
-
-                        Route::get('/{order}', 'show')
-                            ->name('show');
-
-                        Route::put('/{order}', 'update')
-                            ->name('update');
-
-                        Route::delete('/{order}', 'destroy')
-                            ->name('destroy');
-                    });
+                Route::delete('/', 'bulkDestroy')
+                    ->name('bulk-destroy');
             });
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | COMMANDES
+        |--------------------------------------------------------------------------
+        */
+
+        Route::name('orders.')
+            ->prefix('orders')
+            ->controller(OrderController::class)
+            ->group(function () {
+
+                /* ============================================================
+                | LISTE & CRÉATION
+                ============================================================ */
+
+                Route::get('/', 'index')
+                    ->name('index');
+
+                Route::post('/', 'store')
+                    ->name('store');
+
+                /* ============================================================
+                | SUPPRESSION GROUPÉE
+                ============================================================
+                |
+                | DELETE /admin/shop/orders
+                | Utilisé par le formulaire bulk-destroy du index.blade.php
+                |
+                */
+
+                Route::delete('/', 'bulkDestroy')
+                    ->name('bulk-destroy');
+
+
+                /* ============================================================
+                | ACTIONS SUR UNE COMMANDE
+                ============================================================ */
+
+                // Marquer le client comme contacté
+                Route::post('/{order}/contacted', 'markContacted')
+                    ->name('contacted');
+
+                // Retirer le contact client
+                Route::delete('/{order}/contacted', 'unmarkContacted')
+                    ->name('contacted.destroy');
+
+
+                // Confirmer la commande (pending → paid)
+                Route::post('/{order}/confirm', 'confirm')
+                    ->name('confirm');
+
+                // Annuler la commande
+                Route::post('/{order}/cancel', 'cancel')
+                    ->name('cancel');
+
+                // Rembourser la commande
+                Route::post('/{order}/refund', 'refund')
+                    ->name('refund');
+
+
+                /* ============================================================
+                | NOTES ADMINISTRATIVES
+                ============================================================
+                |
+                | PUT /admin/shop/orders/{order}/notes
+                | Utilisé par : admin.shop.orders.notes.update
+                |
+                */
+
+                Route::put('/{order}/notes', 'updateNotes')
+                    ->name('notes.update');
+
+
+                /* ============================================================
+                | STATUT DE LIVRAISON
+                ============================================================
+                |
+                | PUT /admin/shop/orders/{order}/delivery-status
+                | Utilisé par : admin.shop.orders.delivery-status.update
+                |
+                */
+
+                Route::put('/{order}/delivery-status', 'updateDeliveryStatus')
+                    ->name('delivery-status.update');
+
+
+                /* ============================================================
+                | CONTENU NUMÉRIQUE
+                ============================================================ */
+
+                Route::prefix('{order}/items/{item}')
+                    ->name('items.')
+                    ->group(function () {
+
+                        // Ajouter / remplacer le fichier numérique
+                        Route::post('/digital-file', 'uploadDigitalFile')
+                            ->name('digital-file.upload');
+
+                        // Autoriser l'accès au contenu
+                        Route::post('/digital-access', 'grantDigitalAccess')
+                            ->name('digital-access.grant');
+
+                        // Révoquer l'accès au contenu
+                        Route::delete('/digital-access', 'revokeDigitalAccess')
+                            ->name('digital-access.revoke');
+                    });
+
+
+                /* ============================================================
+                | FICHE
+                ============================================================ */
+
+                Route::get('/{order}', 'show')
+                    ->name('show');
+
+
+                /* ============================================================
+                | MODIFICATION
+                ============================================================ */
+
+                Route::put('/{order}', 'update')
+                    ->name('update');
+
+
+                /* ============================================================
+                | SUPPRESSION
+                ============================================================ */
+
+                Route::delete('/{order}', 'destroy')
+                    ->name('destroy');
+            });
+
+    });
 
         // ================================================================
         // PAGES FRONT-OFFICE

@@ -93,17 +93,17 @@
             ],
         ],
         [
-            'label' => __('nav.shop'),
+            'label' => 'Boutique',
             'icon' => 'shopping-bag',
             'match' => 'admin/shop*',
             'children' => [
                 [
-                    'label' => __('nav.products'),
+                    'label' => 'Produits',
                     'href' => route('admin.shop.products.index'),
                     'match' => 'admin/shop/products*',
                 ],
                 [
-                    'label' => __('nav.orders'),
+                    'label' => 'Commandes',
                     'href' => route('admin.shop.orders.index'),
                     'match' => 'admin/shop/orders*',
                 ],
@@ -208,64 +208,64 @@
             ],
         ],
 
-       [
-    'label' => 'Candidatures',
-    'icon' => 'clipboard-list',
-    'match' => 'admin/engagements*',
-    'children' => [
         [
-            'label' => 'Toutes les candidatures',
-            'href' => route('admin.engagements.index'),
-            'match' => 'admin/engagements',
-        ],
-    ],
-],
-
-       [
-    'label' => __('nav.pages'),
-    'icon' => 'globe',
-    'match' => 'admin/pages*',
-    'children' => [
-        [
-            'label' => __('nav.page_home'),
-            'href' => route('admin.pages.home.edit'),
-            'match' => 'admin/pages/home*',
-        ],
-        [
-            'label' => __('nav.page_navigation'),
-            'href' => route('admin.pages.navigation.index'),
-            'match' => 'admin/pages/navigation*',
-        ],
-        [
-            'label' => __('nav.page_footer'),
-            'href' => route('admin.pages.footer.index'),
-            'match' => 'admin/pages/footer*',
-        ],
-        [
-            'label' => 'Pages personnalisées',
-            'href' => route('admin.pages.custom.index'),
-            'match' => 'admin/pages/custom*',
-        ],
-
-
-        [
-            'label' => 'Devenir partenaire',
-            'href' => route('admin.pages.engagement.edit', 'partner'),
-            'match' => 'admin/pages/engagement/partner*',
-        ],
-        [
-            'label' => 'Devenir bénévole',
-            'href' => route('admin.pages.engagement.edit', 'volunteer'),
-            'match' => 'admin/pages/engagement/volunteer*',
+            'label' => 'Candidatures',
+            'icon' => 'clipboard-list',
+            'match' => 'admin/engagements*',
+            'children' => [
+                [
+                    'label' => 'Toutes les candidatures',
+                    'href' => route('admin.engagements.index'),
+                    'match' => 'admin/engagements',
+                ],
+            ],
         ],
 
         [
-            'label' => 'Fondatrice',
-            'href' => route('admin.pages.founder.edit'),
-            'match' => 'admin/pages/founder*',
+            'label' => __('nav.pages'),
+            'icon' => 'globe',
+            'match' => 'admin/pages*',
+            'children' => [
+                [
+                    'label' => __('nav.page_home'),
+                    'href' => route('admin.pages.home.edit'),
+                    'match' => 'admin/pages/home*',
+                ],
+                [
+                    'label' => __('nav.page_navigation'),
+                    'href' => route('admin.pages.navigation.index'),
+                    'match' => 'admin/pages/navigation*',
+                ],
+                [
+                    'label' => __('nav.page_footer'),
+                    'href' => route('admin.pages.footer.index'),
+                    'match' => 'admin/pages/footer*',
+                ],
+                [
+                    'label' => 'Pages personnalisées',
+                    'href' => route('admin.pages.custom.index'),
+                    'match' => 'admin/pages/custom*',
+                ],
+
+
+                [
+                    'label' => 'Devenir partenaire',
+                    'href' => route('admin.pages.engagement.edit', 'partner'),
+                    'match' => 'admin/pages/engagement/partner*',
+                ],
+                [
+                    'label' => 'Devenir bénévole',
+                    'href' => route('admin.pages.engagement.edit', 'volunteer'),
+                    'match' => 'admin/pages/engagement/volunteer*',
+                ],
+
+                [
+                    'label' => 'Fondatrice',
+                    'href' => route('admin.pages.founder.edit'),
+                    'match' => 'admin/pages/founder*',
+                ],
+            ],
         ],
-    ],
-],
     ];
 
     $isActive = function ($pattern) {
@@ -319,8 +319,7 @@
                 $children = $item['children'] ?? null;
             @endphp
             <div x-data="{ expanded: {{ $active && !empty($children) ? 'true' : 'false' }} }">
-                <a href="{{ $children ? '#' : $item['href'] }}"
-                    @if ($children) @click.prevent="expanded = !expanded" @endif
+                <a href="{{ $children ? '#' : $item['href'] }}" @if ($children) @click.prevent="expanded = !expanded" @endif
                     class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-secondary text-foreground {{ $active ? 'bg-accent text-accent-foreground font-semibold hover:bg-accent' : '' }}"
                     :class="!sidebarOpen && 'justify-center px-3'">
                     <x-icon :name="$item['icon']" class="w-5 h-5 shrink-0" />
@@ -336,8 +335,7 @@
 
                 @if ($children)
                     <div x-show="sidebarOpen && expanded" x-cloak x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 -translate-y-1"
-                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                         class="mt-1 ms-4 ps-4 border-s border-sidebar-border space-y-1">
                         @foreach ($children as $child)
                             <a href="{{ $child['href'] }}"

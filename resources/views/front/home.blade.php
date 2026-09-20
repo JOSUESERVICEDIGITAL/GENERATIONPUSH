@@ -1,72 +1,775 @@
 <x-layouts.public :title="$settings->meta_title ?? null" :meta-description="$settings->meta_description ?? null">
 
-    <!-- ============ HERO (vidéo background + texte en absolu) ============ -->
-    <section class="relative h-screen min-h-[600px] w-full overflow-hidden bg-[#1A1A1A]">
-        {{-- {{ dd($settings->heroDirectVideoUrl()) }} --}}
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section
+    id="generation-push-hero"
+    class="relative h-screen min-h-[600px] w-full overflow-hidden bg-[#1A1A1A]"
+>
 
-@if ($settings->heroDirectVideoUrl())
-            <video
-                autoplay
-                muted
-                loop
-                playsinline
-                @if ($settings->heroPosterUrl()) poster="{{ $settings->heroPosterUrl() }}" @endif
-                class="absolute inset-0 w-full h-full object-cover"
+    {{-- ========================================================
+         VIDÉO / IMAGE DE FOND
+         ======================================================== --}}
+    @if ($settings->heroDirectVideoUrl())
+
+        <video
+            autoplay
+            muted
+            loop
+            playsinline
+            @if ($settings->heroPosterUrl())
+                poster="{{ $settings->heroPosterUrl() }}"
+            @endif
+            class="absolute inset-0 w-full h-full object-cover"
+        >
+            <source
+                src="{{ $settings->heroDirectVideoUrl() }}"
+                type="video/mp4"
             >
-                <source src="{{ $settings->heroDirectVideoUrl() }}" type="video/mp4">
-            </video>
-        @elseif ($settings->heroEmbedUrl())
-            <iframe
-                src="{{ $settings->heroEmbedUrl() }}"
-                class="absolute inset-0 w-full h-full object-cover pointer-events-none"
-                style="width: 100vw; height: 56.25vw; min-height: 100%; min-width: 177.77vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"
-                frameborder="0"
-                allow="autoplay; fullscreen"
-            ></iframe>
-        @elseif ($settings->heroPosterUrl())
-            <img src="{{ $settings->heroPosterUrl() }}" class="absolute inset-0 w-full h-full object-cover" alt="">
-        @else
-            <div class="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] via-[#2A1810] to-accent/30"></div>
-        @endif
+        </video>
 
-        <!-- Overlay dégradé pour la lisibilité du texte -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/60"></div>
+    @elseif ($settings->heroEmbedUrl())
 
-        <!-- Texte positionné en absolu sur la vidéo -->
-        <div class="absolute inset-0 flex items-center justify-center px-4">
-            <div class="max-w-4xl text-center" x-data x-reveal="'zoom'">
-                @if ($settings->hero_subtitle)
-                    <p class="inline-block px-4 py-1.5 rounded-full bg-accent/20 border border-accent/40 text-accent-foreground text-xs sm:text-sm font-semibold tracking-wide uppercase mb-6 backdrop-blur-sm">
-                        {{ $settings->hero_subtitle }}
-                    </p>
-                @endif
-                <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight">
-                    {{ $settings->hero_title ?? 'Formons les leaders africains de demain' }}
-                </h1>
-                @if ($settings->hero_description)
-                    <p class="mt-6 text-base sm:text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
-                        {{ $settings->hero_description }}
-                    </p>
-                @endif
-                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a
-                        href="{{ $settings->hero_cta_url ?? route('register') }}"
-                        class="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-accent text-white font-semibold hover:opacity-90 hover:scale-105 transition-all duration-200 shadow-lg shadow-accent/30"
-                    >
-                        {{ $settings->hero_cta_label ?? 'Rejoindre la communauté' }}
-                    </a>
-                    <a href="#a-propos" class="w-full sm:w-auto px-8 py-3.5 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-all duration-200 backdrop-blur-sm">
-                        Découvrir
-                    </a>
-                </div>
+        <iframe
+            src="{{ $settings->heroEmbedUrl() }}"
+            class="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            style="
+                width: 100vw;
+                height: 56.25vw;
+                min-height: 100%;
+                min-width: 177.77vh;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            "
+            frameborder="0"
+            allow="autoplay; fullscreen"
+        ></iframe>
+
+    @elseif ($settings->heroPosterUrl())
+
+        <img
+            src="{{ $settings->heroPosterUrl() }}"
+            class="absolute inset-0 w-full h-full object-cover"
+            alt=""
+        >
+
+    @else
+
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] via-[#2A1810] to-accent/30"
+        ></div>
+
+    @endif
+
+
+    {{-- ========================================================
+         OVERLAY
+         ======================================================== --}}
+    <div
+        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/60"
+    ></div>
+
+
+    {{-- ========================================================
+         CONTENU HERO
+         ======================================================== --}}
+    <div class="absolute inset-0 flex items-center justify-center px-4">
+
+        <div class="max-w-4xl text-center">
+
+            {{-- =================================================
+                 SOUS-TITRE
+                 ================================================= --}}
+            @if ($settings->hero_subtitle)
+
+                <p
+                    class="inline-block px-4 py-1.5 rounded-full
+                           bg-accent/20 border border-accent/40
+                           text-accent-foreground
+                           text-xs sm:text-sm
+                           font-semibold tracking-wide uppercase
+                           mb-6 backdrop-blur-sm"
+                >
+                    {{ $settings->hero_subtitle }}
+                </p>
+
+            @endif
+
+
+            {{-- =================================================
+                 TITRE ANIMÉ
+                 ================================================= --}}
+            <h1
+                id="generation-push-hero-title"
+                class="text-3xl sm:text-5xl md:text-6xl lg:text-6xl
+                       font-extrabold leading-tight tracking-tight"
+                style="color: #FFFFFF;"
+            ></h1>
+
+
+            {{-- =================================================
+                 DESCRIPTION
+                 ================================================= --}}
+            @if ($settings->hero_description)
+
+                <p
+                    class="mt-6 text-base sm:text-lg md:text-xl
+                           text-gray-200 max-w-2xl mx-auto"
+                >
+                    {{ $settings->hero_description }}
+                </p>
+
+            @endif
+
+
+            {{-- =================================================
+                 BOUTONS
+                 ================================================= --}}
+            <div
+                class="mt-10 flex flex-col sm:flex-row
+                       items-center justify-center gap-4"
+            >
+
+                <a
+                    href="{{ $settings->hero_cta_url ?? route('register') }}"
+                    class="w-full sm:w-auto
+                           px-8 py-3.5
+                           rounded-lg
+                           bg-accent
+                           text-white
+                           font-semibold
+                           hover:opacity-90
+                           hover:scale-105
+                           transition-all duration-200
+                           shadow-lg shadow-accent/30"
+                >
+                    {{ $settings->hero_cta_label ?? 'Rejoindre la communauté' }}
+                </a>
+
+
+                <a
+                    href="#a-propos"
+                    class="w-full sm:w-auto
+                           px-8 py-3.5
+                           rounded-lg
+                           border border-white/30
+                           text-white
+                           font-semibold
+                           hover:bg-white/10
+                           transition-all duration-200
+                           backdrop-blur-sm"
+                >
+                    Découvrir
+                </a>
+
             </div>
+
         </div>
 
-        <!-- Indicateur de scroll -->
-        <a href="#stats" class="absolute bottom-8 start-1/2 -translate-x-1/2 text-white/80 hover:text-white transition-colors duration-200 animate-bounce">
-            <x-icon name="chevron-down" class="w-8 h-8" />
-        </a>
-    </section>
+    </div>
+
+
+    {{-- ========================================================
+         INDICATEUR DE SCROLL
+         ======================================================== --}}
+    <a
+        href="#stats"
+        class="absolute bottom-8 start-1/2
+               -translate-x-1/2
+               text-white/80
+               hover:text-white
+               transition-colors duration-200
+               animate-bounce"
+    >
+        <x-icon name="chevron-down" class="w-8 h-8" />
+    </a>
+
+</section>
+
+
+<!-- ============================================================
+     ANIMATION DU TITRE HERO
+     ============================================================ -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const heroSection = document.getElementById(
+        'generation-push-hero'
+    );
+
+    const heroTitle = document.getElementById(
+        'generation-push-hero-title'
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SÉCURITÉ
+    |--------------------------------------------------------------------------
+    */
+
+    if (!heroSection || !heroTitle) {
+        return;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TEXTES
+    |--------------------------------------------------------------------------
+    |
+    | Le premier texte vient directement du back-office.
+    |
+    */
+
+    const configuredText = @json(
+        $settings->hero_title ?? 'Formons les leaders africains de demain'
+    );
+
+
+    /*
+     * Texte automatique.
+     */
+    const defaultText =
+        'Nous formons les leaders africains de demain';
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | COULEURS
+    |--------------------------------------------------------------------------
+    */
+
+    const whiteColor = '#FFFFFF';
+
+    const orangeColor = '#E8631A';
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VITESSES
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+     * Vitesse d'écriture.
+     */
+    const typingSpeed = 70;
+
+
+    /*
+     * Vitesse de suppression.
+     */
+    const deletingSpeed = 45;
+
+
+    /*
+     * Pause lorsque le texte est entièrement écrit.
+     */
+    const pauseAfterTyping = 1200;
+
+
+    /*
+     * Petite pause entre deux textes.
+     */
+    const pauseBetweenTexts = 400;
+
+
+    /*
+     |--------------------------------------------------------------------------
+    | ÉTAT DE L'ANIMATION
+    |--------------------------------------------------------------------------
+    */
+
+    let currentColor = whiteColor;
+
+    let currentTimer = null;
+
+    let animationRunning = false;
+
+    let heroIsVisible = false;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ARRÊTER L'ANIMATION
+    |--------------------------------------------------------------------------
+    */
+
+    function stopAnimation() {
+
+        if (currentTimer !== null) {
+
+            clearTimeout(currentTimer);
+
+            currentTimer = null;
+        }
+
+        animationRunning = false;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ÉCRIRE UN TEXTE
+    |--------------------------------------------------------------------------
+    */
+
+    function typeText(text, callback) {
+
+        let index = 0;
+
+
+        /*
+         * On vide complètement le titre.
+         */
+        heroTitle.textContent = '';
+
+
+        /*
+         * Applique la couleur actuelle.
+         */
+        heroTitle.style.color = currentColor;
+
+
+        function write() {
+
+            /*
+             * Si le HERO n'est plus visible,
+             * on arrête proprement.
+             */
+            if (!heroIsVisible) {
+
+                stopAnimation();
+
+                return;
+            }
+
+
+            /*
+             * Tant qu'il reste des caractères.
+             */
+            if (index < text.length) {
+
+                heroTitle.textContent += text.charAt(index);
+
+                index++;
+
+
+                currentTimer = setTimeout(
+                    write,
+                    typingSpeed
+                );
+
+            } else {
+
+                /*
+                 * Texte entièrement écrit.
+                 *
+                 * On attend avant de supprimer.
+                 */
+                currentTimer = setTimeout(
+                    callback,
+                    pauseAfterTyping
+                );
+            }
+        }
+
+
+        write();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUPPRIMER UN TEXTE
+    |--------------------------------------------------------------------------
+    */
+
+    function deleteText(callback) {
+
+        function erase() {
+
+            /*
+             * Si le HERO n'est plus visible,
+             * on arrête.
+             */
+            if (!heroIsVisible) {
+
+                stopAnimation();
+
+                return;
+            }
+
+
+            const currentText =
+                heroTitle.textContent;
+
+
+            /*
+             * Tant qu'il reste des caractères.
+             */
+            if (currentText.length > 0) {
+
+                heroTitle.textContent =
+                    currentText.substring(
+                        0,
+                        currentText.length - 1
+                    );
+
+
+                currentTimer = setTimeout(
+                    erase,
+                    deletingSpeed
+                );
+
+            } else {
+
+                /*
+                 * Petite pause avant le texte suivant.
+                 */
+                currentTimer = setTimeout(
+                    callback,
+                    pauseBetweenTexts
+                );
+            }
+        }
+
+
+        erase();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TEXTE DU BACK-OFFICE
+    |--------------------------------------------------------------------------
+    */
+
+    function playConfiguredText(callback) {
+
+        typeText(
+            configuredText,
+            function () {
+
+                deleteText(
+                    callback
+                );
+
+            }
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TEXTE PAR DÉFAUT
+    |--------------------------------------------------------------------------
+    */
+
+    function playDefaultText(callback) {
+
+        typeText(
+            defaultText,
+            function () {
+
+                deleteText(
+                    callback
+                );
+
+            }
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SÉQUENCE BLANCHE
+    |--------------------------------------------------------------------------
+    |
+    | 1. Texte back-office
+    | 2. Texte par défaut
+    | 3. Passage à l'orange
+    |
+    */
+
+    function playWhiteSequence() {
+
+        if (!heroIsVisible) {
+            return;
+        }
+
+
+        currentColor = whiteColor;
+
+        heroTitle.style.color = whiteColor;
+
+
+        /*
+         * TEXTE BACK-OFFICE
+         */
+        playConfiguredText(
+
+            function () {
+
+                if (!heroIsVisible) {
+                    return;
+                }
+
+
+                /*
+                 * TEXTE PAR DÉFAUT
+                 */
+                playDefaultText(
+
+                    function () {
+
+                        if (!heroIsVisible) {
+                            return;
+                        }
+
+
+                        /*
+                         * Passage à la séquence orange.
+                         */
+                        playOrangeSequence();
+
+                    }
+                );
+
+            }
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SÉQUENCE ORANGE
+    |--------------------------------------------------------------------------
+    |
+    | 1. Texte back-office
+    | 2. Texte par défaut
+    | 3. Retour au blanc
+    |
+    */
+
+    function playOrangeSequence() {
+
+        if (!heroIsVisible) {
+            return;
+        }
+
+
+        currentColor = orangeColor;
+
+        heroTitle.style.color = orangeColor;
+
+
+        /*
+         * TEXTE BACK-OFFICE EN ORANGE
+         */
+        playConfiguredText(
+
+            function () {
+
+                if (!heroIsVisible) {
+                    return;
+                }
+
+
+                /*
+                 * TEXTE PAR DÉFAUT EN ORANGE
+                 */
+                playDefaultText(
+
+                    function () {
+
+                        if (!heroIsVisible) {
+                            return;
+                        }
+
+
+                        /*
+                         * Retour à la première
+                         * séquence blanche.
+                         */
+                        playWhiteSequence();
+
+                    }
+                );
+
+            }
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | REDÉMARRER DEPUIS LE DÉBUT
+    |--------------------------------------------------------------------------
+    */
+
+    function restartAnimation() {
+
+        /*
+         * Annule absolument tous les anciens timers.
+         */
+        stopAnimation();
+
+
+        /*
+         * Nettoyage complet du titre.
+         */
+        heroTitle.textContent = '';
+
+
+        /*
+         * Première couleur :
+         * BLANC
+         */
+        currentColor = whiteColor;
+
+        heroTitle.style.color = whiteColor;
+
+
+        /*
+         * L'animation peut démarrer.
+         */
+        animationRunning = true;
+
+
+        /*
+         * Première séquence :
+         * BLANC
+         */
+        playWhiteSequence();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INTERSECTION OBSERVER
+    |--------------------------------------------------------------------------
+    |
+    | Le scroll ne contrôle PAS l'animation.
+    |
+    | Il sert uniquement à détecter :
+    |
+    | HERO visible
+    |       ↓
+    | démarrage / reprise depuis le début
+    |
+    | HERO invisible
+    |       ↓
+    | arrêt
+    |
+    */
+
+    const observer =
+        new IntersectionObserver(
+
+            function (entries) {
+
+                entries.forEach(function (entry) {
+
+                    /*
+                     * Le HERO vient d'entrer dans
+                     * la zone visible.
+                     */
+                    if (entry.isIntersecting) {
+
+                        /*
+                         * On évite de redémarrer
+                         * à chaque petit mouvement
+                         * de scroll.
+                         */
+                        if (!heroIsVisible) {
+
+                            heroIsVisible = true;
+
+                            restartAnimation();
+                        }
+
+                    }
+
+                    /*
+                     * Le HERO vient de sortir
+                     * de la zone visible.
+                     */
+                    else {
+
+                        if (heroIsVisible) {
+
+                            heroIsVisible = false;
+
+                            stopAnimation();
+
+                            /*
+                             * On nettoie le titre.
+                             */
+                            heroTitle.textContent = '';
+
+                            /*
+                             * On prépare la prochaine
+                             * apparition en blanc.
+                             */
+                            currentColor = whiteColor;
+
+                            heroTitle.style.color =
+                                whiteColor;
+                        }
+                    }
+
+                });
+
+            },
+
+            {
+                /*
+                 * Le HERO est considéré visible
+                 * dès qu'environ 35% est dans l'écran.
+                 */
+                threshold: 0.35
+            }
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DÉMARRAGE DE LA SURVEILLANCE
+    |--------------------------------------------------------------------------
+    */
+
+    observer.observe(heroSection);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | NETTOYAGE SI LA PAGE EST QUITTÉE
+    |--------------------------------------------------------------------------
+    */
+
+    window.addEventListener(
+        'pagehide',
+        function () {
+
+            stopAnimation();
+
+            observer.disconnect();
+
+        }
+    );
+
+});
+</script>
+
+
+
+
 
     <!-- ============ STATS ============ -->
     <section id="stats" class="bg-white py-14 border-b border-gray-100">
@@ -206,26 +909,63 @@
         </section>
     @endif
 
-    <!-- ============ SPONSORS ============ -->
-    @if ($sponsors->isNotEmpty())
-        <section class="py-16 bg-white border-y border-gray-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <p class="text-center text-sm text-gray-400 font-semibold uppercase tracking-wide mb-8" x-data x-reveal>Ils nous soutiennent</p>
-                <div class="flex flex-wrap items-center justify-center gap-10 sm:gap-16" x-data x-reveal>
-                    @foreach ($sponsors as $sponsor)
-                        <div class="grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300">
-                            @if ($sponsor->logoUrl())
-                                <img src="{{ $sponsor->logoUrl() }}" alt="{{ $sponsor->name }}" class="h-10 object-contain">
-                            @else
-                                <span class="font-bold text-gray-400">{{ $sponsor->name }}</span>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
+  <!-- ============ SPONSORS ============ -->
+@if ($sponsors->isNotEmpty())
+    <section class="py-16 bg-white border-y border-gray-100">
 
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+           <div class="text-center max-w-2xl mx-auto mb-14" x-data x-reveal>
+                    <p class="text-accent font-semibold text-sm uppercase tracking-wide mb-3">Sponsors</p>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">Ils nous soutiennent</h2>
+                </div>
+
+
+            {{-- Logos --}}
+            <div
+                class="flex flex-wrap items-center justify-center gap-x-12 gap-y-10 sm:gap-x-16 sm:gap-y-12"
+                x-data
+                x-reveal
+            >
+
+                @foreach ($sponsors as $sponsor)
+
+                    <div
+                        class="flex items-center justify-center
+                               min-w-[120px] min-h-[60px]
+                               transition-transform duration-300
+                               hover:scale-105"
+                    >
+
+                        @if ($sponsor->logoUrl())
+
+                            <img
+                                src="{{ $sponsor->logoUrl() }}"
+                                alt="{{ $sponsor->name }}"
+                                class="max-h-14 max-w-[180px] w-auto object-contain"
+                                loading="lazy"
+                            >
+
+                        @else
+
+                            <span
+                                class="font-bold text-gray-500 text-lg"
+                            >
+                                {{ $sponsor->name }}
+                            </span>
+
+                        @endif
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+        </div>
+
+    </section>
+@endif
     <!-- ============ BLOG ============ -->
     @if ($posts->isNotEmpty())
         <section class="py-20 md:py-28 bg-white">
@@ -326,3 +1066,5 @@
     </section>
 
 </x-layouts.public>
+
+

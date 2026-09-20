@@ -15,7 +15,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that should be mass assignable.
      *
      * @var list<string>
      */
@@ -26,6 +26,9 @@ class User extends Authenticatable
         'phone',
         'country',
         'city',
+        'address',
+        'profile_photo',
+        'profile_completed_at',
         'status',
         'role',
         'chat_enabled',
@@ -42,7 +45,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
@@ -50,6 +53,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'profile_completed_at' => 'datetime',
             'password' => 'hashed',
             'chat_enabled' => 'boolean',
         ];
@@ -57,17 +61,49 @@ class User extends Authenticatable
 
     public function chatMessages(): HasMany
     {
-        return $this->hasMany(ChatMessage::class, 'user_id')->orderBy('created_at');
+        return $this->hasMany(ChatMessage::class, 'user_id')
+            ->orderBy('created_at');
     }
 
     public function bookmarkedPosts(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class, 'post_bookmarks')->withTimestamps()->latest('post_bookmarks.created_at');
+        return $this->belongsToMany(
+            Post::class,
+            'post_bookmarks'
+        )
+            ->withTimestamps()
+            ->latest('post_bookmarks.created_at');
     }
 
+    /**
+     * Vérifie si le compte est actif.
+     */
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    /**
+     * Vérifie si le profil contient les informations nécessaires.
+     */
+    public function hasCompleteProfile(): bool
+    {
+        return filled($this->name)
+            && filled($this->email)
+            && filled($this->phone)
+            && filled($this->country)
+            && filled($this->city)
+            && filled($this->address)
+            && filled($this->profile_photo)
+            && filled($this->profile_completed_at);
+    }
+
+    /**
+     * Vérifie si le profil doit encore être complété.
+     */
+    public function needsProfileCompletion(): bool
+    {
+        return !$this->hasCompleteProfile();
     }
 
     public function statusLabel(): string

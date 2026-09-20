@@ -16,8 +16,15 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
+
+        // Middleware global du site
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
+        ]);
+
+        // Alias du middleware administrateur
+        $middleware->alias([
+            'admin.only' => \App\Http\Middleware\AdminOnly::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

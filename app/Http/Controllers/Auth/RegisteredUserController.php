@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +15,7 @@ use Illuminate\View\View;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Afficher le formulaire d'inscription.
      */
     public function create(): View
     {
@@ -24,7 +23,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
+     * Enregistrer une nouvelle demande d'inscription au Hub.
      *
      * @throws ValidationException
      */
@@ -32,20 +31,58 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                'unique:' . User::class,
+            ],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::defaults(),
+            ],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOUVELLE INSCRIPTION HUB
+            |--------------------------------------------------------------------------
+            |
+            | Le compte est créé comme membre mais reste en attente
+            | de validation par l'administrateur.
+            |
+            */
+
+            'role' => 'Member',
+            'status' => 'inactive',
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        /*
+        |--------------------------------------------------------------------------
+        | IMPORTANT
+        |--------------------------------------------------------------------------
+        |
+        | On ne connecte PAS automatiquement le nouvel inscrit.
+        | Son compte doit d'abord être validé par un administrateur.
+        |
+        */
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()
+            ->route('registration.pending')
+            ->with('registration_user', [
+                'name' => $user->name,
+                'email' => $user->email,
+                'type' => 'hub',
+            ]);
     }
 }

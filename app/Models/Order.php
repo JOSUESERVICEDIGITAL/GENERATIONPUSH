@@ -14,16 +14,45 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'user_id',
+
+        // Snapshot client au moment de la commande
+        'customer_name',
+        'customer_email',
+        'customer_phone',
+        'customer_country',
+        'customer_city',
+        'customer_address',
+
+        'contacted_at',
+        'confirmed_at',
+        'admin_notes',
+
+        'notes',
+
+        // Commande
         'total',
         'status',
+        'delivery_status',
+
+        // QR Code
+        'qr_content',
+        'qr_code_path',
     ];
 
     protected function casts(): array
     {
         return [
             'total' => 'decimal:2',
+            'contacted_at' => 'datetime',
+            'confirmed_at' => 'datetime',
         ];
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATIONS
+    |--------------------------------------------------------------------------
+    */
 
     public function user(): BelongsTo
     {
@@ -35,22 +64,91 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | STATUT DE LA COMMANDE
+    |--------------------------------------------------------------------------
+    */
+
     public function statusLabel(): string
     {
         return match ($this->status) {
-            'paid' => 'Payée',
             'pending' => 'En attente',
+            'paid' => 'Payée',
             'cancelled' => 'Annulée',
             'refunded' => 'Remboursée',
-            default => $this->status,
+            default => ucfirst((string) $this->status),
         };
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | STATUT DE LIVRAISON
+    |--------------------------------------------------------------------------
+    */
+
+    public function deliveryStatusLabel(): string
+    {
+        return match ($this->delivery_status) {
+            'not_required' => 'Pas de livraison',
+            'pending' => 'En attente',
+            'processing' => 'Préparation',
+            'shipped' => 'Expédiée',
+            'delivered' => 'Livrée',
+            default => ucfirst((string) $this->delivery_status),
+        };
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | HELPERS
+    |--------------------------------------------------------------------------
+    */
+
+    public function requiresDelivery(): bool
+    {
+        return $this->items()
+            ->where('fulfillment_type', 'physical')
+            ->exists();
+    }
+
+    public function hasDigitalItems(): bool
+    {
+        return $this->items()
+            ->where('fulfillment_type', 'digital')
+            ->exists();
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status === 'paid'
+            && (
+                ! $this->requiresDelivery()
+                || $this->delivery_status === 'delivered'
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | NUMÉRO DE COMMANDE
+    |--------------------------------------------------------------------------
+    */
+
     public static function nextOrderNumber(): string
     {
-        $last = static::orderByDesc('id')->value('order_number');
-        $number = $last ? ((int) substr($last, 4)) + 1 : 1;
+        $last = static::query()
+            ->orderByDesc('id')
+            ->value('order_number');
 
-        return 'ORD-' . str_pad((string) $number, 5, '0', STR_PAD_LEFT);
+        $number = $last
+            ? ((int) substr($last, 4)) + 1
+            : 1;
+
+        return 'ORD-' . str_pad(
+            (string) $number,
+            5,
+            '0',
+            STR_PAD_LEFT
+        );
     }
 }

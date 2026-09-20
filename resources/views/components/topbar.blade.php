@@ -262,9 +262,28 @@
             <!-- Profil -->
             <div class="relative" x-data="{ profileOpen: false }" @click.outside="profileOpen = false">
                 <button type="button" @click="profileOpen = !profileOpen" class="flex items-center gap-2 ps-1 sm:ps-2 pe-1 sm:pe-3 py-1 rounded-lg hover:bg-secondary transition-all duration-200 text-foreground cursor-pointer">
-                    <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-semibold text-sm shrink-0">
-                        {{ Str::of(auth()->user()->name ?? 'Admin')->explode(' ')->map(fn($w) => Str::substr($w, 0, 1))->take(2)->join('') }}
-                    </div>
+                    @php
+    $headerUser = auth()->user();
+
+    $headerInitials = Str::of($headerUser->name ?? 'Admin')
+        ->explode(' ')
+        ->filter()
+        ->map(fn ($word) => Str::substr($word, 0, 1))
+        ->take(2)
+        ->join('');
+@endphp
+
+<div class="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-accent flex items-center justify-center text-white font-semibold text-sm">
+    @if ($headerUser?->profile_photo)
+        <img
+            src="{{ Storage::url($headerUser->profile_photo) }}"
+            alt="{{ $headerUser->name }}"
+            class="w-full h-full object-cover"
+        >
+    @else
+        {{ $headerInitials }}
+    @endif
+</div>
                     <x-icon name="chevron-down" class="hidden sm:block w-4 h-4 transition-transform duration-200" x-bind:class="profileOpen ? 'rotate-180' : ''" />
                 </button>
 
@@ -276,10 +295,31 @@
                     x-transition:enter-end="opacity-100 translate-y-0"
                     class="absolute end-0 mt-2 w-48 bg-card border border-border rounded-lg shadow-lg z-50"
                 >
-                    <div class="p-4 border-b border-border">
-                        <p class="font-semibold text-foreground">{{ auth()->user()->name ?? 'Admin' }}</p>
-                        <p class="text-sm text-muted-foreground truncate">{{ auth()->user()->email ?? 'admin@generationpush.com' }}</p>
-                    </div>
+                   <div class="p-4 border-b border-border flex items-center gap-3">
+
+    <div class="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-accent flex items-center justify-center text-white font-semibold">
+        @if ($headerUser?->profile_photo)
+            <img
+                src="{{ Storage::url($headerUser->profile_photo) }}"
+                alt="{{ $headerUser->name }}"
+                class="w-full h-full object-cover"
+            >
+        @else
+            {{ $headerInitials }}
+        @endif
+    </div>
+
+    <div class="min-w-0">
+        <p class="font-semibold text-foreground truncate">
+            {{ $headerUser->name ?? 'Admin' }}
+        </p>
+
+        <p class="text-sm text-muted-foreground truncate">
+            {{ $headerUser->email ?? 'admin@generationpush.com' }}
+        </p>
+    </div>
+
+</div>
                     <nav class="p-2 space-y-1">
                         <a href="{{ route('profile.edit') }}" class="block px-4 py-2 rounded-lg hover:bg-secondary text-foreground transition-all duration-200 text-sm cursor-pointer">{{ __('nav.my_profile') }}</a>
                         <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 rounded-lg hover:bg-secondary text-foreground transition-all duration-200 text-sm cursor-pointer">{{ __('nav.settings') }}</a>

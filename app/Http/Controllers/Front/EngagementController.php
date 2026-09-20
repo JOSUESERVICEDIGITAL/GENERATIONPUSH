@@ -44,6 +44,24 @@ class EngagementController extends Controller
     }
 
     /**
+     * Afficher la page de confirmation après une soumission.
+     */
+    public function success(string $type): View
+    {
+        abort_unless(
+            in_array($type, ['hub', 'partner', 'volunteer'], true),
+            404
+        );
+
+        return view('front.engagements.success', [
+            'type' => $type,
+            'name' => request()->query('name'),
+            'email' => request()->query('email'),
+            'organization' => request()->query('organization'),
+        ]);
+    }
+
+    /**
      * Enregistrer une candidature.
      */
     public function store(
@@ -95,23 +113,32 @@ class EngagementController extends Controller
                 ),
 
                 'contribution_other' =>
-                    $data['contribution_other'] ?? null,
+                $data['contribution_other'] ?? null,
 
                 'motivation' => $data['motivation'],
                 'skills' => $data['skills'],
                 'availability' => $data['availability'],
 
                 'participated_before' =>
-                    $data['participated_before'] === 'yes',
+                $data['participated_before'] === 'yes',
 
                 'social_link' =>
-                    $data['social_link'] ?? null,
+                $data['social_link'] ?? null,
 
                 'document_path' => $documentPath,
                 'document_name' => $documentName,
 
                 'status' => 'pending',
             ]);
+
+            return redirect()->route(
+                'front.engagement.success',
+                [
+                    'type' => 'volunteer',
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                ]
+            );
         }
 
         /*
@@ -120,7 +147,7 @@ class EngagementController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        elseif ($data['type'] === 'partner') {
+        if ($data['type'] === 'partner') {
 
             PartnerApplication::create([
                 'organization' => $data['organization'],
@@ -137,27 +164,37 @@ class EngagementController extends Controller
                 ),
 
                 'partnership_other' =>
-                    $data['partnership_other'] ?? null,
+                $data['partnership_other'] ?? null,
 
                 'collaboration_project' => $data['message'],
 
                 'budget' =>
-                    $data['budget'] ?? null,
+                $data['budget'] ?? null,
 
                 'website' =>
-                    $data['website'] ?? null,
+                $data['website'] ?? null,
 
                 'discovery_source' =>
-                    $data['discovery_source'],
+                $data['discovery_source'],
 
                 'discovery_other' =>
-                    $data['discovery_other'] ?? null,
+                $data['discovery_other'] ?? null,
 
                 'document_path' => $documentPath,
                 'document_name' => $documentName,
 
                 'status' => 'pending',
             ]);
+
+            return redirect()->route(
+                'front.engagement.success',
+                [
+                    'type' => 'partner',
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'organization' => $data['organization'],
+                ]
+            );
         }
 
         /*
@@ -166,13 +203,6 @@ class EngagementController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        else {
-            abort(404);
-        }
-
-        return back()->with(
-            'success',
-            'Merci pour ta candidature ! On te recontacte très vite.'
-        );
+        abort(404);
     }
 }
