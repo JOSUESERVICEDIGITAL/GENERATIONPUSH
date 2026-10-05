@@ -16,60 +16,83 @@
                 ['label' => __('nav.leaders'), 'href' => route('admin.leaders.index'), 'match' => 'admin/leaders*'],
             ],
         ],
-        [
-            'label' => __('nav.programs'),
-            'icon' => 'book-open',
-            'match' => 'admin/programs*',
-            'children' => [
-                [
-                    'label' => __('nav.formations'),
-                    'href' => route('admin.programs.formations.index'),
-                    'match' => 'admin/programs/formations*',
-                ],
-                [
-                    'label' => __('nav.courses'),
-                    'href' => route('admin.programs.courses.index'),
-                    'match' => 'admin/programs/courses*',
-                ],
-                [
-                    'label' => __('nav.library'),
-                    'href' => route('admin.programs.library.index'),
-                    'match' => 'admin/programs/library*',
-                ],
-            ],
-        ],
+
+
+
+
         [
             'label' => __('nav.events'),
             'icon' => 'calendar',
             'match' => 'admin/events*',
+
             'children' => [
+
+                /*
+                |--------------------------------------------------------------------------
+                | NOUVEAU MODULE CENTRALISÉ DES ÉVÉNEMENTS
+                |--------------------------------------------------------------------------
+                */
+
+                [
+                    'label' => 'Dashboard événements',
+                    'href' => route('admin.events.index'),
+                    'match' => 'admin/events',
+                ],
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | ANCIENS MODULES
+                |--------------------------------------------------------------------------
+                |
+                | Désactivés temporairement.
+                | Nous utilisons maintenant une seule table "events"
+                | avec les catégories d'événements.
+                |
+                */
+
+                /*
                 [
                     'label' => __('nav.conferences'),
                     'href' => route('admin.events.conferences.index'),
                     'match' => 'admin/events/conferences*',
                 ],
+
                 [
                     'label' => __('nav.masterclass'),
                     'href' => route('admin.events.masterclasses.index'),
                     'match' => 'admin/events/masterclasses*',
                 ],
+
                 [
                     'label' => __('nav.coaching'),
                     'href' => route('admin.events.coaching.index'),
                     'match' => 'admin/events/coaching*',
                 ],
+
                 [
                     'label' => __('nav.reservations'),
                     'href' => route('admin.events.reservations.index'),
                     'match' => 'admin/events/reservations*',
                 ],
+
                 [
                     'label' => __('nav.tickets'),
                     'href' => route('admin.events.tickets.index'),
                     'match' => 'admin/events/tickets*',
                 ],
+                */
+
             ],
         ],
+
+
+
+
+
+
+
+
         [
             'label' => __('nav.payments'),
             'icon' => 'dollar-sign',
@@ -157,9 +180,10 @@
                     'match' => 'admin/communications/messages*',
                 ],
                 [
-                    'label' => 'Chat interne',
+                    'label' => 'Chat communautaire',
                     'href' => route('admin.communications.chat.index'),
                     'match' => 'admin/communications/chat*',
+                    'badge' => true,
                 ],
                 [
                     'label' => 'Abonnés',
@@ -171,20 +195,32 @@
         [
             'label' => __('nav.media'),
             'icon' => 'image',
-            'match' => 'admin/media*',
+            'match' => 'admin/media*,admin/programs/library*',
+
             'children' => [
+
                 [
                     'label' => __('nav.gallery'),
                     'href' => route('admin.media.gallery.index'),
                     'match' => 'admin/media/gallery*',
                 ],
+
                 [
                     'label' => __('nav.videos'),
                     'href' => route('admin.media.videos.index'),
                     'match' => 'admin/media/videos*',
                 ],
+
+                [
+                    'label' => 'Bibliothèque',
+                    'href' => route('admin.programs.library.index'),
+                    'match' => 'admin/programs/library*',
+                ],
+
             ],
         ],
+
+
         [
             'label' => __('nav.partners'),
             'icon' => 'users-round',
@@ -266,6 +302,33 @@
                 ],
             ],
         ],
+
+        [
+            'label' => 'Pages',
+            'icon' => 'file-text',
+            'match' => 'admin/pages*',
+
+            'children' => [
+
+                [
+                    'label' => 'Toutes les pages',
+                    'href' => route('admin.pages.index'),
+                    'match' => 'admin/pages',
+                ],
+
+                [
+                    'label' => 'À propos',
+                    'href' => route('admin.pages.about.edit'),
+                    'match' => 'admin/pages/about*',
+                ],
+                [
+                    'label' => 'Boutique',
+                    'href' => route('admin.pages.shop.edit'),
+                    'match' => 'admin/pages/shop*',
+                ],
+
+            ],
+        ],
     ];
 
     $isActive = function ($pattern) {
@@ -276,6 +339,14 @@
         }
         return false;
     };
+@endphp
+@php
+    $unreadCommunityChatMessages = \App\Models\ChatMessage::query()
+        ->where('is_from_admin', false)
+        ->whereDoesntHave('reads', function ($query) {
+            $query->where('user_id', auth()->id());
+        })
+        ->count();
 @endphp
 
 <!-- Bouton menu mobile -->
@@ -338,10 +409,65 @@
                         x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
                         class="mt-1 ms-4 ps-4 border-s border-sidebar-border space-y-1">
                         @foreach ($children as $child)
-                            <a href="{{ $child['href'] }}"
-                                class="block px-4 py-2 rounded-lg text-sm transition-all duration-200 hover:bg-secondary text-foreground {{ $isActive($child['match']) ? 'bg-accent text-accent-foreground font-semibold' : '' }}">
-                                {{ $child['label'] }}
+
+                            <a href="{{ $child['href'] }}" class="
+                                            flex
+                                            items-center
+                                            gap-2
+
+                                            block
+                                            px-4
+                                            py-2
+                                            rounded-lg
+
+                                            text-sm
+
+                                            transition-all
+                                            duration-200
+
+                                            hover:bg-secondary
+                                            text-foreground
+
+                                            {{ $isActive($child['match'])
+                            ? 'bg-accent text-accent-foreground font-semibold'
+                            : '' }}
+                                        ">
+
+                                <span class="flex-1 truncate">
+                                    {{ $child['label'] }}
+                                </span>
+
+                                @if(($child['badge'] ?? false) && $unreadCommunityChatMessages > 0)
+
+                                    <span class="
+                                                                flex
+                                                                h-5
+                                                                min-w-5
+                                                                shrink-0
+
+                                                                items-center
+                                                                justify-center
+
+                                                                rounded-full
+
+                                                                bg-red-500
+                                                                px-1.5
+
+                                                                text-[10px]
+                                                                font-bold
+                                                                text-white
+
+                                                                animate-pulse
+                                                            " title="{{ $unreadCommunityChatMessages }} nouveau(x) message(s)">
+                                        {{ $unreadCommunityChatMessages > 99
+                                    ? '99+'
+                                    : $unreadCommunityChatMessages }}
+                                    </span>
+
+                                @endif
+
                             </a>
+
                         @endforeach
                     </div>
                 @endif

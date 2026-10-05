@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\ChatMessageRead;
 
 class User extends Authenticatable
 {
@@ -59,12 +60,34 @@ class User extends Authenticatable
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | RELATIONS
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Messages du membre.
+     */
     public function chatMessages(): HasMany
     {
-        return $this->hasMany(ChatMessage::class, 'user_id')
-            ->orderBy('created_at');
+        return $this->hasMany(
+            ChatMessage::class,
+            'author_id'
+        )->latest();
     }
 
+    public function chatMessageReads(): HasMany
+    {
+        return $this->hasMany(
+            ChatMessageRead::class,
+            'user_id'
+        );
+    }
+
+    /**
+     * Articles enregistrés dans les favoris.
+     */
     public function bookmarkedPosts(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -74,6 +97,36 @@ class User extends Authenticatable
             ->withTimestamps()
             ->latest('post_bookmarks.created_at');
     }
+
+    /**
+     * Commandes du membre.
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Transactions / paiements du membre.
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Réservations du membre.
+     */
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROFIL
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * Vérifie si le compte est actif.
@@ -106,6 +159,15 @@ class User extends Authenticatable
         return !$this->hasCompleteProfile();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | STATUT
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Retourne le libellé du statut du compte.
+     */
     public function statusLabel(): string
     {
         return match ($this->status) {

@@ -1,176 +1,311 @@
-<x-layouts.member title="Tableau de bord">
+<x-layouts.member :title="'Tableau de bord'">
 
     @php
-        $chatUrl = \Illuminate\Support\Facades\Route::has('front.chat.index')
-            ? route('front.chat.index')
-            : route('member.dashboard');
+        /*
+        |--------------------------------------------------------------------------
+        | UTILISATEUR
+        |--------------------------------------------------------------------------
+        */
 
-        $bookmarksUrl = \Illuminate\Support\Facades\Route::has('front.blog.bookmarked')
-            ? route('front.blog.bookmarked')
-            : route('member.dashboard');
+        $userName = filled($user?->name)
+            ? $user->name
+            : 'Membre';
 
-        $profileUrl = route('front.my-space');
+        $initials = collect(
+            preg_split('/\s+/', trim($userName))
+        )
+            ->filter()
+            ->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))
+            ->take(2)
+            ->implode('');
+
+        $profilePhoto = $user?->profile_photo;
+
+        $profilePercentage = min(
+            100,
+            max(0, (int) ($profileCompletion ?? 0))
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUTS COMMANDES
+        |--------------------------------------------------------------------------
+        */
+
+        $orderStatusLabels = [
+            'pending'    => 'En attente',
+            'paid'       => 'Payée',
+            'processing' => 'En traitement',
+            'completed'  => 'Terminée',
+            'cancelled'  => 'Annulée',
+            'failed'     => 'Échouée',
+            'refunded'   => 'Remboursée',
+        ];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUTS RÉSERVATIONS
+        |--------------------------------------------------------------------------
+        */
+
+        $reservationStatusLabels = [
+            'pending'   => 'En attente',
+            'confirmed' => 'Confirmée',
+            'cancelled' => 'Annulée',
+            'completed' => 'Terminée',
+        ];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUTS TRANSACTIONS
+        |--------------------------------------------------------------------------
+        */
+
+        $transactionStatusLabels = [
+            'pending'   => 'En attente',
+            'completed' => 'Effectué',
+            'failed'    => 'Échoué',
+            'cancelled' => 'Annulé',
+            'refunded'  => 'Remboursé',
+        ];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALEURS PAR DÉFAUT
+        |--------------------------------------------------------------------------
+        */
+
+        $unreadMessages = (int) ($unreadMessages ?? 0);
+        $totalMessages = (int) ($totalMessages ?? 0);
+
+        $favoritesCount = (int) ($favoritesCount ?? 0);
+
+        $reservationsCount = (int) ($reservationsCount ?? 0);
+        $confirmedReservationsCount = (int) ($confirmedReservationsCount ?? 0);
+        $pendingReservationsCount = (int) ($pendingReservationsCount ?? 0);
+
+        $eventsCount = (int) ($eventsCount ?? 0);
+
+        $ordersCount = (int) ($ordersCount ?? 0);
+        $paidOrdersCount = (int) ($paidOrdersCount ?? 0);
+        $pendingOrdersCount = (int) ($pendingOrdersCount ?? 0);
+
+        $paymentsCount = (int) ($paymentsCount ?? 0);
+        $completedPaymentsCount = (int) ($completedPaymentsCount ?? 0);
+        $pendingPaymentsCount = (int) ($pendingPaymentsCount ?? 0);
+
+        $totalPaid = (float) ($totalPaid ?? 0);
+
+        $recentOrders = $recentOrders ?? collect();
+        $recentReservations = $recentReservations ?? collect();
+        $recentTransactions = $recentTransactions ?? collect();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ROUTES
+        |--------------------------------------------------------------------------
+        */
+
+        $homeUrl = Route::has('front.home')
+            ? route('front.home')
+            : url('/');
+
+        $profileUrl = Route::has('member.profile')
+            ? route('member.profile')
+            : '#';
+
+        $messagesUrl = Route::has('member.messages')
+            ? route('member.messages')
+            : '#';
+
+        $bookmarksUrl = Route::has('member.bookmarks')
+            ? route('member.bookmarks')
+            : '#';
+
+        $eventsUrl = Route::has('member.events')
+            ? route('member.events')
+            : '#';
+
+        $reservationsUrl = Route::has('member.reservations')
+            ? route('member.reservations')
+            : '#';
+
+        $ordersUrl = Route::has('member.orders')
+            ? route('member.orders')
+            : '#';
+
+        $paymentsUrl = Route::has('member.payments')
+            ? route('member.payments')
+            : '#';
+
+        $settingsUrl = Route::has('member.settings')
+            ? route('member.settings')
+            : '#';
     @endphp
 
 
-    {{-- ==========================================================
+    {{-- ======================================================================
         EN-TÊTE
-    =========================================================== --}}
+    ======================================================================= --}}
 
-    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <section class="mb-8">
 
-        <div>
+        <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
-            <div class="flex items-center gap-2 mb-2">
+            <div class="min-w-0">
 
-                <span
-                    class="
-                        inline-flex
-                        h-8 w-8
-                        items-center justify-center
-                        rounded-lg
-                        bg-primary/10
-                        text-primary
-                    "
-                >
-                    <x-icon
-                        name="layout-dashboard"
-                        class="w-4 h-4"
-                    />
-                </span>
-
-                <span class="text-sm font-medium text-muted-foreground">
+                <p class="mb-1 text-sm font-medium text-gray-500">
                     Espace membre
-                </span>
+                </p>
+
+                <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                    Bonjour {{ $userName }} 
+                </h1>
+
+                <p class="mt-2 max-w-2xl text-sm leading-6 text-gray-500">
+                    Bienvenue dans votre espace personnel Generation PUSH.
+                    Retrouvez ici vos activités, vos réservations, vos commandes
+                    et vos paiements.
+                </p>
 
             </div>
 
-            <h2 class="text-2xl md:text-3xl font-bold tracking-tight">
-                Bonjour, {{ $user->name }}
-            </h2>
 
-            <p class="mt-1 text-muted-foreground">
-                Bienvenue dans votre espace personnel Generation PUSH.
-            </p>
+            {{-- RETOUR SITE --}}
 
-        </div>
-
-
-        {{-- STATUT --}}
-        <div>
-
-            <span
-                class="
-                    inline-flex items-center gap-2
-                    rounded-full
-                    px-3 py-1.5
-                    text-sm font-medium
-                    bg-emerald-500/10
-                    text-emerald-600
-                    dark:text-emerald-400
-                "
+            <a
+                href="{{ $homeUrl }}"
+                class="inline-flex w-fit shrink-0 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-[#E8631A] hover:text-[#E8631A] hover:shadow-md"
             >
 
-                <span
-                    class="
-                        h-2 w-2
-                        rounded-full
-                        bg-emerald-500
-                    "
-                ></span>
+                <svg
+                    class="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="M3 12l9-9 9 9"/>
+                    <path d="M5 10v10h14V10"/>
+                    <path d="M9 20v-6h6v6"/>
+                </svg>
 
-                {{ $user->statusLabel() }}
+                Voir le site
 
-            </span>
+            </a>
 
         </div>
 
-    </div>
+    </section>
 
 
-    {{-- ==========================================================
-        PROFIL INCOMPLET
-    =========================================================== --}}
 
-    @if(!$profileComplete)
+    {{-- ======================================================================
+        PROFIL + MESSAGES
+    ======================================================================= --}}
 
-        <div
-            class="
-                rounded-2xl
-                border border-amber-200
-                dark:border-amber-900/50
-                bg-amber-50
-                dark:bg-amber-950/20
-                p-4 md:p-5
-            "
-        >
+    <section class="mb-8 grid gap-6 lg:grid-cols-3">
 
-            <div class="flex flex-col md:flex-row md:items-center gap-4">
 
-                <div
-                    class="
-                        h-11 w-11
-                        rounded-xl
-                        bg-amber-500/10
-                        text-amber-600
-                        flex items-center justify-center
-                        shrink-0
-                    "
-                >
+        {{-- ==================================================================
+            PROFIL
+        =================================================================== --}}
 
-                    <x-icon
-                        name="circle-alert"
-                        class="w-5 h-5"
-                    />
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2">
+
+            <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
+
+
+                {{-- AVATAR --}}
+
+                <div class="shrink-0">
+
+                    @if($profilePhoto)
+
+                        <img
+                            src="{{ asset('storage/' . ltrim($profilePhoto, '/')) }}"
+                            alt="{{ $userName }}"
+                            class="h-20 w-20 rounded-2xl object-cover ring-4 ring-orange-50"
+                        >
+
+                    @else
+
+                        <div
+                            class="flex h-20 w-20 items-center justify-center rounded-2xl bg-[#E8631A] text-xl font-bold text-white ring-4 ring-orange-50"
+                        >
+                            {{ $initials ?: 'M' }}
+                        </div>
+
+                    @endif
 
                 </div>
 
 
-                <div class="flex-1">
+                {{-- INFORMATIONS --}}
 
-                    <h3 class="font-semibold text-amber-900 dark:text-amber-200">
-                        Votre profil n'est pas encore complet
-                    </h3>
+                <div class="min-w-0 flex-1">
 
-                    <p class="text-sm text-amber-800/80 dark:text-amber-300/80 mt-1">
-                        Complétez vos informations pour profiter pleinement
-                        de votre espace membre.
-                    </p>
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+                        <div class="min-w-0">
+
+                            <h2 class="truncate text-lg font-bold text-gray-900">
+                                {{ $userName }}
+                            </h2>
+
+                            @if(filled($user?->email))
+
+                                <p class="mt-1 truncate text-sm text-gray-500">
+                                    {{ $user->email }}
+                                </p>
+
+                            @endif
+
+                        </div>
 
 
-                    {{-- PROGRESS --}}
-                    <div class="mt-3">
+                        <span
+                            class="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700"
+                        >
 
-                        <div class="flex justify-between text-xs mb-1.5">
+                            <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
 
-                            <span class="text-amber-800/70 dark:text-amber-300/70">
-                                Progression
+                            Membre
+
+                        </span>
+
+                    </div>
+
+
+                    {{-- PROGRESSION PROFIL --}}
+
+                    <div class="mt-5">
+
+                        <div class="mb-2 flex items-center justify-between gap-3 text-xs">
+
+                            <span class="font-medium text-gray-500">
+                                Profil complété
                             </span>
 
-                            <span class="font-semibold">
-                                {{ $profileCompletion }}%
+                            <span class="font-bold text-gray-900">
+                                {{ $profilePercentage }}%
                             </span>
 
                         </div>
 
-                        <div
-                            class="
-                                h-2
-                                rounded-full
-                                bg-amber-200
-                                dark:bg-amber-900/50
-                                overflow-hidden
-                            "
-                        >
+
+                        <div class="h-2 overflow-hidden rounded-full bg-gray-100">
 
                             <div
-                                class="
-                                    h-full
-                                    rounded-full
-                                    bg-amber-500
-                                    transition-all
-                                "
-                                style="width: {{ $profileCompletion }}%"
+                                class="h-full rounded-full bg-[#E8631A] transition-all duration-500"
+                                style="width: {{ $profilePercentage }}%"
                             ></div>
 
                         </div>
@@ -180,29 +315,27 @@
                 </div>
 
 
+                {{-- PROFIL --}}
+
                 <a
                     href="{{ $profileUrl }}"
-                    class="
-                        inline-flex
-                        items-center justify-center
-                        gap-2
-                        rounded-xl
-                        px-4 py-2.5
-                        bg-amber-500
-                        text-white
-                        text-sm font-semibold
-                        hover:bg-amber-600
-                        transition
-                        shrink-0
-                    "
+                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-gray-800"
                 >
 
-                    Compléter mon profil
+                    <svg
+                        class="h-4 w-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4Z"/>
+                    </svg>
 
-                    <x-icon
-                        name="arrow-right"
-                        class="w-4 h-4"
-                    />
+                    Mon profil
 
                 </a>
 
@@ -210,375 +343,463 @@
 
         </div>
 
-    @endif
 
 
-    {{-- ==========================================================
-        KPI
-    =========================================================== --}}
+        {{-- ==================================================================
+            MESSAGES
+        =================================================================== --}}
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <a
+            href="{{ $messagesUrl }}"
+            class="group rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-[#E8631A]/30 hover:shadow-md"
+        >
 
+            <div class="flex items-start justify-between gap-4">
 
-        {{-- PROFIL --}}
-        @can('member.profile')
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-[#E8631A]">
 
-            <a
-                href="{{ $profileUrl }}"
-                class="
-                    group
-                    relative
-                    overflow-hidden
-                    rounded-2xl
-                    border border-border
-                    bg-card
-                    p-5
-                    shadow-sm
-                    hover:shadow-md
-                    hover:-translate-y-0.5
-                    transition-all duration-200
-                "
-            >
-
-                <div class="flex items-start justify-between">
-
-                    <div>
-
-                        <p class="text-sm text-muted-foreground">
-                            Mon profil
-                        </p>
-
-                        <p class="mt-2 text-3xl font-bold tracking-tight">
-                            {{ $profileCompletion }}%
-                        </p>
-
-                    </div>
-
-                    <div
-                        class="
-                            h-11 w-11
-                            rounded-xl
-                            bg-primary/10
-                            text-primary
-                            flex items-center justify-center
-                        "
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                     >
-
-                        <x-icon
-                            name="user"
-                            class="w-5 h-5"
-                        />
-
-                    </div>
+                        <path d="M21 11.5a8.4 8.4 0 01-9 8.5 8.8 8.8 0 01-4-.9L3 21l1.9-4.6A8.3 8.3 0 013 11.5 8.5 8.5 0 0112 3a8.5 8.5 0 019 8.5Z"/>
+                    </svg>
 
                 </div>
 
 
-                <div class="mt-4 flex items-center justify-between">
+                @if($unreadMessages > 0)
 
-                    <span class="text-xs text-muted-foreground">
-                        {{ $profileComplete ? 'Profil complet' : 'À compléter' }}
+                    <span class="shrink-0 rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-600">
+                        {{ $unreadMessages }}
+                        nouveau{{ $unreadMessages > 1 ? 'x' : '' }}
                     </span>
 
-                    <x-icon
-                        name="arrow-up-right"
-                        class="
-                            w-4 h-4
-                            text-muted-foreground
-                            group-hover:text-foreground
-                            transition
-                        "
-                    />
+                @endif
 
-                </div>
-
-            </a>
-
-        @endcan
+            </div>
 
 
-        {{-- MESSAGES --}}
-        @can('member.messages')
+            <div class="mt-5">
 
-            <a
-                href="{{ $chatUrl }}"
-                class="
-                    group
-                    relative
-                    overflow-hidden
-                    rounded-2xl
-                    border border-border
-                    bg-card
-                    p-5
-                    shadow-sm
-                    hover:shadow-md
-                    hover:-translate-y-0.5
-                    transition-all duration-200
-                "
-            >
+                <p class="text-sm font-medium text-gray-500">
+                    Mes messages
+                </p>
 
-                <div class="flex items-start justify-between">
+                <p class="mt-1 text-3xl font-bold text-gray-900">
+                    {{ $totalMessages }}
+                </p>
 
-                    <div>
+                <p class="mt-2 text-xs text-gray-500">
 
-                        <p class="text-sm text-muted-foreground">
-                            Mes messages
-                        </p>
+                    {{ $unreadMessages }}
 
-                        <p class="mt-2 text-3xl font-bold tracking-tight">
-                            {{ $messagesCount }}
-                        </p>
+                    message{{ $unreadMessages > 1 ? 's' : '' }}
 
-                    </div>
+                    non lu{{ $unreadMessages > 1 ? 's' : '' }}
 
-                    <div
-                        class="
-                            h-11 w-11
-                            rounded-xl
-                            bg-blue-500/10
-                            text-blue-600
-                            dark:text-blue-400
-                            flex items-center justify-center
-                        "
-                    >
+                </p>
 
-                        <x-icon
-                            name="message-circle"
-                            class="w-5 h-5"
-                        />
+            </div>
 
-                    </div>
+        </a>
 
-                </div>
+    </section>
 
 
-                <div class="mt-4 flex items-center justify-between">
 
-                    <span
-                        class="
-                            text-xs
-                            {{ $unreadMessagesCount > 0
-                                ? 'text-red-500 font-semibold'
-                                : 'text-muted-foreground'
-                            }}
-                        "
-                    >
-                        @if($unreadMessagesCount > 0)
-                            {{ $unreadMessagesCount }} non lu(s)
-                        @else
-                            Aucun nouveau message
-                        @endif
-                    </span>
+    {{-- ======================================================================
+        STATISTIQUES PRINCIPALES
+    ======================================================================= --}}
 
-                    <x-icon
-                        name="arrow-up-right"
-                        class="
-                            w-4 h-4
-                            text-muted-foreground
-                            group-hover:text-foreground
-                            transition
-                        "
-                    />
-
-                </div>
-
-            </a>
-
-        @endcan
+    <section class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
 
         {{-- FAVORIS --}}
-        @can('member.bookmarks')
 
-            <a
-                href="{{ $bookmarksUrl }}"
-                class="
-                    group
-                    relative
-                    overflow-hidden
-                    rounded-2xl
-                    border border-border
-                    bg-card
-                    p-5
-                    shadow-sm
-                    hover:shadow-md
-                    hover:-translate-y-0.5
-                    transition-all duration-200
-                "
-            >
-
-                <div class="flex items-start justify-between">
-
-                    <div>
-
-                        <p class="text-sm text-muted-foreground">
-                            Articles sauvegardés
-                        </p>
-
-                        <p class="mt-2 text-3xl font-bold tracking-tight">
-                            {{ $bookmarksCount }}
-                        </p>
-
-                    </div>
-
-                    <div
-                        class="
-                            h-11 w-11
-                            rounded-xl
-                            bg-violet-500/10
-                            text-violet-600
-                            dark:text-violet-400
-                            flex items-center justify-center
-                        "
-                    >
-
-                        <x-icon
-                            name="bookmark"
-                            class="w-5 h-5"
-                        />
-
-                    </div>
-
-                </div>
-
-
-                <div class="mt-4 flex items-center justify-between">
-
-                    <span class="text-xs text-muted-foreground">
-                        Ma bibliothèque
-                    </span>
-
-                    <x-icon
-                        name="arrow-up-right"
-                        class="
-                            w-4 h-4
-                            text-muted-foreground
-                            group-hover:text-foreground
-                            transition
-                        "
-                    />
-
-                </div>
-
-            </a>
-
-        @endcan
-
-
-        {{-- STATUT --}}
-        @can('member.dashboard')
-
-            <a
-                href="{{ $profileUrl }}"
-                class="
-                    group
-                    relative
-                    overflow-hidden
-                    rounded-2xl
-                    border border-border
-                    bg-card
-                    p-5
-                    shadow-sm
-                    hover:shadow-md
-                    hover:-translate-y-0.5
-                    transition-all duration-200
-                "
-            >
-
-                <div class="flex items-start justify-between">
-
-                    <div>
-
-                        <p class="text-sm text-muted-foreground">
-                            Statut du compte
-                        </p>
-
-                        <p class="mt-2 text-2xl font-bold tracking-tight">
-                            {{ $user->statusLabel() }}
-                        </p>
-
-                    </div>
-
-                    <div
-                        class="
-                            h-11 w-11
-                            rounded-xl
-                            bg-emerald-500/10
-                            text-emerald-600
-                            dark:text-emerald-400
-                            flex items-center justify-center
-                        "
-                    >
-
-                        <x-icon
-                            name="shield-check"
-                            class="w-5 h-5"
-                        />
-
-                    </div>
-
-                </div>
-
-
-                <div class="mt-4 flex items-center justify-between">
-
-                    <span class="text-xs text-muted-foreground">
-                        Compte membre
-                    </span>
-
-                    <x-icon
-                        name="arrow-up-right"
-                        class="
-                            w-4 h-4
-                            text-muted-foreground
-                            group-hover:text-foreground
-                            transition
-                        "
-                    />
-
-                </div>
-
-            </a>
-
-        @endcan
-
-    </div>
-
-
-    {{-- ==========================================================
-        SECTION PRINCIPALE
-    =========================================================== --}}
-
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-
-        {{-- ACTIVITÉ --}}
-        <div
-            class="
-                xl:col-span-2
-                rounded-2xl
-                border border-border
-                bg-card
-                overflow-hidden
-            "
+        <a
+            href="{{ $bookmarksUrl }}"
+            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
         >
 
-            <div
-                class="
-                    px-5 py-4
-                    border-b border-border
-                    flex items-center justify-between
-                "
-            >
+            <div class="flex items-center justify-between gap-4">
 
-                <div>
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-pink-50 text-pink-600">
 
-                    <h3 class="font-semibold">
-                        Votre espace
-                    </h3>
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M20.8 8.6c0 5.5-8.8 10.4-8.8 10.4S3.2 14.1 3.2 8.6A4.6 4.6 0 017.8 4c1.7 0 3.3.9 4.2 2.2A5 5 0 0116.2 4a4.6 4.6 0 014.6 4.6Z"/>
+                    </svg>
 
-                    <p class="text-sm text-muted-foreground mt-0.5">
-                        Retrouvez rapidement vos principales fonctionnalités.
+                </div>
+
+                <span class="text-xs font-medium text-gray-400">
+                    Favoris
+                </span>
+
+            </div>
+
+            <p class="mt-5 text-2xl font-bold text-gray-900">
+                {{ $favoritesCount }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                article{{ $favoritesCount > 1 ? 's' : '' }}
+
+                enregistré{{ $favoritesCount > 1 ? 's' : '' }}
+
+            </p>
+
+        </a>
+
+
+
+        {{-- RÉSERVATIONS --}}
+
+        <a
+            href="{{ $reservationsUrl }}"
+            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+        >
+
+            <div class="flex items-center justify-between gap-4">
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M8 2v4"/>
+                        <path d="M16 2v4"/>
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <path d="M3 10h18"/>
+                        <path d="M8 14h.01"/>
+                        <path d="M12 14h.01"/>
+                        <path d="M16 14h.01"/>
+                    </svg>
+
+                </div>
+
+                <span class="text-xs font-medium text-gray-400">
+                    Réservations
+                </span>
+
+            </div>
+
+            <p class="mt-5 text-2xl font-bold text-gray-900">
+                {{ $reservationsCount }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{ $confirmedReservationsCount }}
+
+                confirmée{{ $confirmedReservationsCount > 1 ? 's' : '' }}
+
+            </p>
+
+        </a>
+
+
+
+        {{-- ÉVÉNEMENTS --}}
+
+        <a
+            href="{{ $eventsUrl }}"
+            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+        >
+
+            <div class="flex items-center justify-between gap-4">
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
+
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M8 2v4"/>
+                        <path d="M16 2v4"/>
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <path d="M3 10h18"/>
+                        <path d="M8 14h.01"/>
+                        <path d="M12 14h.01"/>
+                        <path d="M16 14h.01"/>
+                    </svg>
+
+                </div>
+
+                <span class="text-xs font-medium text-gray-400">
+                    Événements
+                </span>
+
+            </div>
+
+            <p class="mt-5 text-2xl font-bold text-gray-900">
+                {{ $eventsCount }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Masterclass réservées
+            </p>
+
+        </a>
+
+
+
+        {{-- COMMANDES --}}
+
+        <a
+            href="{{ $ordersUrl }}"
+            class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+        >
+
+            <div class="flex items-center justify-between gap-4">
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M6 2l-3 6v14h18V8l-3-6H6Z"/>
+                        <path d="M3 8h18"/>
+                        <path d="M8 12a4 4 0 008 0"/>
+                    </svg>
+
+                </div>
+
+                <span class="text-xs font-medium text-gray-400">
+                    Commandes
+                </span>
+
+            </div>
+
+            <p class="mt-5 text-2xl font-bold text-gray-900">
+                {{ $ordersCount }}
+            </p>
+
+            <p class="mt-1 text-sm text-gray-500">
+
+                {{ $paidOrdersCount }}
+
+                payée{{ $paidOrdersCount > 1 ? 's' : '' }}
+
+            </p>
+
+        </a>
+
+    </section>
+
+
+
+    {{-- ======================================================================
+        RÉSERVATIONS + PAIEMENTS
+    ======================================================================= --}}
+
+    <section class="mb-8 grid gap-6 xl:grid-cols-2">
+
+
+        {{-- ==================================================================
+            RÉSERVATIONS RÉCENTES
+        =================================================================== --}}
+
+        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+            <div class="flex items-center justify-between gap-4 border-b border-gray-100 px-6 py-5">
+
+                <div class="min-w-0">
+
+                    <h2 class="font-bold text-gray-900">
+                        Mes réservations
+                    </h2>
+
+                    <p class="mt-1 text-xs text-gray-500">
+                        Vos dernières inscriptions
+                    </p>
+
+                </div>
+
+                <a
+                    href="{{ $reservationsUrl }}"
+                    class="shrink-0 text-xs font-semibold text-[#E8631A] hover:underline"
+                >
+                    Tout voir
+                </a>
+
+            </div>
+
+
+            @forelse($recentReservations as $reservation)
+
+                @php
+                    $reservable = $reservation->reservable;
+                    $reservationStatus = $reservation->status ?? 'pending';
+
+                    $statusClass = match ($reservationStatus) {
+                        'confirmed' => 'bg-green-50 text-green-700',
+                        'cancelled' => 'bg-red-50 text-red-700',
+                        'completed' => 'bg-blue-50 text-blue-700',
+                        default => 'bg-amber-50 text-amber-700',
+                    };
+                @endphp
+
+
+                <div class="border-b border-gray-100 px-6 py-4 last:border-0">
+
+                    <div class="flex items-start gap-4">
+
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-[#E8631A]">
+
+                            <svg
+                                class="h-5 w-5"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                <path d="M16 2v4"/>
+                                <path d="M8 2v4"/>
+                                <path d="M3 10h18"/>
+                            </svg>
+
+                        </div>
+
+
+                        <div class="min-w-0 flex-1">
+
+                            <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+
+                                <div class="min-w-0">
+
+                                    <p class="truncate text-sm font-semibold text-gray-900">
+                                        {{ $reservable?->title ?? $reservable?->name ?? 'Réservation' }}
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        {{ $reservation->created_at?->format('d/m/Y à H:i') ?? 'Date inconnue' }}
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="inline-flex w-fit shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $statusClass }}"
+                                >
+                                    {{ $reservationStatusLabels[$reservationStatus] ?? ucfirst($reservationStatus) }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @empty
+
+                <div class="px-6 py-12 text-center">
+
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 text-gray-400">
+
+                        <svg
+                            class="h-6 w-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                        >
+                            <rect x="3" y="4" width="18" height="18" rx="2"/>
+                            <path d="M16 2v4"/>
+                            <path d="M8 2v4"/>
+                            <path d="M3 10h18"/>
+                        </svg>
+
+                    </div>
+
+                    <p class="mt-4 text-sm font-semibold text-gray-900">
+                        Aucune réservation
+                    </p>
+
+                    <p class="mt-1 text-xs text-gray-500">
+                        Vous n'avez encore aucune réservation.
+                    </p>
+
+                </div>
+
+            @endforelse
+
+        </div>
+
+
+
+        {{-- ==================================================================
+            PAIEMENTS
+        =================================================================== --}}
+
+        <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+            <div class="border-b border-gray-100 px-6 py-5">
+
+                <div class="flex items-start justify-between gap-4">
+
+                    <div>
+
+                        <h2 class="font-bold text-gray-900">
+                            Mes paiements
+                        </h2>
+
+                        <p class="mt-1 text-xs text-gray-500">
+                            Historique de vos transactions
+                        </p>
+
+                    </div>
+
+                    <a
+                        href="{{ $paymentsUrl }}"
+                        class="shrink-0 text-xs font-semibold text-[#E8631A] hover:underline"
+                    >
+                        Tout voir
+                    </a>
+
+                </div>
+
+
+                <div class="mt-5 rounded-xl bg-gray-50 p-4">
+
+                    <p class="text-xs font-medium text-gray-500">
+                        Total payé
+                    </p>
+
+                    <p class="mt-1 text-2xl font-bold text-gray-900">
+
+                        {{ number_format($totalPaid, 0, ',', ' ') }}
+
+                        <span class="text-sm font-semibold text-gray-500">
+                            FCFA
+                        </span>
+
                     </p>
 
                 </div>
@@ -586,419 +807,517 @@
             </div>
 
 
-            <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            @forelse($recentTransactions as $transaction)
+
+                @php
+                    $transactionStatus = $transaction->status ?? 'pending';
+
+                    $transactionClass = match ($transactionStatus) {
+                        'completed' => 'bg-green-50 text-green-700',
+                        'failed', 'cancelled' => 'bg-red-50 text-red-700',
+                        'refunded' => 'bg-blue-50 text-blue-700',
+                        default => 'bg-amber-50 text-amber-700',
+                    };
+                @endphp
 
 
-                @can('member.profile')
+                <div class="border-b border-gray-100 px-6 py-4 last:border-0">
 
-                    <a
-                        href="{{ $profileUrl }}"
-                        class="
-                            group
-                            flex items-center gap-4
-                            rounded-xl
-                            border border-border
-                            p-4
-                            hover:bg-muted/50
-                            transition
-                        "
-                    >
+                    <div class="flex items-center gap-4">
 
-                        <div
-                            class="
-                                h-10 w-10
-                                rounded-xl
-                                bg-primary/10
-                                text-primary
-                                flex items-center justify-center
-                                shrink-0
-                            "
-                        >
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50 text-gray-500">
 
-                            <x-icon
-                                name="user"
-                                class="w-5 h-5"
-                            />
+                            <svg
+                                class="h-5 w-5"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                                <path d="M3 10h18"/>
+                                <path d="M7 15h4"/>
+                            </svg>
 
                         </div>
+
 
                         <div class="min-w-0 flex-1">
 
-                            <div class="font-medium">
-                                Mon profil
-                            </div>
+                            <p class="truncate text-sm font-semibold text-gray-900">
+                                {{ $transaction->description ?? 'Transaction' }}
+                            </p>
 
-                            <div class="text-xs text-muted-foreground mt-0.5">
-                                Gérer mes informations
-                            </div>
+                            <p class="mt-1 text-xs text-gray-500">
 
-                        </div>
+                                {{ $transaction->date?->format('d/m/Y')
+                                    ?? $transaction->created_at?->format('d/m/Y')
+                                    ?? 'Date inconnue'
+                                }}
 
-                        <x-icon
-                            name="chevron-right"
-                            class="
-                                w-4 h-4
-                                text-muted-foreground
-                                group-hover:translate-x-0.5
-                                transition
-                            "
-                        />
-
-                    </a>
-
-                @endcan
-
-
-                @can('member.messages')
-
-                    <a
-                        href="{{ $chatUrl }}"
-                        class="
-                            group
-                            flex items-center gap-4
-                            rounded-xl
-                            border border-border
-                            p-4
-                            hover:bg-muted/50
-                            transition
-                        "
-                    >
-
-                        <div
-                            class="
-                                h-10 w-10
-                                rounded-xl
-                                bg-blue-500/10
-                                text-blue-600
-                                dark:text-blue-400
-                                flex items-center justify-center
-                                shrink-0
-                            "
-                        >
-
-                            <x-icon
-                                name="message-circle"
-                                class="w-5 h-5"
-                            />
+                            </p>
 
                         </div>
 
-                        <div class="min-w-0 flex-1">
 
-                            <div class="font-medium">
-                                Mes messages
-                            </div>
+                        <div class="shrink-0 text-right">
 
-                            <div class="text-xs text-muted-foreground mt-0.5">
-                                Échanger avec Generation PUSH
-                            </div>
+                            <p class="text-sm font-bold text-gray-900">
 
-                        </div>
+                                {{ number_format((float) ($transaction->amount ?? 0), 0, ',', ' ') }}
 
-                        <x-icon
-                            name="chevron-right"
-                            class="
-                                w-4 h-4
-                                text-muted-foreground
-                                group-hover:translate-x-0.5
-                                transition
-                            "
-                        />
+                                <span class="text-[10px] font-semibold text-gray-500">
+                                    FCFA
+                                </span>
 
-                    </a>
+                            </p>
 
-                @endcan
+                            <span
+                                class="mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold {{ $transactionClass }}"
+                            >
+                                {{ $transactionStatusLabels[$transactionStatus] ?? ucfirst($transactionStatus) }}
+                            </span>
 
-
-                @can('member.bookmarks')
-
-                    <a
-                        href="{{ $bookmarksUrl }}"
-                        class="
-                            group
-                            flex items-center gap-4
-                            rounded-xl
-                            border border-border
-                            p-4
-                            hover:bg-muted/50
-                            transition
-                        "
-                    >
-
-                        <div
-                            class="
-                                h-10 w-10
-                                rounded-xl
-                                bg-violet-500/10
-                                text-violet-600
-                                dark:text-violet-400
-                                flex items-center justify-center
-                                shrink-0
-                            "
-                        >
-
-                            <x-icon
-                                name="bookmark"
-                                class="w-5 h-5"
-                            />
-
-                        </div>
-
-                        <div class="min-w-0 flex-1">
-
-                            <div class="font-medium">
-                                Articles sauvegardés
-                            </div>
-
-                            <div class="text-xs text-muted-foreground mt-0.5">
-                                Retrouver mes contenus favoris
-                            </div>
-
-                        </div>
-
-                        <x-icon
-                            name="chevron-right"
-                            class="
-                                w-4 h-4
-                                text-muted-foreground
-                                group-hover:translate-x-0.5
-                                transition
-                            "
-                        />
-
-                    </a>
-
-                @endcan
-
-
-                <a
-                    href="{{ route('front.home') }}"
-                    class="
-                        group
-                        flex items-center gap-4
-                        rounded-xl
-                        border border-border
-                        p-4
-                        hover:bg-muted/50
-                        transition
-                    "
-                >
-
-                    <div
-                        class="
-                            h-10 w-10
-                            rounded-xl
-                            bg-emerald-500/10
-                            text-emerald-600
-                            dark:text-emerald-400
-                            flex items-center justify-center
-                            shrink-0
-                        "
-                    >
-
-                        <x-icon
-                            name="globe"
-                            class="w-5 h-5"
-                        />
-
-                    </div>
-
-                    <div class="min-w-0 flex-1">
-
-                        <div class="font-medium">
-                            Site Generation PUSH
-                        </div>
-
-                        <div class="text-xs text-muted-foreground mt-0.5">
-                            Découvrir les actualités et programmes
                         </div>
 
                     </div>
 
-                    <x-icon
-                        name="external-link"
-                        class="
-                            w-4 h-4
-                            text-muted-foreground
-                            group-hover:translate-x-0.5
-                            transition
-                        "
-                    />
+                </div>
 
-                </a>
+            @empty
 
-            </div>
+                <div class="px-6 py-12 text-center">
+
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 text-gray-400">
+
+                        <svg
+                            class="h-6 w-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                        >
+                            <rect x="3" y="4" width="18" height="16" rx="2"/>
+                            <path d="M3 10h18"/>
+                        </svg>
+
+                    </div>
+
+                    <p class="mt-4 text-sm font-semibold text-gray-900">
+                        Aucun paiement
+                    </p>
+
+                    <p class="mt-1 text-xs text-gray-500">
+                        Vos transactions apparaîtront ici.
+                    </p>
+
+                </div>
+
+            @endforelse
 
         </div>
 
+    </section>
 
-        {{-- PROFIL --}}
-        <div
-            class="
-                rounded-2xl
-                border border-border
-                bg-card
-                overflow-hidden
-            "
-        >
 
-            <div
-                class="
-                    px-5 py-4
-                    border-b border-border
-                "
-            >
 
-                <h3 class="font-semibold">
-                    Mon compte
-                </h3>
+    {{-- ======================================================================
+        COMMANDES RÉCENTES
+    ======================================================================= --}}
 
-                <p class="text-sm text-muted-foreground mt-0.5">
-                    Informations principales
+    <section class="mb-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="flex items-center justify-between gap-4 border-b border-gray-100 px-6 py-5">
+
+            <div>
+
+                <h2 class="font-bold text-gray-900">
+                    Mes commandes
+                </h2>
+
+                <p class="mt-1 text-xs text-gray-500">
+                    Vos dernières commandes
                 </p>
 
             </div>
 
+            <a
+                href="{{ $ordersUrl }}"
+                class="shrink-0 text-xs font-semibold text-[#E8631A] hover:underline"
+            >
+                Toutes les commandes
+            </a>
 
-            <div class="p-5">
+        </div>
 
 
-                <div class="flex items-center gap-4">
+        @forelse($recentOrders as $order)
 
-                    @if($user->profile_photo)
+            @php
+                $orderStatus = $order->status ?? 'pending';
 
-                        <img
-                            src="{{ asset('storage/' . $user->profile_photo) }}"
-                            alt="{{ $user->name }}"
-                            class="
-                                h-14 w-14
-                                rounded-2xl
-                                object-cover
-                            "
+                $orderClass = match ($orderStatus) {
+                    'paid', 'completed' => 'bg-green-50 text-green-700',
+                    'cancelled', 'failed' => 'bg-red-50 text-red-700',
+                    'processing' => 'bg-blue-50 text-blue-700',
+                    'refunded' => 'bg-purple-50 text-purple-700',
+                    default => 'bg-amber-50 text-amber-700',
+                };
+
+                $itemsCount = $order->items?->count() ?? 0;
+
+                $orderTotal = $order->total
+                    ?? $order->total_amount
+                    ?? 0;
+            @endphp
+
+
+            <div class="border-b border-gray-100 px-6 py-4 last:border-0">
+
+                <div class="flex flex-col gap-4 md:flex-row md:items-center">
+
+
+                    {{-- COMMANDE --}}
+
+                    <div class="flex min-w-0 flex-1 items-center gap-4">
+
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gray-900 text-white">
+
+                            <svg
+                                class="h-5 w-5"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <path d="M6 2l-3 6v14h18V8l-3-6H6Z"/>
+                                <path d="M3 8h18"/>
+                            </svg>
+
+                        </div>
+
+
+                        <div class="min-w-0">
+
+                            <p class="truncate text-sm font-bold text-gray-900">
+                                Commande #{{ $order->id }}
+                            </p>
+
+                            <p class="mt-1 text-xs text-gray-500">
+                                {{ $order->created_at?->format('d/m/Y à H:i') ?? 'Date inconnue' }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- ARTICLES --}}
+
+                    <div class="text-sm text-gray-500 md:w-40">
+
+                        <span class="font-semibold text-gray-700">
+                            {{ $itemsCount }}
+                        </span>
+
+                        article{{ $itemsCount > 1 ? 's' : '' }}
+
+                    </div>
+
+
+                    {{-- TOTAL --}}
+
+                    <div class="text-left md:w-36 md:text-right">
+
+                        <p class="text-sm font-bold text-gray-900">
+
+                            {{ number_format((float) $orderTotal, 0, ',', ' ') }}
+
+                            <span class="text-[10px] font-semibold text-gray-500">
+                                FCFA
+                            </span>
+
+                        </p>
+
+                    </div>
+
+
+                    {{-- STATUT --}}
+
+                    <div class="md:w-32 md:text-right">
+
+                        <span
+                            class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $orderClass }}"
                         >
-
-                    @else
-
-                        <div
-                            class="
-                                h-14 w-14
-                                rounded-2xl
-                                bg-primary/10
-                                text-primary
-                                flex items-center justify-center
-                                font-bold
-                                text-xl
-                            "
-                        >
-                            {{ strtoupper(substr($user->name, 0, 1)) }}
-                        </div>
-
-                    @endif
-
-
-                    <div class="min-w-0">
-
-                        <div class="font-semibold truncate">
-                            {{ $user->name }}
-                        </div>
-
-                        <div class="text-sm text-muted-foreground truncate">
-                            {{ $user->email }}
-                        </div>
+                            {{ $orderStatusLabels[$orderStatus] ?? ucfirst($orderStatus) }}
+                        </span>
 
                     </div>
 
                 </div>
 
+            </div>
 
-                <div class="mt-5 space-y-3">
+        @empty
 
+            <div class="px-6 py-14 text-center">
 
-                    <div class="flex items-center justify-between text-sm">
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 text-gray-400">
 
-                        <span class="text-muted-foreground">
-                            Statut
-                        </span>
-
-                        <span class="font-medium">
-                            {{ $user->statusLabel() }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="flex items-center justify-between text-sm">
-
-                        <span class="text-muted-foreground">
-                            Profil
-                        </span>
-
-                        <span class="font-medium">
-                            {{ $profileCompletion }}%
-                        </span>
-
-                    </div>
-
-
-                    <div class="flex items-center justify-between text-sm">
-
-                        <span class="text-muted-foreground">
-                            Messages
-                        </span>
-
-                        <span class="font-medium">
-                            {{ $messagesCount }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="flex items-center justify-between text-sm">
-
-                        <span class="text-muted-foreground">
-                            Favoris
-                        </span>
-
-                        <span class="font-medium">
-                            {{ $bookmarksCount }}
-                        </span>
-
-                    </div>
+                    <svg
+                        class="h-6 w-6"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                    >
+                        <path d="M6 2l-3 6v14h18V8l-3-6H6Z"/>
+                        <path d="M3 8h18"/>
+                    </svg>
 
                 </div>
+
+                <p class="mt-4 text-sm font-semibold text-gray-900">
+                    Aucune commande
+                </p>
+
+                <p class="mt-1 text-xs text-gray-500">
+                    Vous n'avez encore effectué aucune commande.
+                </p>
+
+            </div>
+
+        @endforelse
+
+    </section>
+
+
+
+    {{-- ======================================================================
+        RÉSUMÉ RAPIDE
+    ======================================================================= --}}
+
+    <section class="grid gap-6 lg:grid-cols-3">
+
+
+        {{-- ==================================================================
+            RÉSERVATIONS
+        =================================================================== --}}
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M8 2v4"/>
+                        <path d="M16 2v4"/>
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <path d="M3 10h18"/>
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <p class="text-sm font-semibold text-gray-900">
+                        Réservations
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+                        État de vos inscriptions
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-5 grid grid-cols-2 gap-3">
+
+                <div class="rounded-xl bg-green-50 p-3">
+
+                    <p class="text-xl font-bold text-green-700">
+                        {{ $confirmedReservationsCount }}
+                    </p>
+
+                    <p class="mt-1 text-xs text-green-700/70">
+                        Confirmées
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-amber-50 p-3">
+
+                    <p class="text-xl font-bold text-amber-700">
+                        {{ $pendingReservationsCount }}
+                    </p>
+
+                    <p class="mt-1 text-xs text-amber-700/70">
+                        En attente
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        {{-- ==================================================================
+            PAIEMENTS
+        =================================================================== --}}
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <rect x="3" y="4" width="18" height="16" rx="2"/>
+                        <path d="M3 10h18"/>
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <p class="text-sm font-semibold text-gray-900">
+                        Paiements
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+                        État de vos transactions
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-5 grid grid-cols-2 gap-3">
+
+                <div class="rounded-xl bg-green-50 p-3">
+
+                    <p class="text-xl font-bold text-green-700">
+                        {{ $completedPaymentsCount }}
+                    </p>
+
+                    <p class="mt-1 text-xs text-green-700/70">
+                        Effectués
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl bg-amber-50 p-3">
+
+                    <p class="text-xl font-bold text-amber-700">
+                        {{ $pendingPaymentsCount }}
+                    </p>
+
+                    <p class="mt-1 text-xs text-amber-700/70">
+                        En attente
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        {{-- ==================================================================
+            ACCÈS RAPIDES
+        =================================================================== --}}
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-[#E8631A]">
+
+                    <svg
+                        class="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8Z"/>
+                    </svg>
+
+                </div>
+
+                <div>
+
+                    <p class="text-sm font-semibold text-gray-900">
+                        Accès rapides
+                    </p>
+
+                    <p class="text-xs text-gray-500">
+                        Les espaces les plus utilisés
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-5 grid grid-cols-2 gap-2">
+
+                <a
+                    href="{{ $messagesUrl }}"
+                    class="rounded-lg border border-gray-100 px-3 py-2 text-center text-xs font-semibold text-gray-700 transition hover:border-orange-200 hover:bg-orange-50/50 hover:text-[#E8631A]"
+                >
+                    Messages
+                </a>
 
 
                 <a
-                    href="{{ $profileUrl }}"
-                    class="
-                        mt-5
-                        w-full
-                        inline-flex
-                        items-center
-                        justify-center
-                        gap-2
-                        rounded-xl
-                        border border-border
-                        px-4 py-2.5
-                        text-sm font-semibold
-                        hover:bg-muted
-                        transition
-                    "
+                    href="{{ $eventsUrl }}"
+                    class="rounded-lg border border-gray-100 px-3 py-2 text-center text-xs font-semibold text-gray-700 transition hover:border-orange-200 hover:bg-orange-50/50 hover:text-[#E8631A]"
                 >
+                    Événements
+                </a>
 
-                    Gérer mon profil
 
-                    <x-icon
-                        name="arrow-right"
-                        class="w-4 h-4"
-                    />
+                <a
+                    href="{{ $ordersUrl }}"
+                    class="rounded-lg border border-gray-100 px-3 py-2 text-center text-xs font-semibold text-gray-700 transition hover:border-orange-200 hover:bg-orange-50/50 hover:text-[#E8631A]"
+                >
+                    Commandes
+                </a>
 
+
+                <a
+                    href="{{ $settingsUrl }}"
+                    class="rounded-lg border border-gray-100 px-3 py-2 text-center text-xs font-semibold text-gray-700 transition hover:border-orange-200 hover:bg-orange-50/50 hover:text-[#E8631A]"
+                >
+                    Paramètres
                 </a>
 
             </div>
 
         </div>
 
-    </div>
+    </section>
 
 </x-layouts.member>

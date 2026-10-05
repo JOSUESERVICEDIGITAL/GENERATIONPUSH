@@ -14,37 +14,14 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'user_id',
-
-        // Snapshot client au moment de la commande
-        'customer_name',
-        'customer_email',
-        'customer_phone',
-        'customer_country',
-        'customer_city',
-        'customer_address',
-
-        'contacted_at',
-        'confirmed_at',
-        'admin_notes',
-
-        'notes',
-
-        // Commande
         'total',
         'status',
-        'delivery_status',
-
-        // QR Code
-        'qr_content',
-        'qr_code_path',
     ];
 
     protected function casts(): array
     {
         return [
             'total' => 'decimal:2',
-            'contacted_at' => 'datetime',
-            'confirmed_at' => 'datetime',
         ];
     }
 
@@ -54,11 +31,17 @@ class Order extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * Membre ayant passé la commande.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Articles de la commande.
+     */
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
@@ -66,7 +49,33 @@ class Order extends Model
 
     /*
     |--------------------------------------------------------------------------
-    | STATUT DE LA COMMANDE
+    | STATUT
+    |--------------------------------------------------------------------------
+    */
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->status === 'paid';
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === 'cancelled';
+    }
+
+    public function isRefunded(): bool
+    {
+        return $this->status === 'refunded';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | INFORMATIONS AFFICHABLES
     |--------------------------------------------------------------------------
     */
 
@@ -79,76 +88,5 @@ class Order extends Model
             'refunded' => 'Remboursée',
             default => ucfirst((string) $this->status),
         };
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | STATUT DE LIVRAISON
-    |--------------------------------------------------------------------------
-    */
-
-    public function deliveryStatusLabel(): string
-    {
-        return match ($this->delivery_status) {
-            'not_required' => 'Pas de livraison',
-            'pending' => 'En attente',
-            'processing' => 'Préparation',
-            'shipped' => 'Expédiée',
-            'delivered' => 'Livrée',
-            default => ucfirst((string) $this->delivery_status),
-        };
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | HELPERS
-    |--------------------------------------------------------------------------
-    */
-
-    public function requiresDelivery(): bool
-    {
-        return $this->items()
-            ->where('fulfillment_type', 'physical')
-            ->exists();
-    }
-
-    public function hasDigitalItems(): bool
-    {
-        return $this->items()
-            ->where('fulfillment_type', 'digital')
-            ->exists();
-    }
-
-    public function isCompleted(): bool
-    {
-        return $this->status === 'paid'
-            && (
-                ! $this->requiresDelivery()
-                || $this->delivery_status === 'delivered'
-            );
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | NUMÉRO DE COMMANDE
-    |--------------------------------------------------------------------------
-    */
-
-    public static function nextOrderNumber(): string
-    {
-        $last = static::query()
-            ->orderByDesc('id')
-            ->value('order_number');
-
-        $number = $last
-            ? ((int) substr($last, 4)) + 1
-            : 1;
-
-        return 'ORD-' . str_pad(
-            (string) $number,
-            5,
-            '0',
-            STR_PAD_LEFT
-        );
     }
 }

@@ -1,8 +1,13 @@
 @php
+    use Illuminate\Support\Str;
+    use Illuminate\Support\Facades\Storage;
+
     $navItems = \App\Models\MenuItem::navbar()
         ->active()
         ->with([
-            'children' => fn ($q) => $q->active()->orderBy('order')
+            'children' => fn ($query) => $query
+                ->active()
+                ->orderBy('order'),
         ])
         ->orderBy('order')
         ->get();
@@ -21,7 +26,12 @@
 
 <nav
     x-data="{ scrolled: false, mobileOpen: false }"
-    x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 40)"
+    x-init="
+        scrolled = window.scrollY > 40;
+        window.addEventListener('scroll', () => {
+            scrolled = window.scrollY > 40;
+        });
+    "
     :class="scrolled || mobileOpen
         ? 'bg-white/95 backdrop-blur-md shadow-sm text-foreground'
         : 'bg-transparent text-white'"
@@ -29,28 +39,22 @@
 >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div class="flex items-center justify-between h-18 py-3">
+        <div class="flex items-center justify-between py-3">
 
-            {{-- =========================================================
-                 LOGO
-            ========================================================== --}}
-            <a href="{{ route('front.home') }}" class="flex items-center gap-2 shrink-0">
-
-                <div class="w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-white font-bold">
-                    GP
-                </div>
-
-                <span class="font-bold leading-tight">
-                    Generation<br class="hidden sm:block">
-                    <span class="font-normal text-sm"> PUSH</span>
-                </span>
-
+            {{-- Logo --}}
+            <a
+                href="{{ route('front.home') }}"
+                class="flex items-center shrink-0"
+                aria-label="Generation PUSH - Accueil"
+            >
+                <img
+                    src="{{ asset('front/images/logo.png') }}"
+                    alt="Generation PUSH"
+                    class="h-16 md:h-20 w-auto object-contain transition-all duration-300"
+                >
             </a>
 
-
-            {{-- =========================================================
-                 LIENS DESKTOP
-            ========================================================== --}}
+            {{-- Navigation desktop --}}
             <div class="hidden lg:flex items-center gap-1">
 
                 @foreach ($navItems as $item)
@@ -62,17 +66,19 @@
                             x-data="{ open: false }"
                             @mouseenter="open = true"
                             @mouseleave="open = false"
+                            @click.outside="open = false"
                         >
-
                             <button
                                 type="button"
-                                class="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors duration-200"
+                                @click="open = !open"
+                                class="flex items-center gap-1 px-3 xl:px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors duration-200"
                             >
-                                {{ $item->label }}
+                                <span>{{ $item->label }}</span>
 
                                 <x-icon
                                     name="chevron-down"
-                                    class="w-3.5 h-3.5"
+                                    class="w-3.5 h-3.5 transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-180' : ''"
                                 />
                             </button>
 
@@ -80,35 +86,34 @@
                                 x-show="open"
                                 x-transition
                                 x-cloak
-                                class="absolute top-full start-0 mt-1 w-56 bg-white text-foreground rounded-lg shadow-lg border border-border p-2"
+                                class="absolute top-full start-0 mt-1 w-56 bg-white text-foreground rounded-xl shadow-xl border border-border p-2"
                             >
-
                                 @foreach ($item->children as $child)
 
                                     <a
                                         href="{{ $child->url }}"
-                                        @if($child->open_in_new_tab)
+                                        @if ($child->open_in_new_tab)
                                             target="_blank"
+                                            rel="noopener noreferrer"
                                         @endif
-                                        class="block px-3 py-2 rounded-lg text-sm hover:bg-secondary transition-colors duration-200"
+                                        class="block px-3 py-2.5 rounded-lg text-sm hover:bg-secondary transition-colors duration-200"
                                     >
                                         {{ $child->label }}
                                     </a>
 
                                 @endforeach
-
                             </div>
-
                         </div>
 
                     @else
 
                         <a
                             href="{{ $item->url }}"
-                            @if($item->open_in_new_tab)
+                            @if ($item->open_in_new_tab)
                                 target="_blank"
+                                rel="noopener noreferrer"
                             @endif
-                            class="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors duration-200"
+                            class="px-3 xl:px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors duration-200"
                         >
                             {{ $item->label }}
                         </a>
@@ -119,10 +124,7 @@
 
             </div>
 
-
-            {{-- =========================================================
-                 CONNEXION / UTILISATEUR
-            ========================================================== --}}
+            {{-- Utilisateur desktop --}}
             <div class="hidden lg:flex items-center gap-3">
 
                 @auth
@@ -133,22 +135,18 @@
                         @click.outside="open = false"
                     >
 
-                        {{-- Bouton utilisateur --}}
                         <button
                             type="button"
                             @click="open = !open"
                             class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors duration-200 cursor-pointer"
                         >
-
-                            {{-- PHOTO DE PROFIL --}}
                             <div
                                 class="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-[#E8631A] flex items-center justify-center text-white font-semibold text-xs"
                             >
-
                                 @if ($navUser?->profile_photo)
 
                                     <img
-                                        src="{{ \Illuminate\Support\Facades\Storage::url($navUser->profile_photo) }}"
+                                        src="{{ Storage::url($navUser->profile_photo) }}"
                                         alt="{{ $navUser->name }}"
                                         class="w-full h-full object-cover"
                                     >
@@ -158,7 +156,6 @@
                                     {{ $navInitials }}
 
                                 @endif
-
                             </div>
 
                             <span class="text-sm font-medium">
@@ -170,13 +167,9 @@
                                 class="w-3.5 h-3.5 transition-transform duration-200"
                                 x-bind:class="open ? 'rotate-180' : ''"
                             />
-
                         </button>
 
-
-                        {{-- =================================================
-                             DROPDOWN UTILISATEUR
-                        ================================================== --}}
+                        {{-- Menu utilisateur --}}
                         <div
                             x-show="open"
                             x-transition
@@ -184,20 +177,18 @@
                             class="absolute end-0 top-full mt-2 w-72 bg-white text-foreground rounded-xl shadow-xl border border-border overflow-hidden"
                         >
 
-                            {{-- En-tête profil --}}
+                            {{-- Profil --}}
                             <div class="p-4 border-b border-border">
 
                                 <div class="flex items-center gap-3">
 
-                                    {{-- Grande photo --}}
                                     <div
                                         class="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-[#E8631A] flex items-center justify-center text-white font-bold"
                                     >
-
                                         @if ($navUser?->profile_photo)
 
                                             <img
-                                                src="{{ \Illuminate\Support\Facades\Storage::url($navUser->profile_photo) }}"
+                                                src="{{ Storage::url($navUser->profile_photo) }}"
                                                 alt="{{ $navUser->name }}"
                                                 class="w-full h-full object-cover"
                                             >
@@ -207,7 +198,6 @@
                                             {{ $navInitials }}
 
                                         @endif
-
                                     </div>
 
                                     <div class="min-w-0">
@@ -226,22 +216,18 @@
 
                             </div>
 
+                            {{-- Mon espace --}}
+                            <a
+                                href="{{ route('front.my-space') }}"
+                                class="flex items-center gap-3 px-4 py-3 text-sm font-medium hover:bg-secondary transition-colors duration-200"
+                            >
+                                <x-icon
+                                    name="layout-dashboard"
+                                    class="w-4 h-4 text-[#E8631A]"
+                                />
 
-                         {{-- =================================================
-     MON ESPACE
-================================================== --}}
-<a
-    href="{{ route('front.my-space') }}"
-    class="flex items-center gap-3 px-4 py-3 text-sm font-medium hover:bg-secondary transition-colors duration-200"
->
-    <x-icon
-        name="layout-dashboard"
-        class="w-4 h-4 text-[#E8631A]"
-    />
-
-    <span>Mon espace</span>
-</a>
-
+                                <span>Mon espace</span>
+                            </a>
 
                             {{-- Profil --}}
                             <a
@@ -256,7 +242,6 @@
                                 <span>Mon profil</span>
                             </a>
 
-
                             {{-- Messages --}}
                             <a
                                 href="{{ route('front.chat.index') }}"
@@ -269,7 +254,6 @@
 
                                 <span>Mes messages</span>
                             </a>
-
 
                             {{-- Articles sauvegardés --}}
                             <a
@@ -284,7 +268,6 @@
                                 <span>Articles sauvegardés</span>
                             </a>
 
-
                             {{-- Déconnexion --}}
                             <div class="border-t border-border p-2">
 
@@ -298,14 +281,12 @@
                                         type="submit"
                                         class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm hover:bg-destructive/10 text-destructive transition-colors duration-200 text-start cursor-pointer"
                                     >
-
                                         <x-icon
                                             name="log-out"
                                             class="w-4 h-4"
                                         />
 
                                         <span>Déconnexion</span>
-
                                     </button>
 
                                 </form>
@@ -327,7 +308,7 @@
 
                     <a
                         href="{{ route('register') }}"
-                        class="px-4 py-2 rounded-lg bg-accent text-white text-sm font-medium hover:opacity-90 transition-all duration-200"
+                        class="px-4 py-2 rounded-lg bg-[#E8631A] text-white text-sm font-medium hover:opacity-90 transition-all duration-200"
                     >
                         Rejoindre
                     </a>
@@ -336,89 +317,121 @@
 
             </div>
 
-
-            {{-- =========================================================
-                 BOUTON MOBILE
-            ========================================================== --}}
+            {{-- Bouton menu mobile --}}
             <button
                 type="button"
                 @click="mobileOpen = !mobileOpen"
                 class="lg:hidden p-2 rounded-lg cursor-pointer"
+                aria-label="Ouvrir le menu"
             >
-
                 <x-icon
-                    :name="'menu'"
+                    name="menu"
                     class="w-6 h-6"
                     x-show="!mobileOpen"
                 />
 
                 <x-icon
-                    :name="'x'"
+                    name="x"
                     class="w-6 h-6"
                     x-show="mobileOpen"
                     x-cloak
                 />
-
             </button>
 
         </div>
 
     </div>
 
-
-    {{-- ================================================================
-         MENU MOBILE
-    ================================================================= --}}
+    {{-- Menu mobile --}}
     <div
         x-show="mobileOpen"
         x-cloak
         x-transition
-        class="lg:hidden bg-white text-foreground border-t border-border"
+        class="lg:hidden bg-white text-foreground border-t border-border shadow-lg"
     >
-
         <div class="px-4 py-4 space-y-1">
 
+            {{-- Navigation --}}
             @foreach ($navItems as $item)
 
-                <a
-                    href="{{ $item->url }}"
-                    class="block px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary transition-colors duration-200"
-                >
-                    {{ $item->label }}
-                </a>
+                @if ($item->children->isNotEmpty())
 
-                @foreach ($item->children as $child)
+                    <div
+                        x-data="{ open: false }"
+                        class="rounded-lg"
+                    >
+
+                        <button
+                            type="button"
+                            @click="open = !open"
+                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary transition-colors duration-200"
+                        >
+                            <span>{{ $item->label }}</span>
+
+                            <x-icon
+                                name="chevron-down"
+                                class="w-4 h-4 transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-180' : ''"
+                            />
+                        </button>
+
+                        <div
+                            x-show="open"
+                            x-transition
+                            x-cloak
+                            class="pl-3"
+                        >
+                            @foreach ($item->children as $child)
+
+                                <a
+                                    href="{{ $child->url }}"
+                                    @click="mobileOpen = false"
+                                    @if ($child->open_in_new_tab)
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    @endif
+                                    class="block px-4 py-2.5 rounded-lg text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors duration-200"
+                                >
+                                    {{ $child->label }}
+                                </a>
+
+                            @endforeach
+                        </div>
+
+                    </div>
+
+                @else
 
                     <a
-                        href="{{ $child->url }}"
-                        class="block px-6 py-2 rounded-lg text-sm text-muted-foreground hover:bg-secondary transition-colors duration-200"
+                        href="{{ $item->url }}"
+                        @click="mobileOpen = false"
+                        @if ($item->open_in_new_tab)
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        @endif
+                        class="block px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary transition-colors duration-200"
                     >
-                        {{ $child->label }}
+                        {{ $item->label }}
                     </a>
 
-                @endforeach
+                @endif
 
             @endforeach
 
-
-            {{-- =========================================================
-                 UTILISATEUR MOBILE
-            ========================================================== --}}
+            {{-- Utilisateur mobile --}}
             <div class="pt-3 mt-3 border-t border-border">
 
                 @auth
 
-                    {{-- Profil mobile --}}
                     <div class="flex items-center gap-3 px-3 py-3 mb-2">
 
                         <div
                             class="w-11 h-11 rounded-full overflow-hidden shrink-0 bg-[#E8631A] flex items-center justify-center text-white font-bold text-sm"
                         >
-
                             @if ($navUser?->profile_photo)
 
                                 <img
-                                    src="{{ \Illuminate\Support\Facades\Storage::url($navUser->profile_photo) }}"
+                                    src="{{ Storage::url($navUser->profile_photo) }}"
                                     alt="{{ $navUser->name }}"
                                     class="w-full h-full object-cover"
                                 >
@@ -428,7 +441,6 @@
                                 {{ $navInitials }}
 
                             @endif
-
                         </div>
 
                         <div class="min-w-0">
@@ -445,33 +457,32 @@
 
                     </div>
 
-
                     <div class="flex flex-col gap-2">
 
-                       <a
-    href="{{ route('front.my-space') }}"
-    class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-[#E8631A] text-[#E8631A] hover:bg-[#E8631A] hover:text-white transition-colors duration-200"
->
-    Mon espace
-</a>
+                        <a
+                            href="{{ route('front.my-space') }}"
+                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-[#E8631A] text-[#E8631A] hover:bg-[#E8631A] hover:text-white transition-colors duration-200"
+                        >
+                            Mon espace
+                        </a>
 
                         <a
                             href="{{ route('profile.edit') }}"
-                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border"
+                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border hover:bg-secondary transition-colors duration-200"
                         >
                             Mon profil
                         </a>
 
                         <a
                             href="{{ route('front.chat.index') }}"
-                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border"
+                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border hover:bg-secondary transition-colors duration-200"
                         >
                             Mes messages
                         </a>
 
                         <a
                             href="{{ route('front.blog.bookmarked') }}"
-                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border"
+                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border hover:bg-secondary transition-colors duration-200"
                         >
                             Articles sauvegardés
                         </a>
@@ -488,7 +499,6 @@
                             >
                                 Déconnexion
                             </button>
-
                         </form>
 
                     </div>
@@ -499,14 +509,14 @@
 
                         <a
                             href="{{ route('login') }}"
-                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border"
+                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center border border-border hover:bg-secondary transition-colors duration-200"
                         >
                             Connexion
                         </a>
 
                         <a
                             href="{{ route('register') }}"
-                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center bg-accent text-white"
+                            class="px-3 py-2.5 rounded-lg text-sm font-medium text-center bg-[#E8631A] text-white"
                         >
                             Rejoindre
                         </a>
@@ -518,7 +528,6 @@
             </div>
 
         </div>
-
     </div>
 
 </nav>

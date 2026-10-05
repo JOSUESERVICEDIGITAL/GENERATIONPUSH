@@ -1,1070 +1,1629 @@
-<x-layouts.public :title="$settings->meta_title ?? null" :meta-description="$settings->meta_description ?? null">
+@extends('layouts.front')
 
-<!-- ============================================================
-     HERO
-     ============================================================ -->
-<section
-    id="generation-push-hero"
-    class="relative h-screen min-h-[600px] w-full overflow-hidden bg-[#1A1A1A]"
->
+@section('title', $settings->meta_title ?? 'Generation PUSH')
 
-    {{-- ========================================================
-         VIDÉO / IMAGE DE FOND
-         ======================================================== --}}
-    @if ($settings->heroDirectVideoUrl())
+@section(
+    'meta_description',
+    $settings->meta_description
+    ?? 'Generation PUSH - La communauté des leaders africains.'
+)
 
-        <video
-            autoplay
-            muted
-            loop
-            playsinline
-            @if ($settings->heroPosterUrl())
-                poster="{{ $settings->heroPosterUrl() }}"
+@section('content')
+
+
+    {{-- ================================================================
+    01. HERO
+    ================================================================ --}}
+    <section id="home" class="gp-home-hero">
+
+        {{-- MEDIA --}}
+        <div class="gp-home-hero-media">
+
+            @if($settings->heroDirectVideoUrl())
+
+                <video autoplay muted loop playsinline preload="metadata" @if($settings->heroPosterUrl())
+                poster="{{ $settings->heroPosterUrl() }}" @endif>
+                    <source src="{{ $settings->heroDirectVideoUrl() }}" type="video/mp4">
+                </video>
+
+            @elseif($settings->heroEmbedUrl())
+
+                <iframe src="{{ $settings->heroEmbedUrl() }}" class="gp-home-hero-iframe" title="Generation PUSH"
+                    frameborder="0" allow="autoplay; fullscreen"></iframe>
+
+            @elseif($settings->heroPosterUrl())
+
+                <img src="{{ $settings->heroPosterUrl() }}" alt="Generation PUSH" fetchpriority="high">
+
+            @else
+
+                <div class="gp-home-hero-fallback"></div>
+
             @endif
-            class="absolute inset-0 w-full h-full object-cover"
+
+        </div>
+
+
+        {{-- OVERLAYS --}}
+        <div class="gp-home-hero-overlay"></div>
+
+        <div class="gp-home-hero-glow gp-home-hero-glow-one"></div>
+        <div class="gp-home-hero-glow gp-home-hero-glow-two"></div>
+
+
+        {{-- CONTENT --}}
+        <div class="container position-relative">
+
+            <div class="gp-home-hero-content">
+
+
+                {{-- TOP INFO --}}
+                {{-- TOP INFO --}}
+@php
+    $ongoingEventsCount = $ongoingEvents->count();
+@endphp
+
+<div class="gp-home-hero-info" data-aos="fade-down">
+
+    <span class="gp-home-greeting">
+
+        <i class="bi bi-sun"></i>
+
+        <span id="gpGreeting">
+            Bienvenue
+        </span>
+
+    </span>
+
+
+    <span class="gp-home-info-separator"></span>
+
+
+    @if($ongoingEventsCount > 0)
+
+        <a
+            href="{{ $ongoingEventsCount === 1
+                ? route('events.show', $ongoingEvents->first())
+                : route('events.index') }}"
+            class="gp-home-live-events"
         >
-            <source
-                src="{{ $settings->heroDirectVideoUrl() }}"
-                type="video/mp4"
-            >
-        </video>
 
-    @elseif ($settings->heroEmbedUrl())
+            <i class="bi bi-broadcast-pin"></i>
 
-        <iframe
-            src="{{ $settings->heroEmbedUrl() }}"
-            class="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            style="
-                width: 100vw;
-                height: 56.25vw;
-                min-height: 100%;
-                min-width: 177.77vh;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            "
-            frameborder="0"
-            allow="autoplay; fullscreen"
-        ></iframe>
+            <span>
+                <strong>{{ $ongoingEventsCount }}</strong>
+                événement{{ $ongoingEventsCount > 1 ? 's' : '' }}
+                en cours
+            </span>
 
-    @elseif ($settings->heroPosterUrl())
-
-        <img
-            src="{{ $settings->heroPosterUrl() }}"
-            class="absolute inset-0 w-full h-full object-cover"
-            alt=""
-        >
+        </a>
 
     @else
 
-        <div
-            class="absolute inset-0 bg-gradient-to-br from-[#1A1A1A] via-[#2A1810] to-accent/30"
-        ></div>
+        <a
+            href="{{ route('events.index') }}"
+            class="gp-home-live-events"
+        >
+
+            <i class="bi bi-calendar-event"></i>
+
+            <span>
+                Découvrir nos événements
+            </span>
+
+        </a>
 
     @endif
 
+</div>
 
-    {{-- ========================================================
-         OVERLAY
-         ======================================================== --}}
-    <div
-        class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/60"
-    ></div>
+                {{-- MACHINE À ÉCRIRE --}}
+                <h1 class="gp-home-machine-title" data-aos="fade-up" data-aos-delay="100">
+
+                    <span class="gp-home-machine-prefix">
+                        WE ARE HERE TO
+                    </span>
 
 
-    {{-- ========================================================
-         CONTENU HERO
-         ======================================================== --}}
-    <div class="absolute inset-0 flex items-center justify-center px-4">
+                    <span class="gp-home-machine-dynamic">
 
-        <div class="max-w-4xl text-center">
+                        <span data-gp-typing data-gp-text="PUSH YOU"></span>
 
-            {{-- =================================================
-                 SOUS-TITRE
-                 ================================================= --}}
-            @if ($settings->hero_subtitle)
+                        <span class="gp-typing-cursor"></span>
 
-                <p
-                    class="inline-block px-4 py-1.5 rounded-full
-                           bg-accent/20 border border-accent/40
-                           text-accent-foreground
-                           text-xs sm:text-sm
-                           font-semibold tracking-wide uppercase
-                           mb-6 backdrop-blur-sm"
-                >
-                    {{ $settings->hero_subtitle }}
+                    </span>
+
+                </h1>
+
+
+
+                {{-- DESCRIPTION --}}
+                <p class="gp-home-hero-description" data-aos="fade-up" data-aos-delay="200">
+
+                    {{ $settings->hero_description
+        ?? 'Formations, conférences et un réseau de mentors pour révéler le leader qui est en toi.' }}
+
                 </p>
 
-            @endif
 
 
-            {{-- =================================================
-                 TITRE ANIMÉ
-                 ================================================= --}}
-            <h1
-                id="generation-push-hero-title"
-                class="text-3xl sm:text-5xl md:text-6xl lg:text-6xl
-                       font-extrabold leading-tight tracking-tight"
-                style="color: #FFFFFF;"
-            ></h1>
+                {{-- CTA --}}
+                <div class="gp-home-hero-actions" data-aos="fade-up" data-aos-delay="300">
+
+                    <a href="{{ $settings->hero_cta_url ?? route('register') }}" class="gp-home-main-button">
+
+                        {{ $settings->hero_cta_label ?? 'Rejoindre la communauté' }}
+
+                        <i class="bi bi-arrow-up-right"></i>
+
+                    </a>
 
 
-            {{-- =================================================
-                 DESCRIPTION
-                 ================================================= --}}
-            @if ($settings->hero_description)
+                    <a href="#impact" class="gp-home-discover-link">
 
-                <p
-                    class="mt-6 text-base sm:text-lg md:text-xl
-                           text-gray-200 max-w-2xl mx-auto"
-                >
-                    {{ $settings->hero_description }}
-                </p>
+                        Découvrir
 
-            @endif
+                        <i class="bi bi-arrow-down"></i>
 
+                    </a>
 
-            {{-- =================================================
-                 BOUTONS
-                 ================================================= --}}
-            <div
-                class="mt-10 flex flex-col sm:flex-row
-                       items-center justify-center gap-4"
-            >
+                </div>
 
-                <a
-                    href="{{ $settings->hero_cta_url ?? route('register') }}"
-                    class="w-full sm:w-auto
-                           px-8 py-3.5
-                           rounded-lg
-                           bg-accent
-                           text-white
-                           font-semibold
-                           hover:opacity-90
-                           hover:scale-105
-                           transition-all duration-200
-                           shadow-lg shadow-accent/30"
-                >
-                    {{ $settings->hero_cta_label ?? 'Rejoindre la communauté' }}
-                </a>
-
-
-                <a
-                    href="#a-propos"
-                    class="w-full sm:w-auto
-                           px-8 py-3.5
-                           rounded-lg
-                           border border-white/30
-                           text-white
-                           font-semibold
-                           hover:bg-white/10
-                           transition-all duration-200
-                           backdrop-blur-sm"
-                >
-                    Découvrir
-                </a>
 
             </div>
 
         </div>
 
-    </div>
 
+        {{-- SCROLL INDICATOR --}}
+        <a href="#impact" class="gp-home-scroll-indicator" aria-label="Découvrir la suite">
 
-    {{-- ========================================================
-         INDICATEUR DE SCROLL
-         ======================================================== --}}
-    <a
-        href="#stats"
-        class="absolute bottom-8 start-1/2
-               -translate-x-1/2
-               text-white/80
-               hover:text-white
-               transition-colors duration-200
-               animate-bounce"
-    >
-        <x-icon name="chevron-down" class="w-8 h-8" />
-    </a>
+            <span>SCROLL</span>
 
-</section>
+            <span class="gp-home-scroll-line"></span>
 
+        </a>
 
-<!-- ============================================================
-     ANIMATION DU TITRE HERO
-     ============================================================ -->
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const heroSection = document.getElementById(
-        'generation-push-hero'
-    );
-
-    const heroTitle = document.getElementById(
-        'generation-push-hero-title'
-    );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SÉCURITÉ
-    |--------------------------------------------------------------------------
-    */
-
-    if (!heroSection || !heroTitle) {
-        return;
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TEXTES
-    |--------------------------------------------------------------------------
-    |
-    | Le premier texte vient directement du back-office.
-    |
-    */
-
-    const configuredText = @json(
-        $settings->hero_title ?? 'Formons les leaders africains de demain'
-    );
-
-
-    /*
-     * Texte automatique.
-     */
-    const defaultText =
-        'Nous formons les leaders africains de demain';
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | COULEURS
-    |--------------------------------------------------------------------------
-    */
-
-    const whiteColor = '#FFFFFF';
-
-    const orangeColor = '#E8631A';
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | VITESSES
-    |--------------------------------------------------------------------------
-    */
-
-    /*
-     * Vitesse d'écriture.
-     */
-    const typingSpeed = 70;
-
-
-    /*
-     * Vitesse de suppression.
-     */
-    const deletingSpeed = 45;
-
-
-    /*
-     * Pause lorsque le texte est entièrement écrit.
-     */
-    const pauseAfterTyping = 1200;
-
-
-    /*
-     * Petite pause entre deux textes.
-     */
-    const pauseBetweenTexts = 400;
-
-
-    /*
-     |--------------------------------------------------------------------------
-    | ÉTAT DE L'ANIMATION
-    |--------------------------------------------------------------------------
-    */
-
-    let currentColor = whiteColor;
-
-    let currentTimer = null;
-
-    let animationRunning = false;
-
-    let heroIsVisible = false;
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ARRÊTER L'ANIMATION
-    |--------------------------------------------------------------------------
-    */
-
-    function stopAnimation() {
-
-        if (currentTimer !== null) {
-
-            clearTimeout(currentTimer);
-
-            currentTimer = null;
-        }
-
-        animationRunning = false;
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ÉCRIRE UN TEXTE
-    |--------------------------------------------------------------------------
-    */
-
-    function typeText(text, callback) {
-
-        let index = 0;
-
-
-        /*
-         * On vide complètement le titre.
-         */
-        heroTitle.textContent = '';
-
-
-        /*
-         * Applique la couleur actuelle.
-         */
-        heroTitle.style.color = currentColor;
-
-
-        function write() {
-
-            /*
-             * Si le HERO n'est plus visible,
-             * on arrête proprement.
-             */
-            if (!heroIsVisible) {
-
-                stopAnimation();
-
-                return;
-            }
-
-
-            /*
-             * Tant qu'il reste des caractères.
-             */
-            if (index < text.length) {
-
-                heroTitle.textContent += text.charAt(index);
-
-                index++;
-
-
-                currentTimer = setTimeout(
-                    write,
-                    typingSpeed
-                );
-
-            } else {
-
-                /*
-                 * Texte entièrement écrit.
-                 *
-                 * On attend avant de supprimer.
-                 */
-                currentTimer = setTimeout(
-                    callback,
-                    pauseAfterTyping
-                );
-            }
-        }
-
-
-        write();
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SUPPRIMER UN TEXTE
-    |--------------------------------------------------------------------------
-    */
-
-    function deleteText(callback) {
-
-        function erase() {
-
-            /*
-             * Si le HERO n'est plus visible,
-             * on arrête.
-             */
-            if (!heroIsVisible) {
-
-                stopAnimation();
-
-                return;
-            }
-
-
-            const currentText =
-                heroTitle.textContent;
-
-
-            /*
-             * Tant qu'il reste des caractères.
-             */
-            if (currentText.length > 0) {
-
-                heroTitle.textContent =
-                    currentText.substring(
-                        0,
-                        currentText.length - 1
-                    );
-
-
-                currentTimer = setTimeout(
-                    erase,
-                    deletingSpeed
-                );
-
-            } else {
-
-                /*
-                 * Petite pause avant le texte suivant.
-                 */
-                currentTimer = setTimeout(
-                    callback,
-                    pauseBetweenTexts
-                );
-            }
-        }
-
-
-        erase();
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TEXTE DU BACK-OFFICE
-    |--------------------------------------------------------------------------
-    */
-
-    function playConfiguredText(callback) {
-
-        typeText(
-            configuredText,
-            function () {
-
-                deleteText(
-                    callback
-                );
-
-            }
-        );
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TEXTE PAR DÉFAUT
-    |--------------------------------------------------------------------------
-    */
-
-    function playDefaultText(callback) {
-
-        typeText(
-            defaultText,
-            function () {
-
-                deleteText(
-                    callback
-                );
-
-            }
-        );
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SÉQUENCE BLANCHE
-    |--------------------------------------------------------------------------
-    |
-    | 1. Texte back-office
-    | 2. Texte par défaut
-    | 3. Passage à l'orange
-    |
-    */
-
-    function playWhiteSequence() {
-
-        if (!heroIsVisible) {
-            return;
-        }
-
-
-        currentColor = whiteColor;
-
-        heroTitle.style.color = whiteColor;
-
-
-        /*
-         * TEXTE BACK-OFFICE
-         */
-        playConfiguredText(
-
-            function () {
-
-                if (!heroIsVisible) {
-                    return;
-                }
-
-
-                /*
-                 * TEXTE PAR DÉFAUT
-                 */
-                playDefaultText(
-
-                    function () {
-
-                        if (!heroIsVisible) {
-                            return;
-                        }
-
-
-                        /*
-                         * Passage à la séquence orange.
-                         */
-                        playOrangeSequence();
-
-                    }
-                );
-
-            }
-        );
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SÉQUENCE ORANGE
-    |--------------------------------------------------------------------------
-    |
-    | 1. Texte back-office
-    | 2. Texte par défaut
-    | 3. Retour au blanc
-    |
-    */
-
-    function playOrangeSequence() {
-
-        if (!heroIsVisible) {
-            return;
-        }
-
-
-        currentColor = orangeColor;
-
-        heroTitle.style.color = orangeColor;
-
-
-        /*
-         * TEXTE BACK-OFFICE EN ORANGE
-         */
-        playConfiguredText(
-
-            function () {
-
-                if (!heroIsVisible) {
-                    return;
-                }
-
-
-                /*
-                 * TEXTE PAR DÉFAUT EN ORANGE
-                 */
-                playDefaultText(
-
-                    function () {
-
-                        if (!heroIsVisible) {
-                            return;
-                        }
-
-
-                        /*
-                         * Retour à la première
-                         * séquence blanche.
-                         */
-                        playWhiteSequence();
-
-                    }
-                );
-
-            }
-        );
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | REDÉMARRER DEPUIS LE DÉBUT
-    |--------------------------------------------------------------------------
-    */
-
-    function restartAnimation() {
-
-        /*
-         * Annule absolument tous les anciens timers.
-         */
-        stopAnimation();
-
-
-        /*
-         * Nettoyage complet du titre.
-         */
-        heroTitle.textContent = '';
-
-
-        /*
-         * Première couleur :
-         * BLANC
-         */
-        currentColor = whiteColor;
-
-        heroTitle.style.color = whiteColor;
-
-
-        /*
-         * L'animation peut démarrer.
-         */
-        animationRunning = true;
-
-
-        /*
-         * Première séquence :
-         * BLANC
-         */
-        playWhiteSequence();
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | INTERSECTION OBSERVER
-    |--------------------------------------------------------------------------
-    |
-    | Le scroll ne contrôle PAS l'animation.
-    |
-    | Il sert uniquement à détecter :
-    |
-    | HERO visible
-    |       ↓
-    | démarrage / reprise depuis le début
-    |
-    | HERO invisible
-    |       ↓
-    | arrêt
-    |
-    */
-
-    const observer =
-        new IntersectionObserver(
-
-            function (entries) {
-
-                entries.forEach(function (entry) {
-
-                    /*
-                     * Le HERO vient d'entrer dans
-                     * la zone visible.
-                     */
-                    if (entry.isIntersecting) {
-
-                        /*
-                         * On évite de redémarrer
-                         * à chaque petit mouvement
-                         * de scroll.
-                         */
-                        if (!heroIsVisible) {
-
-                            heroIsVisible = true;
-
-                            restartAnimation();
-                        }
-
-                    }
-
-                    /*
-                     * Le HERO vient de sortir
-                     * de la zone visible.
-                     */
-                    else {
-
-                        if (heroIsVisible) {
-
-                            heroIsVisible = false;
-
-                            stopAnimation();
-
-                            /*
-                             * On nettoie le titre.
-                             */
-                            heroTitle.textContent = '';
-
-                            /*
-                             * On prépare la prochaine
-                             * apparition en blanc.
-                             */
-                            currentColor = whiteColor;
-
-                            heroTitle.style.color =
-                                whiteColor;
-                        }
-                    }
-
-                });
-
-            },
-
-            {
-                /*
-                 * Le HERO est considéré visible
-                 * dès qu'environ 35% est dans l'écran.
-                 */
-                threshold: 0.35
-            }
-        );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DÉMARRAGE DE LA SURVEILLANCE
-    |--------------------------------------------------------------------------
-    */
-
-    observer.observe(heroSection);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | NETTOYAGE SI LA PAGE EST QUITTÉE
-    |--------------------------------------------------------------------------
-    */
-
-    window.addEventListener(
-        'pagehide',
-        function () {
-
-            stopAnimation();
-
-            observer.disconnect();
-
-        }
-    );
-
-});
-</script>
-
-
-
-
-
-    <!-- ============ STATS ============ -->
-    <section id="stats" class="bg-white py-14 border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div x-data x-reveal.delay.0>
-                <p class="text-3xl sm:text-4xl font-extrabold text-accent">{{ number_format($stats['members']) }}+</p>
-                <p class="text-sm text-gray-500 mt-1">Membres actifs</p>
-            </div>
-            <div x-data x-reveal.delay.100>
-                <p class="text-3xl sm:text-4xl font-extrabold text-accent">{{ number_format($stats['formations']) }}+</p>
-                <p class="text-sm text-gray-500 mt-1">Formations</p>
-            </div>
-            <div x-data x-reveal.delay.200>
-                <p class="text-3xl sm:text-4xl font-extrabold text-accent">{{ number_format($stats['events']) }}+</p>
-                <p class="text-sm text-gray-500 mt-1">Événements</p>
-            </div>
-            <div x-data x-reveal.delay.300>
-                <p class="text-3xl sm:text-4xl font-extrabold text-accent">{{ $stats['satisfaction'] }}%</p>
-                <p class="text-sm text-gray-500 mt-1">Satisfaction</p>
-            </div>
-        </div>
     </section>
 
-    <!-- ============ À PROPOS ============ -->
-    <section id="a-propos" class="py-20 md:py-28 bg-white overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div x-data x-reveal="'left'">
-                @if ($settings->aboutImageUrl())
-                    <img src="{{ $settings->aboutImageUrl() }}" class="rounded-2xl shadow-xl w-full aspect-[4/3] object-cover">
-                @else
-                    <div class="rounded-2xl shadow-xl w-full aspect-[4/3] bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
-                        <div class="w-20 h-20 rounded-2xl bg-accent flex items-center justify-center text-white font-bold text-3xl">GP</div>
+
+
+    {{-- ================================================================
+    02. IMPACT / STATS
+    ================================================================ --}}
+    <section id="impact" class="gp-home-impact">
+
+        <div class="container">
+
+            <div class="row g-0">
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="gp-home-stat" data-aos="fade-up">
+
+                        <strong data-gp-counter="{{ $stats['members'] ?? 0 }}" data-gp-suffix="+">
+                            0
+                        </strong>
+
+                        <span>
+                            Membres actifs
+                        </span>
+
                     </div>
-                @endif
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="gp-home-stat" data-aos="fade-up" data-aos-delay="100">
+
+                        <strong data-gp-counter="{{ $stats['formations'] ?? 0 }}" data-gp-suffix="+">
+                            0
+                        </strong>
+
+                        <span>
+                            Formations
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="gp-home-stat" data-aos="fade-up" data-aos-delay="200">
+
+                        <strong data-gp-counter="{{ $stats['events'] ?? 0 }}" data-gp-suffix="+">
+                            0
+                        </strong>
+
+                        <span>
+                            Événements
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="gp-home-stat" data-aos="fade-up" data-aos-delay="300">
+
+                        <strong data-gp-counter="{{ $stats['satisfaction'] ?? 0 }}" data-gp-suffix="%">
+                            0
+                        </strong>
+
+                        <span>
+                            Satisfaction
+                        </span>
+
+                    </div>
+
+                </div>
+
             </div>
-            <div x-data x-reveal="'right'">
-                <p class="text-accent font-semibold text-sm uppercase tracking-wide mb-3">À propos de nous</p>
-                <h2 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-6">{{ $settings->about_title ?? 'Une communauté panafricaine de leadership' }}</h2>
-                <p class="text-gray-600 leading-relaxed whitespace-pre-line">{{ $settings->about_text ?? "Generation PUSH accompagne des milliers de jeunes leaders à travers l'Afrique de l'Ouest à travers des formations, des conférences et un réseau de mentors engagés." }}</p>
-                <a href="{{ route('register') }}" class="inline-flex items-center gap-2 mt-8 text-accent font-semibold hover:gap-3 transition-all duration-200">
-                    En savoir plus <x-icon name="chevron-right" class="w-4 h-4" />
-                </a>
-            </div>
+
         </div>
+
     </section>
 
-    <!-- ============ FORMATIONS ============ -->
-    @if ($formations->isNotEmpty())
-        <section class="py-20 md:py-28 bg-[#F8F9FA]">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-14" x-data x-reveal>
-                    <p class="text-accent font-semibold text-sm uppercase tracking-wide mb-3">Programmes</p>
-                    <h2 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">Nos formations en cours</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    @foreach ($formations as $i => $formation)
-                        <div class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden group" x-data x-reveal.delay.{{ $i * 100 }}>
-                            <div class="aspect-video bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                                <x-icon name="book-open" class="w-10 h-10 text-accent/60" />
-                            </div>
-                            <div class="p-6">
-                                <h3 class="font-bold text-lg text-[#1A1A1A] mb-2 line-clamp-2">{{ $formation->name }}</h3>
-                                <div class="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                                    <span class="flex items-center gap-1"><x-icon name="calendar" class="w-3.5 h-3.5" /> {{ $formation->duration ?? '—' }}</span>
-                                    <span class="flex items-center gap-1"><x-icon name="users" class="w-3.5 h-3.5" /> {{ $formation->participants }}</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold text-accent">{{ number_format($formation->price, 0) }} $</span>
-                                    <a href="{{ route('register') }}" class="text-sm font-semibold text-accent hover:underline">S'inscrire →</a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
-
-    <!-- ============ ÉVÉNEMENTS ============ -->
-    @if ($events->isNotEmpty())
-        <section class="py-20 md:py-28 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-14" x-data x-reveal>
-                    <p class="text-accent font-semibold text-sm uppercase tracking-wide mb-3">Agenda</p>
-                    <h2 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">Prochains événements</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    @foreach ($events as $i => $event)
-                        <div class="border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300 group" x-data x-reveal.delay.{{ $i * 100 }}>
-                            <div class="aspect-video bg-gradient-to-br from-[#1A1A1A] to-accent/40 flex items-center justify-center relative overflow-hidden">
-                                <x-icon name="zap" class="w-10 h-10 text-white/70 group-hover:scale-110 transition-transform duration-500" />
-                                <span class="absolute top-3 start-3 px-2.5 py-1 rounded-lg bg-white text-[#1A1A1A] text-xs font-bold">
-                                    {{ $event->date?->format('d M') }}
-                                </span>
-                            </div>
-                            <div class="p-6">
-                                <h3 class="font-bold text-lg text-[#1A1A1A] mb-2 line-clamp-2">{{ $event->title }}</h3>
-                                <p class="text-sm text-gray-500 flex items-center gap-1"><x-icon name="calendar" class="w-3.5 h-3.5" /> {{ $event->location }}, {{ $event->country }}</p>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
-
-    <!-- ============ TÉMOIGNAGES ============ -->
-    @if ($testimonials->isNotEmpty())
-        <section class="py-20 md:py-28 bg-[#F8F9FA]">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-14" x-data x-reveal>
-                    <p class="text-accent font-semibold text-sm uppercase tracking-wide mb-3">Témoignages</p>
-                    <h2 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">Ce que dit notre communauté</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    @foreach ($testimonials->take(3) as $i => $testimonial)
-                        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow duration-300" x-data x-reveal.delay.{{ $i * 100 }}>
-                            <x-icon name="quote" class="w-8 h-8 text-accent/30 mb-4" />
-                            <p class="text-gray-600 text-sm leading-relaxed mb-6">{{ $testimonial->content }}</p>
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center overflow-hidden shrink-0">
-                                    @if ($testimonial->photoUrl())
-                                        <img src="{{ $testimonial->photoUrl() }}" class="w-full h-full object-cover">
-                                    @else
-                                        <span class="text-accent font-semibold text-sm">{{ Str::substr($testimonial->author_name, 0, 1) }}</span>
-                                    @endif
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-sm text-[#1A1A1A]">{{ $testimonial->author_name }}</p>
-                                    <p class="text-xs text-gray-500">{{ $testimonial->author_role }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
-
-  <!-- ============ SPONSORS ============ -->
-@if ($sponsors->isNotEmpty())
-    <section class="py-16 bg-white border-y border-gray-100">
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-           <div class="text-center max-w-2xl mx-auto mb-14" x-data x-reveal>
-                    <p class="text-accent font-semibold text-sm uppercase tracking-wide mb-3">Sponsors</p>
-                    <h2 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">Ils nous soutiennent</h2>
-                </div>
 
 
-            {{-- Logos --}}
-            <div
-                class="flex flex-wrap items-center justify-center gap-x-12 gap-y-10 sm:gap-x-16 sm:gap-y-12"
-                x-data
-                x-reveal
-            >
+    {{-- ================================================================
+    03. À PROPOS
+    ================================================================ --}}
+    <section class="gp-home-about">
 
-                @foreach ($sponsors as $sponsor)
+        <div class="container">
 
-                    <div
-                        class="flex items-center justify-center
-                               min-w-[120px] min-h-[60px]
-                               transition-transform duration-300
-                               hover:scale-105"
-                    >
+            <div class="row align-items-center g-5">
 
-                        @if ($sponsor->logoUrl())
 
-                            <img
-                                src="{{ $sponsor->logoUrl() }}"
-                                alt="{{ $sponsor->name }}"
-                                class="max-h-14 max-w-[180px] w-auto object-contain"
-                                loading="lazy"
-                            >
+                {{-- MEDIA --}}
+                <div class="col-lg-6" data-aos="fade-right">
+
+                    <div class="gp-home-about-media">
+
+                        @if($settings->aboutImageUrl())
+
+                            <img src="{{ $settings->aboutImageUrl() }}" alt="À propos de Generation PUSH" loading="lazy">
 
                         @else
 
-                            <span
-                                class="font-bold text-gray-500 text-lg"
-                            >
-                                {{ $sponsor->name }}
-                            </span>
+                            <div class="gp-home-about-placeholder">
+
+                                <span>GP</span>
+
+                            </div>
 
                         @endif
 
+
+                        <span class="gp-home-about-index">
+                            01
+                        </span>
+
                     </div>
 
-                @endforeach
+                </div>
+
+
+
+                {{-- CONTENT --}}
+                <div class="col-lg-6" data-aos="fade-left">
+
+                    <span class="gp-home-small-label">
+                        À PROPOS DE NOUS
+                    </span>
+
+
+                    <h2 class="gp-home-large-title">
+
+                        {{ $settings->about_title
+        ?? 'Une communauté panafricaine de leadership' }}
+
+                    </h2>
+
+
+                    <div class="gp-home-about-text">
+
+                        {!! nl2br(e(
+        $settings->about_text
+        ?? 'Generation PUSH accompagne une nouvelle génération de jeunes à travers des formations, des conférences, des rencontres et un réseau engagé.'
+    )) !!}
+
+                    </div>
+
+
+                    <a href="{{ url('/a-propos') }}" class="gp-home-arrow-link">
+
+                        En savoir plus
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+
+                </div>
 
             </div>
 
         </div>
 
     </section>
-@endif
-    <!-- ============ BLOG ============ -->
-    @if ($posts->isNotEmpty())
-        <section class="py-20 md:py-28 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-14" x-data x-reveal>
-                    <p class="text-accent font-semibold text-sm uppercase tracking-wide mb-3">Blog</p>
-                    <h2 class="text-3xl sm:text-4xl font-bold text-[#1A1A1A]">Derniers articles</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    @foreach ($posts as $i => $post)
-                        <a href="#" class="group" x-data x-reveal.delay.{{ $i * 100 }}>
-                            <div class="aspect-video rounded-2xl bg-gray-100 overflow-hidden mb-4">
-                                @if ($post->coverImageUrl())
-                                    <img src="{{ $post->coverImageUrl() }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center">
-                                        <x-icon name="file-text" class="w-8 h-8 text-gray-300" />
-                                    </div>
-                                @endif
-                            </div>
-                            @if ($post->category)
-                                <span class="text-xs font-semibold" style="color: {{ $post->category->color }}">{{ $post->category->name }}</span>
-                            @endif
-                            <h3 class="font-bold text-[#1A1A1A] mt-1 group-hover:text-accent transition-colors duration-200 line-clamp-2">{{ $post->title }}</h3>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </section>
+
+
+
+    {{-- ================================================================
+    SIGNAL 01 — PROGRAMMES
+    ================================================================ --}}
+    <section class="gp-home-section-signal">
+
+        <div class="gp-home-signal-content" data-aos="fade-up">
+
+            <span class="gp-home-signal-index">
+                02 / 07
+            </span>
+
+            <span class="gp-home-signal-title">
+                PROGRAMMES
+            </span>
+
+            <span class="gp-home-signal-line"></span>
+
+            <i class="bi bi-arrow-down"></i>
+
+        </div>
+
+    </section>
+
+
+
+    {{-- ================================================================
+    04. AGENDA — DÉBORA + ÉVÉNEMENTS DYNAMIQUES
+    ================================================================ --}}
+{{-- ================================================================
+    04. DÉBORA — PROCHAINS ÉVÉNEMENTS
+================================================================ --}}
+
+<section class="gp-agenda" id="events">
+
+    {{-- NAVIGATION LATÉRALE --}}
+
+    @if(isset($events) && $events->count() > 1)
+
+        <button
+            type="button"
+            class="gp-agenda-screen-arrow gp-agenda-prev"
+            aria-label="Événement précédent"
+        >
+            <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <button
+            type="button"
+            class="gp-agenda-screen-arrow gp-agenda-next"
+            aria-label="Événement suivant"
+        >
+            <i class="bi bi-chevron-right"></i>
+        </button>
+
     @endif
 
-    <!-- ============ NOUS REJOINDRE AUTREMENT ============ -->
-<section class="py-20 md:py-28 bg-[#F8F9FA]">
-   <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center">
-    <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
-        <x-icon name="award" class="w-6 h-6 text-accent" />
+
+    {{-- DÉCORATION --}}
+
+    <div class="gp-agenda-decoration gp-agenda-decoration-one"></div>
+    <div class="gp-agenda-decoration gp-agenda-decoration-two"></div>
+
+
+    <div class="container">
+
+        {{-- ========================================================
+            EN-TÊTE
+        ======================================================== --}}
+
+        <div class="gp-agenda-heading">
+
+            <div data-aos="fade-up">
+
+                <span class="gp-agenda-eyebrow">
+                    <span></span>
+                    GENERATION PUSH
+                </span>
+
+                <h2>
+                    Les prochains
+                    <strong>événements.</strong>
+                </h2>
+
+                <p>
+                    Conférences, masterclasses, rencontres, ateliers
+                    et expériences conçus pour faire avancer une génération.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {{-- ========================================================
+            DÉBORA + ÉVÉNEMENTS
+        ======================================================== --}}
+
+        <div class="gp-agenda-stage">
+
+
+            {{-- ====================================================
+                DÉBORA
+            ===================================================== --}}
+
+            <div
+                class="gp-agenda-presenter"
+                data-aos="fade-right"
+            >
+
+                <div class="gp-agenda-presenter-image">
+
+                    <img
+                        src="{{ asset('front/images/debora-events.png') }}"
+                        alt="Generation PUSH"
+                        loading="lazy"
+                    >
+
+                </div>
+
+
+                <div class="gp-agenda-presenter-caption">
+
+                    <span class="gp-agenda-dot"></span>
+
+                    <div>
+                        <strong>
+                            GENERATION PUSH
+                        </strong>
+
+                        <small>
+                            Expériences & événements
+                        </small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- ====================================================
+                ÉVÉNEMENTS
+            ===================================================== --}}
+
+            <div class="gp-agenda-events">
+
+                @if(isset($events) && $events->isNotEmpty())
+
+                    <div class="swiper gp-agenda-swiper">
+
+                        <div class="swiper-wrapper">
+
+                            @foreach($events as $event)
+
+                                @php
+
+                                    $reservedPlaces =
+                                        (int) ($event->confirmed_reserved_places ?? 0);
+
+                                    $remainingPlaces =
+                                        $event->capacity !== null
+                                            ? max(
+                                                0,
+                                                $event->capacity - $reservedPlaces
+                                            )
+                                            : null;
+
+                                    $percentage =
+                                        ($event->capacity && $event->capacity > 0)
+                                            ? min(
+                                                100,
+                                                round(
+                                                    ($reservedPlaces / $event->capacity) * 100
+                                                )
+                                            )
+                                            : 0;
+
+                                    $isOngoing =
+                                        $event->starts_at->lte(now())
+                                        && $event->ends_at
+                                        && $event->ends_at->gte(now());
+
+                                @endphp
+
+
+                                <div class="swiper-slide">
+
+                                    <article class="gp-agenda-card">
+
+
+                                        {{-- =====================================
+                                            HAUT
+                                        ====================================== --}}
+
+                                        <div class="gp-agenda-card-top">
+
+                                            <span class="gp-agenda-card-type">
+
+                                                @if($event->category?->icon)
+
+                                                    <i class="bi {{ $event->category->icon }}"></i>
+
+                                                @else
+
+                                                    <i class="bi bi-calendar-event"></i>
+
+                                                @endif
+
+                                                {{ strtoupper(
+                                                    $event->category?->name
+                                                    ?? 'ÉVÉNEMENT'
+                                                ) }}
+
+                                            </span>
+
+
+                                            @if($isOngoing)
+
+                                                <span class="gp-event-live-badge">
+                                                    <i></i>
+                                                    EN COURS
+                                                </span>
+
+                                            @elseif($event->featured)
+
+                                                <span class="gp-event-featured-badge">
+                                                    <i class="bi bi-star-fill"></i>
+                                                    À LA UNE
+                                                </span>
+
+                                            @else
+
+                                                <span class="gp-agenda-card-number">
+
+                                                    {{ str_pad(
+                                                        $loop->iteration,
+                                                        2,
+                                                        '0',
+                                                        STR_PAD_LEFT
+                                                    ) }}
+
+                                                </span>
+
+                                            @endif
+
+                                        </div>
+
+
+                                        {{-- =====================================
+                                            DATE
+                                        ====================================== --}}
+
+                                        <div class="gp-agenda-date">
+
+                                            <strong>
+                                                {{ $event->starts_at->format('d') }}
+                                            </strong>
+
+                                            <div>
+
+                                                <span>
+                                                    {{ strtoupper(
+                                                        $event->starts_at
+                                                            ->locale('fr')
+                                                            ->translatedFormat('M')
+                                                    ) }}
+                                                </span>
+
+                                                <small>
+                                                    {{ $event->starts_at->format('Y') }}
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {{-- =====================================
+                                            TITRE
+                                        ====================================== --}}
+
+                                        <h3 class="gp-agenda-card-title">
+                                            {{ $event->title }}
+                                        </h3>
+
+
+                                        @if($event->subtitle)
+
+                                            <p class="gp-event-card-subtitle">
+                                                {{ \Illuminate\Support\Str::limit(
+                                                    $event->subtitle,
+                                                    90
+                                                ) }}
+                                            </p>
+
+                                        @endif
+
+
+                                        {{-- =====================================
+                                            INFORMATIONS
+                                        ====================================== --}}
+
+                                        <div class="gp-agenda-card-information">
+
+
+                                            {{-- DATE + HEURE --}}
+
+                                            <div class="gp-agenda-info">
+
+                                                <span class="gp-agenda-info-icon">
+                                                    <i class="bi bi-calendar3"></i>
+                                                </span>
+
+                                                <div>
+
+                                                    <strong>
+                                                        {{ ucfirst(
+                                                            $event->starts_at
+                                                                ->locale('fr')
+                                                                ->translatedFormat(
+                                                                    'l d F Y'
+                                                                )
+                                                        ) }}
+                                                    </strong>
+
+                                                    <small>
+
+                                                        {{ $event->starts_at->format('H:i') }}
+
+                                                        @if($event->ends_at)
+
+                                                            —
+                                                            {{ $event->ends_at->format('H:i') }}
+
+                                                        @endif
+
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            {{-- FORMAT / LIEU --}}
+
+                                            <div class="gp-agenda-info">
+
+                                                <span class="gp-agenda-info-icon">
+
+                                                    @if($event->format === 'online')
+
+                                                        <i class="bi bi-camera-video"></i>
+
+                                                    @elseif($event->format === 'hybrid')
+
+                                                        <i class="bi bi-broadcast"></i>
+
+                                                    @else
+
+                                                        <i class="bi bi-geo-alt"></i>
+
+                                                    @endif
+
+                                                </span>
+
+
+                                                <div>
+
+                                                    <strong>
+
+                                                        @switch($event->format)
+
+                                                            @case('online')
+
+                                                                En ligne
+
+                                                                @break
+
+
+                                                            @case('hybrid')
+
+                                                                Hybride
+
+                                                                @break
+
+
+                                                            @default
+
+                                                                {{ $event->venue
+                                                                    ?: $event->city
+                                                                    ?: 'Lieu à confirmer' }}
+
+                                                        @endswitch
+
+                                                    </strong>
+
+
+                                                    <small>
+
+                                                        @if($event->format !== 'online')
+
+                                                            {{ collect([
+                                                                $event->city,
+                                                                $event->country
+                                                            ])->filter()->implode(', ') }}
+
+                                                        @else
+
+                                                            Événement digital
+
+                                                        @endif
+
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            {{-- INTERVENANT --}}
+
+                                            @if($event->speaker)
+
+                                                <div class="gp-agenda-info">
+
+                                                    <span class="gp-agenda-info-icon">
+                                                        <i class="bi bi-person"></i>
+                                                    </span>
+
+                                                    <div>
+
+                                                        <strong>
+                                                            {{ $event->speaker }}
+                                                        </strong>
+
+                                                        @if($event->speaker_title)
+
+                                                            <small>
+                                                                {{ $event->speaker_title }}
+                                                            </small>
+
+                                                        @endif
+
+                                                    </div>
+
+                                                </div>
+
+                                            @endif
+
+
+                                            {{-- PRIX --}}
+
+                                            <div class="gp-agenda-info">
+
+                                                <span class="gp-agenda-info-icon">
+
+                                                    @if($event->is_free)
+
+                                                        <i class="bi bi-gift"></i>
+
+                                                    @else
+
+                                                        <i class="bi bi-ticket-perforated"></i>
+
+                                                    @endif
+
+                                                </span>
+
+                                                <div>
+
+                                                    <strong>
+
+                                                        @if($event->is_free)
+
+                                                            Gratuit
+
+                                                        @else
+
+                                                            {{ number_format(
+                                                                $event->price,
+                                                                0,
+                                                                ',',
+                                                                ' '
+                                                            ) }}
+
+                                                            {{ $event->currency }}
+
+                                                        @endif
+
+                                                    </strong>
+
+                                                    <small>
+                                                        Participation
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {{-- =====================================
+                                            PLACES
+                                        ====================================== --}}
+
+                                        @if($event->capacity)
+
+                                            <div class="gp-home-event-capacity">
+
+                                                <div class="gp-home-event-capacity-top">
+
+                                                    <span>
+                                                        <i class="bi bi-people"></i>
+
+                                                        {{ $reservedPlaces }}
+                                                        /
+                                                        {{ $event->capacity }}
+                                                        places réservées
+                                                    </span>
+
+
+                                                    @if($remainingPlaces > 0)
+
+                                                        <strong>
+                                                            {{ $remainingPlaces }}
+                                                            restante{{ $remainingPlaces > 1 ? 's' : '' }}
+                                                        </strong>
+
+                                                    @else
+
+                                                        <strong class="is-full">
+                                                            Complet
+                                                        </strong>
+
+                                                    @endif
+
+                                                </div>
+
+
+                                                <div class="gp-home-event-progress">
+
+                                                    <span
+                                                        style="width: {{ $percentage }}%"
+                                                    ></span>
+
+                                                </div>
+
+                                            </div>
+
+                                        @endif
+
+
+                                        {{-- =====================================
+                                            FOOTER
+                                        ====================================== --}}
+
+                                        <div class="gp-agenda-card-footer">
+
+                                            <div class="gp-agenda-mini-brand">
+
+                                                <span>
+                                                    GP
+                                                </span>
+
+                                                <div>
+
+                                                    <strong>
+                                                        GENERATION
+                                                    </strong>
+
+                                                    <small>
+                                                        PUSH
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <a
+                                                href="{{ route(
+                                                    'events.show',
+                                                    $event
+                                                ) }}"
+                                                class="gp-agenda-discover"
+                                                aria-label="Découvrir {{ $event->title }}"
+                                            >
+
+                                                @if($event->can_reserve)
+
+                                                    Réserver
+
+                                                @else
+
+                                                    Découvrir
+
+                                                @endif
+
+                                                <i class="bi bi-arrow-up-right"></i>
+
+                                            </a>
+
+                                        </div>
+
+
+                                        <span class="gp-agenda-card-ring"></span>
+                                        <span class="gp-agenda-card-line"></span>
+
+                                    </article>
+
+                                </div>
+
+                            @endforeach
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- SLIDER FOOTER --}}
+
+                    <div class="gp-agenda-slider-footer">
+
+                        <div class="gp-agenda-pagination"></div>
+
+                        <div class="gp-agenda-auto">
+
+                            <span class="gp-agenda-auto-icon">
+                                <i class="bi bi-play-fill"></i>
+                            </span>
+
+                            <span>
+                                Défilement automatique
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                @else
+
+                    {{-- ====================================================
+                        AUCUN ÉVÉNEMENT
+                    ===================================================== --}}
+
+                    <div class="gp-agenda-empty">
+
+                        <span class="gp-agenda-empty-icon">
+                            <i class="bi bi-calendar2-event"></i>
+                        </span>
+
+                        <span class="gp-agenda-eyebrow">
+                            ÉVÉNEMENTS
+                        </span>
+
+                        <h3>
+                            Le prochain PUSH arrive bientôt.
+                        </h3>
+
+                        <p>
+                            De nouvelles expériences seront
+                            prochainement annoncées.
+                        </p>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </div>
+
+
+        {{-- ========================================================
+            TOUS LES ÉVÉNEMENTS
+        ======================================================== --}}
+
+        <div class="gp-agenda-all">
+
+            <a
+                href="{{ route('events.index') }}"
+                class="gp-home-arrow-link"
+            >
+
+                <span>
+                    Explorer tous les événements
+                </span>
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
     </div>
 
-    <h3 class="font-bold text-lg text-[#1A1A1A] mb-2">Devenir partenaire</h3>
-
-    <p class="text-sm text-gray-600 mb-6">
-        Entreprise, institution ou organisation : associe ta marque à une communauté de plus de 2500 jeunes leaders.
-    </p>
-
-    {{-- <a href="{{ route('front.engagement.create', ['type' => 'partner']) }}"
-       class="inline-block px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:opacity-90 transition-all duration-200">
-        Devenir partenaire
-    </a> --}}
-    <a href="{{ route('front.partner') }}"
-   class="inline-block px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:opacity-90 transition-all duration-200">
-    Devenir partenaire
-</a>
-</div>
-
-<div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 text-center"
-     x-data
-     x-reveal.delay.100>
-    <div class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
-        <x-icon name="users-round" class="w-6 h-6 text-accent" />
-    </div>
-
-    <h3 class="font-bold text-lg text-[#1A1A1A] mb-2">Devenir bénévole</h3>
-
-    <p class="text-sm text-gray-600 mb-6">
-        Donne de ton temps et de tes compétences pour accompagner la prochaine génération de leaders.
-    </p>
-
-    {{-- <a href="{{ route('front.engagement.create', ['type' => 'volunteer']) }}"
-       class="inline-block px-6 py-3 rounded-lg border-2 border-accent text-accent font-semibold hover:bg-accent hover:text-white transition-all duration-200">
-        Devenir bénévole
-    </a> --}}
-    <a href="{{ route('front.volunteer') }}"
-   class="inline-block px-6 py-3 rounded-lg border-2 border-accent text-accent font-semibold hover:bg-accent hover:text-white transition-all duration-200">
-    Devenir bénévole
-</a>
-</div>
 </section>
 
-    <!-- ============ NEWSLETTER ============ -->
-    <section class="py-20 bg-[#1A1A1A]">
-        <div class="max-w-3xl mx-auto px-4 text-center" x-data x-reveal="'zoom'">
-            <h2 class="text-2xl sm:text-3xl font-bold text-white mb-3">{{ $settings->newsletter_title ?? 'Reste informé' }}</h2>
-            <p class="text-gray-400 mb-8">{{ $settings->newsletter_text ?? 'Reçois nos actualités, formations et événements directement par email.' }}</p>
 
-            @if (session('success'))
-                <p class="text-green-400 text-sm mb-4">{{ session('success') }}</p>
-            @endif
 
-            <form method="POST" action="{{ route('front.newsletter.store') }}" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                @csrf
-                <input type="email" name="email" required placeholder="ton@email.com" class="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent">
-                <button type="submit" class="px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:opacity-90 transition-all duration-200 cursor-pointer">S'abonner</button>
-            </form>
-            @error('email')
-                <p class="text-red-400 text-xs mt-2">{{ $message }}</p>
-            @enderror
+    {{-- ================================================================
+    SIGNAL 03 — TÉMOIGNAGES
+    ================================================================ --}}
+    <section class="gp-home-section-signal">
+
+        <div class="gp-home-signal-content" data-aos="fade-up">
+
+            <span class="gp-home-signal-index">
+                04 / 07
+            </span>
+
+            <span class="gp-home-signal-title">
+                TÉMOIGNAGES
+            </span>
+
+            <span class="gp-home-signal-line"></span>
+
+            <i class="bi bi-arrow-down"></i>
+
         </div>
+
     </section>
 
-</x-layouts.public>
 
 
+    {{-- ================================================================
+    06. TÉMOIGNAGES — SLIDER
+    ================================================================ --}}
+    <section class="gp-home-testimonials">
+
+        <div class="container">
+
+
+            <div class="gp-home-list-header">
+
+                <div data-aos="fade-right">
+
+                    <span class="gp-home-small-label">
+                        LA COMMUNAUTÉ
+                    </span>
+
+                    <h2 class="gp-home-list-title">
+                        Ce que dit notre communauté
+                    </h2>
+
+                </div>
+
+
+                <div class="gp-home-slider-controls" data-aos="fade-left">
+
+                    <button type="button" class="gp-slider-button gp-testimonials-prev" aria-label="Témoignage précédent">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+
+                    <button type="button" class="gp-slider-button gp-testimonials-next" aria-label="Témoignage suivant">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            @if(isset($testimonials) && $testimonials->isNotEmpty())
+
+                <div class="swiper gp-testimonials-swiper" data-aos="fade-up">
+
+                    <div class="swiper-wrapper">
+
+                        @foreach($testimonials as $testimonial)
+
+                            <div class="swiper-slide">
+
+                                <article class="gp-home-testimonial-card">
+
+                                    <i class="bi bi-quote gp-home-quote"></i>
+
+
+                                    <p>
+                                        {{ $testimonial->content }}
+                                    </p>
+
+
+                                    <div class="gp-home-testimonial-author">
+
+                                        @if($testimonial->photoUrl())
+
+                                            <img src="{{ $testimonial->photoUrl() }}" alt="{{ $testimonial->author_name }}"
+                                                loading="lazy">
+
+                                        @else
+
+                                                            <div class="gp-home-testimonial-avatar">
+
+                                                                {{ strtoupper(
+                                                mb_substr(
+                                                    $testimonial->author_name,
+                                                    0,
+                                                    1
+                                                )
+                                            ) }}
+
+                                                            </div>
+
+                                        @endif
+
+
+                                        <div>
+
+                                            <strong>
+                                                {{ $testimonial->author_name }}
+                                            </strong>
+
+                                            <span>
+                                                {{ $testimonial->author_role }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+
+                    <div class="gp-testimonials-pagination"></div>
+
+                </div>
+
+            @endif
+
+        </div>
+
+    </section>
+
+
+
+    {{-- ================================================================
+    SIGNAL 04 — SPONSORS
+    ================================================================ --}}
+    <section class="gp-home-section-signal gp-home-signal-small">
+
+        <div class="gp-home-signal-content" data-aos="fade-up">
+
+            <span class="gp-home-signal-index">
+                05 / 07
+            </span>
+
+            <span class="gp-home-signal-title">
+                SPONSORS
+            </span>
+
+            <span class="gp-home-signal-line"></span>
+
+        </div>
+
+    </section>
+
+
+
+    {{-- ================================================================
+    07. SPONSORS — DÉFILEMENT CONTINU
+    ================================================================ --}}
+    @if(isset($sponsors) && $sponsors->isNotEmpty())
+
+        <section class="gp-home-sponsors">
+
+            <div class="container">
+
+                <h2 class="gp-home-sponsors-title" data-aos="fade-up">
+                    Ils nous soutiennent
+                </h2>
+
+            </div>
+
+
+            <div class="swiper gp-sponsors-swiper" data-aos="fade-up">
+
+                <div class="swiper-wrapper">
+
+                    @foreach($sponsors as $sponsor)
+
+                        <div class="swiper-slide">
+
+                            <div class="gp-home-sponsor" data-bs-toggle="tooltip" data-bs-title="{{ $sponsor->name }}">
+
+                                @if($sponsor->logoUrl())
+
+                                    <img src="{{ $sponsor->logoUrl() }}" alt="{{ $sponsor->name }}" loading="lazy">
+
+                                @else
+
+                                    <strong>
+                                        {{ $sponsor->name }}
+                                    </strong>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            </div>
+
+        </section>
+
+    @endif
+
+
+
+    {{-- ================================================================
+    SIGNAL 05 — BLOG
+    ================================================================ --}}
+    <section class="gp-home-section-signal">
+
+        <div class="gp-home-signal-content" data-aos="fade-up">
+
+            <span class="gp-home-signal-index">
+                06 / 07
+            </span>
+
+            <span class="gp-home-signal-title">
+                BLOG
+            </span>
+
+            <span class="gp-home-signal-line"></span>
+
+            <i class="bi bi-arrow-down"></i>
+
+        </div>
+
+    </section>
+
+
+
+    {{-- ================================================================
+    08. BLOG — SLIDER MANUEL
+    ================================================================ --}}
+    <section class="gp-home-blog">
+
+        <div class="container">
+
+
+            <div class="gp-home-list-header">
+
+                <div data-aos="fade-right">
+
+                    <span class="gp-home-small-label">
+                        ACTUALITÉS & IDÉES
+                    </span>
+
+                    <h2 class="gp-home-list-title">
+                        Derniers articles
+                    </h2>
+
+                </div>
+
+
+                <div class="gp-home-slider-controls" data-aos="fade-left">
+
+                    <button type="button" class="gp-slider-button gp-blog-prev" aria-label="Article précédent">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+
+                    <button type="button" class="gp-slider-button gp-blog-next" aria-label="Article suivant">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            @if(isset($posts) && $posts->isNotEmpty())
+
+                <div class="swiper gp-blog-swiper" data-aos="fade-up">
+
+                    <div class="swiper-wrapper">
+
+                        @foreach($posts as $post)
+
+                            <div class="swiper-slide">
+
+                                <article class="gp-home-blog-card">
+
+
+                                    <a href="{{ route('front.blog.show', $post) }}" class="gp-home-blog-image">
+
+                                        @if($post->coverImageUrl())
+
+                                            <img src="{{ $post->coverImageUrl() }}" alt="{{ $post->title }}" loading="lazy">
+
+                                        @else
+
+                                            <div class="gp-home-blog-placeholder">
+
+                                                <i class="bi bi-file-earmark-text"></i>
+
+                                            </div>
+
+                                        @endif
+
+
+                                        <span class="gp-home-blog-arrow">
+
+                                            <i class="bi bi-arrow-up-right"></i>
+
+                                        </span>
+
+                                    </a>
+
+
+                                    <div class="gp-home-blog-content">
+
+                                        @if($post->category)
+
+                                                        <span class="gp-home-blog-category">
+
+                                                            {{ is_object($post->category)
+                                            ? ($post->category->name ?? '')
+                                            : $post->category }}
+
+                                                        </span>
+
+                                        @endif
+
+
+                                        <h3>
+
+                                            <a href="{{ route('front.blog.show', $post) }}">
+                                                {{ $post->title }}
+                                            </a>
+
+                                        </h3>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+
+                    <div class="gp-blog-pagination"></div>
+
+                </div>
+
+            @endif
+
+        </div>
+
+    </section>
+
+
+
+    {{-- ================================================================
+    SIGNAL 06 — S'IMPLIQUER
+    ================================================================ --}}
+    <section class="gp-home-section-signal">
+
+        <div class="gp-home-signal-content" data-aos="fade-up">
+
+            <span class="gp-home-signal-index">
+                07 / 07
+            </span>
+
+            <span class="gp-home-signal-title">
+                S'IMPLIQUER
+            </span>
+
+            <span class="gp-home-signal-line"></span>
+
+            <i class="bi bi-arrow-down"></i>
+
+        </div>
+
+    </section>
+
+
+
+    {{-- ================================================================
+    09. PARTENAIRE / BÉNÉVOLE
+    ================================================================ --}}
+    <section class="gp-home-involvement">
+
+        <div class="container">
+
+            <div class="row g-4">
+
+
+                {{-- PARTENAIRE --}}
+                <div class="col-lg-6" data-aos="fade-right">
+
+                    <article class="gp-home-involvement-card">
+
+                        <span class="gp-home-involvement-number">
+                            01
+                        </span>
+
+
+                        <div class="gp-home-involvement-icon">
+
+                            <i class="bi bi-award"></i>
+
+                        </div>
+
+
+                        <h3>
+                            Devenir partenaire
+                        </h3>
+
+
+                        <p>
+
+                            Entreprise, institution ou organisation :
+                            associez votre marque à une génération
+                            ambitieuse et engagée.
+
+                        </p>
+
+
+                        <a href="{{ route('front.partner') }}" class="gp-home-arrow-link">
+
+                            Devenir partenaire
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </article>
+
+                </div>
+
+
+
+                {{-- BÉNÉVOLE --}}
+                <div class="col-lg-6" data-aos="fade-left">
+
+                    <article class="gp-home-involvement-card gp-home-involvement-dark">
+
+                        <span class="gp-home-involvement-number">
+                            02
+                        </span>
+
+
+                        <div class="gp-home-involvement-icon">
+
+                            <i class="bi bi-people"></i>
+
+                        </div>
+
+
+                        <h3>
+                            Devenir bénévole
+                        </h3>
+
+
+                        <p>
+
+                            Donne de ton temps et de tes compétences
+                            pour accompagner la prochaine génération
+                            de leaders.
+
+                        </p>
+
+
+                        <a href="{{ route('front.volunteer') }}" class="gp-home-arrow-link">
+
+                            Rejoindre l'équipe
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    {{-- ================================================================
+    10. NEWSLETTER
+    ================================================================ --}}
+    <section class="gp-home-newsletter">
+
+        <div class="container">
+
+            <div class="gp-home-newsletter-inner" data-aos="zoom-out">
+
+                <span class="gp-home-small-label">
+                    RESTE CONNECTÉ
+                </span>
+
+
+                <h2>
+                    Reste informé.
+                </h2>
+
+
+                <p>
+
+                    Reçois nos actualités, formations et événements
+                    directement par email.
+
+                </p>
+
+
+                <form method="POST" action="{{ route('front.newsletter.store') }}" class="gp-home-newsletter-form"
+                    data-gp-form>
+
+                    @csrf
+
+
+                    <div class="gp-home-newsletter-input">
+
+                        <i class="bi bi-envelope"></i>
+
+
+                        <input type="email" name="email" value="{{ old('email') }}" placeholder="ton@email.com" required>
+
+
+                        <button type="submit" data-loading-text="Inscription...">
+
+                            S'abonner
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                @error('email')
+
+                    <div class="text-danger small mt-3">
+                        {{ $message }}
+                    </div>
+
+                @enderror
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+@endsection

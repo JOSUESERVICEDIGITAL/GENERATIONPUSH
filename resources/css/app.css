@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-
+@import "tailwindcss";
+@plugin "daisyui";
 @plugin '@tailwindcss/forms';
 
 @source '../views';
@@ -147,4 +147,741 @@
     .scrollbar-none::-webkit-scrollbar {
         display: none;
     }
+}
+
+/* ================================================================
+   34. HOME — NOS ACTIONS
+================================================================ */
+
+.gp-actions-section {
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fafafa 100%
+        );
+}
+
+
+/* ================================================================
+   DECORATIONS
+================================================================ */
+
+.gp-actions-decoration {
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(1px);
+}
+
+.gp-actions-decoration-1 {
+    top: 80px;
+    right: -180px;
+
+    width: 420px;
+    height: 420px;
+
+    border: 1px solid rgba(232, 99, 26, 0.10);
+}
+
+.gp-actions-decoration-1::before,
+.gp-actions-decoration-1::after {
+    content: "";
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(232, 99, 26, 0.08);
+}
+
+.gp-actions-decoration-1::before {
+    inset: 50px;
+}
+
+.gp-actions-decoration-1::after {
+    inset: 110px;
+}
+
+.gp-actions-decoration-2 {
+    left: -130px;
+    bottom: 150px;
+
+    width: 300px;
+    height: 300px;
+
+    background:
+        rgba(232, 99, 26, 0.04);
+
+    filter: blur(60px);
+}
+
+
+/* ================================================================
+   FEATURE ACTION
+================================================================ */
+
+.gp-action-feature {
+    position: relative;
+
+    margin-top: 60px;
+
+    overflow: hidden;
+
+    border-radius: 30px;
+
+    background: var(--gp-black);
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ================================================================
+   FEATURE MEDIA
+================================================================ */
+
+.gp-action-media {
+    position: relative;
+
+    min-height: 560px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            rgba(232, 99, 26, 0.35),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #292929,
+            #111111
+        );
+}
+
+.gp-action-media img {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 1s
+        cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gp-action-feature:hover
+.gp-action-media img {
+    transform: scale(1.055);
+}
+
+
+.gp-action-media-overlay {
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.08),
+            rgba(0, 0, 0, 0.45)
+        ),
+        linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.55),
+            transparent 55%
+        );
+}
+
+
+/* fallback lorsqu'une image n'existe pas */
+
+.gp-action-media-fallback::after {
+    content: "PUSH";
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    color: rgba(255, 255, 255, 0.08);
+
+    font-family: var(--gp-font-heading);
+    font-size: clamp(5rem, 12vw, 11rem);
+    font-weight: 900;
+
+    letter-spacing: -0.08em;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(-8deg);
+}
+
+
+/* ================================================================
+   FEATURE NUMBER
+================================================================ */
+
+.gp-action-number {
+    position: absolute;
+
+    top: 30px;
+    left: 30px;
+
+    z-index: 3;
+
+    color: rgba(255, 255, 255, 0.85);
+
+    font-family: var(--gp-font-heading);
+    font-size: 0.75rem;
+    font-weight: 800;
+
+    letter-spacing: 0.15em;
+}
+
+
+/* ================================================================
+   FLOATING BADGE
+================================================================ */
+
+.gp-action-floating-badge {
+    position: absolute;
+
+    left: 30px;
+    bottom: 30px;
+
+    z-index: 3;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 15px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.18);
+
+    border-radius: 999px;
+
+    color: white;
+
+    background:
+        rgba(20, 20, 20, 0.45);
+
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.gp-action-floating-badge i {
+    color: var(--gp-orange);
+}
+
+
+/* ================================================================
+   FEATURE CONTENT
+================================================================ */
+
+.gp-action-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-height: 560px;
+
+    padding: clamp(
+        40px,
+        5vw,
+        75px
+    );
+
+    color: var(--gp-white);
+}
+
+.gp-action-category {
+    display: inline-block;
+
+    margin-bottom: 20px;
+
+    color: var(--gp-orange);
+
+    font-size: 0.68rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.16em;
+}
+
+.gp-action-content h3 {
+    margin-bottom: 25px;
+
+    color: var(--gp-white);
+
+    font-size:
+        clamp(
+            2.5rem,
+            5vw,
+            4.5rem
+        );
+
+    line-height: 0.95;
+
+    letter-spacing: -0.06em;
+}
+
+.gp-action-content p {
+    max-width: 480px;
+
+    margin: 0;
+
+    color:
+        rgba(255, 255, 255, 0.62);
+
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+
+/* ================================================================
+   FEATURE LINK
+================================================================ */
+
+.gp-action-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 50px;
+
+    padding-top: 25px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.10);
+
+    color: var(--gp-white);
+
+    font-size: 0.86rem;
+    font-weight: 700;
+
+    transition: var(--gp-transition);
+}
+
+.gp-action-link span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    color: var(--gp-black);
+
+    background: var(--gp-orange);
+
+    transition: var(--gp-transition);
+}
+
+.gp-action-link:hover {
+    color: var(--gp-orange);
+}
+
+.gp-action-link:hover span {
+    color: var(--gp-white);
+
+    transform: rotate(45deg);
+}
+
+
+/* ================================================================
+   SMALL ACTION CARDS
+================================================================ */
+
+.gp-action-card {
+    position: relative;
+
+    height: 100%;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        var(--gp-gray-200);
+
+    border-radius: 25px;
+
+    background: var(--gp-white);
+
+    transition:
+        transform 0.5s
+        cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.5s ease,
+        border-color 0.5s ease;
+}
+
+.gp-action-card:hover {
+    border-color:
+        rgba(232, 99, 26, 0.25);
+
+    transform: translateY(-10px);
+
+    box-shadow:
+        0 30px 70px
+        rgba(0, 0, 0, 0.10);
+}
+
+
+/* ================================================================
+   CARD MEDIA
+================================================================ */
+
+.gp-action-card-media {
+    position: relative;
+
+    height: 310px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            rgba(232, 99, 26, 0.40),
+            transparent 40%
+        ),
+        #1A1A1A;
+}
+
+.gp-action-card-media img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.8s
+        cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gp-action-card:hover
+.gp-action-card-media img {
+    transform: scale(1.07);
+}
+
+.gp-action-card-overlay {
+    position: absolute;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.65),
+            transparent 60%
+        );
+}
+
+
+/* fallback */
+
+.gp-action-card-fallback::after {
+    content: "PUSH";
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    color:
+        rgba(255, 255, 255, 0.09);
+
+    font-family:
+        var(--gp-font-heading);
+
+    font-size: 4.2rem;
+    font-weight: 900;
+
+    transform:
+        translate(-50%, -50%);
+}
+
+
+/* ================================================================
+   CARD NUMBER
+================================================================ */
+
+.gp-action-card-number {
+    position: absolute;
+
+    top: 22px;
+    left: 22px;
+
+    z-index: 3;
+
+    color:
+        rgba(255, 255, 255, 0.80);
+
+    font-size: 0.7rem;
+    font-weight: 800;
+
+    letter-spacing: 0.15em;
+}
+
+
+/* ================================================================
+   CARD ICON
+================================================================ */
+
+.gp-action-card-icon {
+    position: absolute;
+
+    right: 22px;
+    bottom: 22px;
+
+    z-index: 3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
+    color: var(--gp-white);
+
+    background: var(--gp-orange);
+
+    box-shadow:
+        0 10px 30px
+        rgba(232, 99, 26, 0.30);
+
+    font-size: 1.2rem;
+
+    transition: var(--gp-transition);
+}
+
+.gp-action-card:hover
+.gp-action-card-icon {
+    transform: rotate(8deg) scale(1.08);
+}
+
+
+/* ================================================================
+   CARD BODY
+================================================================ */
+
+.gp-action-card-body {
+    padding: 30px;
+}
+
+.gp-action-card-body h3 {
+    margin-bottom: 15px;
+
+    font-size: 1.45rem;
+
+    letter-spacing: -0.04em;
+}
+
+.gp-action-card-body p {
+    min-height: 105px;
+
+    margin-bottom: 25px;
+
+    color: var(--gp-gray-500);
+
+    font-size: 0.88rem;
+    line-height: 1.75;
+}
+
+
+/* ================================================================
+   DARK CARD VARIANT
+================================================================ */
+
+.gp-action-card-dark {
+    border-color: var(--gp-black);
+
+    background: var(--gp-black);
+}
+
+.gp-action-card-dark
+.gp-action-card-body h3 {
+    color: var(--gp-white);
+}
+
+.gp-action-card-dark
+.gp-action-card-body p {
+    color:
+        rgba(255, 255, 255, 0.55);
+}
+
+.gp-action-card-dark
+.gp-link {
+    color: var(--gp-orange);
+}
+
+
+/* ================================================================
+   ACTIONS BOTTOM CTA
+================================================================ */
+
+.gp-actions-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-top: 55px;
+
+    padding: 35px 40px;
+
+    border:
+        1px solid
+        var(--gp-gray-200);
+
+    border-radius: 20px;
+
+    background: var(--gp-white);
+}
+
+.gp-actions-bottom span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--gp-gray-500);
+
+    font-size: 0.82rem;
+}
+
+.gp-actions-bottom strong {
+    display: block;
+
+    color: var(--gp-black);
+
+    font-family:
+        var(--gp-font-heading);
+
+    font-size:
+        clamp(
+            1.1rem,
+            2vw,
+            1.4rem
+        );
+}
+
+
+/* ================================================================
+   ACTIONS RESPONSIVE
+================================================================ */
+
+@media (max-width: 991.98px) {
+
+    .gp-action-media {
+        min-height: 480px;
+    }
+
+    .gp-action-content {
+        min-height: auto;
+
+        padding: 45px;
+    }
+
+    .gp-action-link {
+        margin-top: 40px;
+    }
+
+    .gp-action-card-media {
+        height: 360px;
+    }
+
+}
+
+
+@media (max-width: 767.98px) {
+
+    .gp-action-feature {
+        margin-top: 40px;
+
+        border-radius: 22px;
+    }
+
+    .gp-action-media {
+        min-height: 390px;
+    }
+
+    .gp-action-content {
+        padding: 35px 28px;
+    }
+
+    .gp-action-content h3 {
+        font-size: 2.5rem;
+    }
+
+    .gp-action-card {
+        border-radius: 20px;
+    }
+
+    .gp-action-card-media {
+        height: 300px;
+    }
+
+    .gp-action-card-body p {
+        min-height: 0;
+    }
+
+    .gp-actions-bottom {
+        align-items: stretch;
+        flex-direction: column;
+
+        padding: 30px;
+    }
+
+    .gp-actions-bottom
+    .gp-btn-dark {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 575.98px) {
+
+    .gp-action-media {
+        min-height: 330px;
+    }
+
+    .gp-action-number {
+        top: 20px;
+        left: 20px;
+    }
+
+    .gp-action-floating-badge {
+        left: 20px;
+        bottom: 20px;
+    }
+
+    .gp-action-card-media {
+        height: 270px;
+    }
+
 }

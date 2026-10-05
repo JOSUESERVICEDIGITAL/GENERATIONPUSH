@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Member\DashboardController;
 use App\Http\Controllers\Member\MemberPageController;
+use App\Http\Controllers\Member\MemberChatController;
 
 Route::middleware(['auth', 'member'])
     ->prefix('espace-membre')
@@ -21,7 +22,27 @@ Route::middleware(['auth', 'member'])
 
         /*
         |--------------------------------------------------------------------------
-        | NOTIFICATIONS
+        | MON PROFIL
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/profil', [MemberPageController::class, 'profile'])
+            ->name('profile');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MES MESSAGES
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/messages', [MemberPageController::class, 'messages'])
+            ->name('messages');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MES NOTIFICATIONS
         |--------------------------------------------------------------------------
         */
 
@@ -31,7 +52,17 @@ Route::middleware(['auth', 'member'])
 
         /*
         |--------------------------------------------------------------------------
-        | FORMATIONS
+        | MES FAVORIS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/favoris', [MemberPageController::class, 'bookmarks'])
+            ->name('bookmarks');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MES FORMATIONS
         |--------------------------------------------------------------------------
         */
 
@@ -41,7 +72,7 @@ Route::middleware(['auth', 'member'])
 
         /*
         |--------------------------------------------------------------------------
-        | ÉVÉNEMENTS
+        | MES ÉVÉNEMENTS
         |--------------------------------------------------------------------------
         */
 
@@ -51,7 +82,7 @@ Route::middleware(['auth', 'member'])
 
         /*
         |--------------------------------------------------------------------------
-        | RÉSERVATIONS
+        | MES RÉSERVATIONS
         |--------------------------------------------------------------------------
         */
 
@@ -61,7 +92,7 @@ Route::middleware(['auth', 'member'])
 
         /*
         |--------------------------------------------------------------------------
-        | COMMANDES
+        | MES COMMANDES
         |--------------------------------------------------------------------------
         */
 
@@ -71,7 +102,7 @@ Route::middleware(['auth', 'member'])
 
         /*
         |--------------------------------------------------------------------------
-        | PAIEMENTS
+        | MES PAIEMENTS
         |--------------------------------------------------------------------------
         */
 
@@ -88,4 +119,12 @@ Route::middleware(['auth', 'member'])
         Route::get('/parametres', [MemberPageController::class, 'settings'])
             ->name('settings');
 
+        Route::get('/chat', [MemberChatController::class, 'index'])
+            ->name('chat');
+
+        Route::post('/chat', [MemberChatController::class, 'store'])
+            ->name('chat.store');
+
+        Route::post('/chat/{message}/read', [MemberChatController::class, 'markAsRead'])
+            ->name('chat.read');
     });

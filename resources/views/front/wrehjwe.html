@@ -1,0 +1,1290 @@
+@extends('layouts.front')
+
+@section('title', $settings->meta_title ?? 'Generation PUSH')
+
+@section(
+    'meta_description',
+    $settings->meta_description
+        ?? 'Generation PUSH - Une génération qui avance, grandit, dirige et impacte.'
+)
+
+@section('content')
+
+
+{{-- ================================================================
+     HERO — GENERATION PUSH
+================================================================ --}}
+<section
+    id="home"
+    class="gp-hero"
+>
+
+    {{-- ============================================================
+         MEDIA DE FOND
+    ============================================================ --}}
+    <div class="gp-hero-media">
+
+        {{-- VIDÉO DIRECTE --}}
+        @if ($settings->heroDirectVideoUrl())
+
+            <video
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+
+                @if ($settings->heroPosterUrl())
+                    poster="{{ $settings->heroPosterUrl() }}"
+                @endif
+            >
+
+                <source
+                    src="{{ $settings->heroDirectVideoUrl() }}"
+                    type="video/mp4"
+                >
+
+            </video>
+
+
+        {{-- VIDÉO EMBED --}}
+        @elseif ($settings->heroEmbedUrl())
+
+            <iframe
+                src="{{ $settings->heroEmbedUrl() }}"
+                class="gp-hero-video-embed"
+                title="Generation PUSH"
+                frameborder="0"
+                allow="autoplay; fullscreen"
+            ></iframe>
+
+
+        {{-- IMAGE --}}
+        @elseif ($settings->heroPosterUrl())
+
+            <img
+                src="{{ $settings->heroPosterUrl() }}"
+                alt="Generation PUSH"
+                fetchpriority="high"
+            >
+
+
+        {{-- FALLBACK --}}
+        @else
+
+            <div
+                class="position-absolute top-0 start-0 w-100 h-100"
+                style="
+                    background:
+                        radial-gradient(
+                            circle at 75% 30%,
+                            rgba(232,99,26,.30),
+                            transparent 35%
+                        ),
+                        linear-gradient(
+                            135deg,
+                            #090909,
+                            #1A1A1A 60%,
+                            #30180c
+                        );
+                "
+            ></div>
+
+        @endif
+
+    </div>
+
+
+    {{-- ============================================================
+         OVERLAYS
+    ============================================================ --}}
+    <div class="gp-hero-overlay"></div>
+
+    <div class="gp-hero-glow gp-hero-glow-1"></div>
+    <div class="gp-hero-glow gp-hero-glow-2"></div>
+
+
+    {{-- ============================================================
+         CONTENU
+    ============================================================ --}}
+    <div class="gp-hero-content">
+
+        <div class="container">
+
+            <div class="gp-hero-inner">
+
+
+                {{-- BADGE --}}
+                <div
+                    class="gp-hero-badge"
+                    data-aos="fade-down"
+                >
+
+                    <span class="gp-hero-badge-dot"></span>
+
+                    LE MOUVEMENT D'UNE GÉNÉRATION
+
+                </div>
+
+
+                {{-- PETIT TITRE --}}
+                <div
+                    class="mb-3 text-uppercase fw-bold"
+                    style="
+                        color: #E8631A;
+                        letter-spacing: .18em;
+                        font-size: .75rem;
+                    "
+                    data-aos="fade-up"
+                    data-aos-delay="100"
+                >
+
+                    GENERATION PUSH
+
+                </div>
+
+
+                {{-- TITRE PRINCIPAL --}}
+                <h1
+                    class="gp-hero-title"
+                    data-aos="fade-up"
+                    data-aos-delay="150"
+                >
+
+                    We are not here
+                    to motivate you.
+
+                    <span class="gp-text-orange d-block">
+                        We are here to PUSH you.
+                    </span>
+
+                </h1>
+
+
+                {{-- DESCRIPTION --}}
+                <p
+                    class="gp-hero-description"
+                    data-aos="fade-up"
+                    data-aos-delay="250"
+                >
+
+                    {{ $settings->hero_description
+                        ?? "Une communauté panafricaine qui accompagne une nouvelle génération à développer son leadership, libérer son potentiel et transformer ses ambitions en actions concrètes." }}
+
+                </p>
+
+
+                {{-- CTA --}}
+                <div
+                    class="gp-hero-actions"
+                    data-aos="fade-up"
+                    data-aos-delay="350"
+                >
+
+                    <a
+                        href="{{ $settings->hero_cta_url ?? route('register') }}"
+                        class="gp-btn-primary"
+                    >
+
+                        {{ $settings->hero_cta_label ?? 'Rejoindre le mouvement' }}
+
+                        <i class="bi bi-arrow-up-right"></i>
+
+                    </a>
+
+
+                    <a
+                        href="#discover"
+                        class="gp-btn-outline"
+                    >
+
+                        Découvrir Generation PUSH
+
+                        <i class="bi bi-arrow-down"></i>
+
+                    </a>
+
+                </div>
+
+
+                {{-- =================================================
+                     MINI INFORMATIONS
+                ================================================== --}}
+                <div
+                    class="d-flex flex-wrap align-items-center gap-4 mt-5"
+                    data-aos="fade-up"
+                    data-aos-delay="450"
+                >
+
+                    <div
+                        class="d-flex align-items-center gap-2 text-white-50"
+                    >
+
+                        <i
+                            class="bi bi-people-fill"
+                            style="color:#E8631A;"
+                        ></i>
+
+                        <small>
+                            Leadership
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="d-flex align-items-center gap-2 text-white-50"
+                    >
+
+                        <i
+                            class="bi bi-lightning-charge-fill"
+                            style="color:#E8631A;"
+                        ></i>
+
+                        <small>
+                            Action
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="d-flex align-items-center gap-2 text-white-50"
+                    >
+
+                        <i
+                            class="bi bi-globe-africa"
+                            style="color:#E8631A;"
+                        ></i>
+
+                        <small>
+                            Impact panafricain
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- SCROLL --}}
+    <a
+        href="#discover"
+        class="gp-scroll-indicator"
+        aria-label="Découvrir"
+    >
+
+        <span>Scroll</span>
+
+        <div class="gp-scroll-mouse"></div>
+
+    </a>
+
+</section>
+
+
+
+{{-- ================================================================
+     IMPACT / STATS
+================================================================ --}}
+<section
+    id="discover"
+    class="gp-stats"
+>
+
+    <div class="container">
+
+        <div class="row g-0">
+
+            {{-- MEMBRES --}}
+            <div class="col-6 col-lg-3">
+
+                <div
+                    class="gp-stat-item"
+                    data-aos="fade-up"
+                >
+
+                    <div
+                        class="gp-stat-number"
+                        data-gp-counter="{{ $stats['members'] ?? 0 }}"
+                        data-gp-suffix="+"
+                    >
+                        0
+                    </div>
+
+                    <p class="gp-stat-label">
+                        Membres de la communauté
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {{-- FORMATIONS --}}
+            <div class="col-6 col-lg-3">
+
+                <div
+                    class="gp-stat-item"
+                    data-aos="fade-up"
+                    data-aos-delay="100"
+                >
+
+                    <div
+                        class="gp-stat-number"
+                        data-gp-counter="{{ $stats['formations'] ?? 0 }}"
+                        data-gp-suffix="+"
+                    >
+                        0
+                    </div>
+
+                    <p class="gp-stat-label">
+                        Formations
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {{-- EVENTS --}}
+            <div class="col-6 col-lg-3">
+
+                <div
+                    class="gp-stat-item"
+                    data-aos="fade-up"
+                    data-aos-delay="200"
+                >
+
+                    <div
+                        class="gp-stat-number"
+                        data-gp-counter="{{ $stats['events'] ?? 0 }}"
+                        data-gp-suffix="+"
+                    >
+                        0
+                    </div>
+
+                    <p class="gp-stat-label">
+                        Événements
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {{-- SATISFACTION --}}
+            <div class="col-6 col-lg-3">
+
+                <div
+                    class="gp-stat-item"
+                    data-aos="fade-up"
+                    data-aos-delay="300"
+                >
+
+                    <div
+                        class="gp-stat-number"
+                        data-gp-counter="{{ $stats['satisfaction'] ?? 0 }}"
+                        data-gp-suffix="%"
+                    >
+                        0
+                    </div>
+
+                    <p class="gp-stat-label">
+                        Satisfaction
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+{{-- ================================================================
+     INTRODUCTION — LE MOUVEMENT
+================================================================ --}}
+<section class="gp-section gp-section-light">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+
+            {{-- IMAGE --}}
+            <div
+                class="col-lg-6"
+                data-aos="fade-right"
+            >
+
+                <div class="gp-image-wrapper">
+
+                    @if ($settings->aboutImageUrl())
+
+                        <img
+                            src="{{ $settings->aboutImageUrl() }}"
+                            alt="Generation PUSH"
+                            loading="lazy"
+                        >
+
+                    @else
+
+                        <div
+                            class="d-flex align-items-center justify-content-center"
+                            style="
+                                min-height: 520px;
+                                background:
+                                    linear-gradient(
+                                        135deg,
+                                        #1A1A1A,
+                                        #E8631A
+                                    );
+                            "
+                        >
+
+                            <div class="text-center text-white">
+
+                                <div
+                                    class="fw-black"
+                                    style="
+                                        font-size:5rem;
+                                        font-weight:900;
+                                    "
+                                >
+                                    PUSH
+                                </div>
+
+                                <div
+                                    class="text-uppercase"
+                                    style="
+                                        letter-spacing:.25em;
+                                        font-size:.75rem;
+                                    "
+                                >
+                                    Move • Grow • Lead • Impact
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+
+            {{-- CONTENU --}}
+            <div
+                class="col-lg-6"
+                data-aos="fade-left"
+            >
+
+                <span class="gp-section-eyebrow">
+                    Qui sommes-nous ?
+                </span>
+
+
+                <h2 class="gp-section-title">
+
+                    Plus qu'une communauté.
+
+                    <span class="gp-text-orange">
+                        Un mouvement.
+                    </span>
+
+                </h2>
+
+
+                <p class="gp-section-description">
+
+                    {{ $settings->about_text
+                        ?? "Generation PUSH crée des espaces où les jeunes peuvent apprendre, se connecter, développer leur leadership et surtout passer à l'action." }}
+
+                </p>
+
+
+                <p class="gp-section-description">
+
+                    Nous croyons qu'une génération ne transforme
+                    pas son avenir uniquement par la motivation,
+                    mais par la connaissance, la discipline,
+                    les opportunités et l'action.
+
+                </p>
+
+
+                {{-- SIGNATURE / MESSAGE --}}
+                <div
+                    class="my-4 ps-4"
+                    style="
+                        border-left:3px solid #E8631A;
+                    "
+                >
+
+                    <p
+                        class="mb-0 fw-semibold"
+                        style="
+                            font-size:1.1rem;
+                            color:#1A1A1A;
+                        "
+                    >
+
+                        « Nous ne sommes pas là pour te motiver.
+                        Nous sommes là pour te PUSH. »
+
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url('/a-propos') }}"
+                    class="gp-link mt-3"
+                >
+
+                    Découvrir notre histoire
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+{{-- ================================================================
+     LES PILIERS
+================================================================ --}}
+<section class="gp-section gp-section-soft">
+
+    <div class="container">
+
+
+        {{-- HEADER --}}
+        <div
+            class="row mb-5"
+            data-aos="fade-up"
+        >
+
+            <div class="col-lg-7">
+
+                <span class="gp-section-eyebrow">
+                    Notre ADN
+                </span>
+
+
+                <h2 class="gp-section-title">
+
+                    Une génération qui ne reste pas
+
+                    <span class="gp-text-orange">
+                        spectatrice.
+                    </span>
+
+                </h2>
+
+            </div>
+
+
+            <div class="col-lg-5 d-flex align-items-end">
+
+                <p class="gp-section-description mb-0">
+
+                    Generation PUSH développe une culture
+                    fondée sur l'apprentissage, le leadership,
+                    la communauté et le passage à l'action.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {{-- CARDS --}}
+        <div class="row g-4">
+
+
+            {{-- 01 --}}
+            <div
+                class="col-md-6 col-xl-3"
+                data-aos="fade-up"
+            >
+
+                <div class="gp-card">
+
+                    <div class="gp-card-body p-4 p-xl-5">
+
+                        <span
+                            class="d-block mb-4"
+                            style="
+                                color:#E8631A;
+                                font-size:.75rem;
+                                font-weight:800;
+                                letter-spacing:.15em;
+                            "
+                        >
+                            01
+                        </span>
+
+
+                        <i
+                            class="bi bi-lightning-charge-fill d-block mb-4"
+                            style="
+                                color:#E8631A;
+                                font-size:2rem;
+                            "
+                        ></i>
+
+
+                        <h3 class="gp-card-title">
+                            Action
+                        </h3>
+
+
+                        <p class="gp-card-text mb-0">
+
+                            Transformer les idées,
+                            les ambitions et les connaissances
+                            en actions concrètes.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- 02 --}}
+            <div
+                class="col-md-6 col-xl-3"
+                data-aos="fade-up"
+                data-aos-delay="100"
+            >
+
+                <div class="gp-card">
+
+                    <div class="gp-card-body p-4 p-xl-5">
+
+                        <span
+                            class="d-block mb-4"
+                            style="
+                                color:#E8631A;
+                                font-size:.75rem;
+                                font-weight:800;
+                                letter-spacing:.15em;
+                            "
+                        >
+                            02
+                        </span>
+
+
+                        <i
+                            class="bi bi-graph-up-arrow d-block mb-4"
+                            style="
+                                color:#E8631A;
+                                font-size:2rem;
+                            "
+                        ></i>
+
+
+                        <h3 class="gp-card-title">
+                            Progression
+                        </h3>
+
+
+                        <p class="gp-card-text mb-0">
+
+                            Développer continuellement
+                            ses compétences et repousser
+                            ses propres limites.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- 03 --}}
+            <div
+                class="col-md-6 col-xl-3"
+                data-aos="fade-up"
+                data-aos-delay="200"
+            >
+
+                <div class="gp-card">
+
+                    <div class="gp-card-body p-4 p-xl-5">
+
+                        <span
+                            class="d-block mb-4"
+                            style="
+                                color:#E8631A;
+                                font-size:.75rem;
+                                font-weight:800;
+                                letter-spacing:.15em;
+                            "
+                        >
+                            03
+                        </span>
+
+
+                        <i
+                            class="bi bi-person-up d-block mb-4"
+                            style="
+                                color:#E8631A;
+                                font-size:2rem;
+                            "
+                        ></i>
+
+
+                        <h3 class="gp-card-title">
+                            Leadership
+                        </h3>
+
+
+                        <p class="gp-card-text mb-0">
+
+                            Former des personnes capables
+                            de prendre des initiatives,
+                            mobiliser et inspirer par l'exemple.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- 04 --}}
+            <div
+                class="col-md-6 col-xl-3"
+                data-aos="fade-up"
+                data-aos-delay="300"
+            >
+
+                <div class="gp-card">
+
+                    <div class="gp-card-body p-4 p-xl-5">
+
+                        <span
+                            class="d-block mb-4"
+                            style="
+                                color:#E8631A;
+                                font-size:.75rem;
+                                font-weight:800;
+                                letter-spacing:.15em;
+                            "
+                        >
+                            04
+                        </span>
+
+
+                        <i
+                            class="bi bi-globe2 d-block mb-4"
+                            style="
+                                color:#E8631A;
+                                font-size:2rem;
+                            "
+                        ></i>
+
+
+                        <h3 class="gp-card-title">
+                            Impact
+                        </h3>
+
+
+                        <p class="gp-card-text mb-0">
+
+                            Utiliser son potentiel pour
+                            créer une valeur durable dans
+                            sa communauté et au-delà.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+{{-- ================================================================
+     NOS ACTIONS
+================================================================ --}}
+<section
+    id="actions"
+    class="gp-section gp-actions-section"
+>
+
+    {{-- décoration arrière-plan --}}
+    <div class="gp-actions-decoration gp-actions-decoration-1"></div>
+    <div class="gp-actions-decoration gp-actions-decoration-2"></div>
+
+    <div class="container position-relative">
+
+
+        {{-- =========================================================
+             HEADER
+        ========================================================== --}}
+        <div class="row align-items-end g-4 mb-5">
+
+            <div
+                class="col-lg-7"
+                data-aos="fade-up"
+            >
+
+                <span class="gp-section-eyebrow">
+                    Nos actions
+                </span>
+
+                <h2 class="gp-section-title mb-0">
+
+                    Des expériences pensées pour
+
+                    <span class="gp-text-orange">
+                        te faire avancer.
+                    </span>
+
+                </h2>
+
+            </div>
+
+
+            <div
+                class="col-lg-5"
+                data-aos="fade-up"
+                data-aos-delay="100"
+            >
+
+                <p class="gp-section-description mb-0">
+
+                    Nous créons des espaces d'apprentissage,
+                    de connexion et de transformation pour
+                    aider chaque jeune à développer son potentiel
+                    et passer à l'action.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        {{-- =========================================================
+             ACTION 01 — PUSHCONNECT
+        ========================================================== --}}
+        <article
+            id="pushconnect"
+            class="gp-action-feature"
+            data-aos="fade-up"
+        >
+
+            <div class="row g-0 align-items-stretch">
+
+
+                {{-- IMAGE --}}
+                <div class="col-lg-7">
+
+                    <div class="gp-action-media">
+
+                        <img
+                            src="{{ asset('front/images/pushconnect.jpg') }}"
+                            alt="PushConnect - Generation PUSH"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('gp-action-media-fallback');"
+                        >
+
+
+                        <div class="gp-action-media-overlay"></div>
+
+
+                        {{-- numéro --}}
+                        <span class="gp-action-number">
+                            01
+                        </span>
+
+
+                        {{-- badge --}}
+                        <span class="gp-action-floating-badge">
+
+                            <i class="bi bi-people-fill"></i>
+
+                            Networking
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {{-- CONTENU --}}
+                <div class="col-lg-5">
+
+                    <div class="gp-action-content">
+
+                        <div>
+
+                            <span class="gp-action-category">
+                                Connect • Share • Grow
+                            </span>
+
+
+                            <h3>
+                                PushConnect
+                            </h3>
+
+
+                            <p>
+
+                                Un espace de connexion qui rassemble
+                                des jeunes ambitieux, entrepreneurs,
+                                étudiants, professionnels et leaders
+                                autour du partage d'expériences,
+                                des opportunités et du networking.
+
+                            </p>
+
+                        </div>
+
+
+                        <a
+                            href="{{ url('/actions#pushconnect') }}"
+                            class="gp-action-link"
+                        >
+
+                            Découvrir PushConnect
+
+                            <span>
+                                <i class="bi bi-arrow-up-right"></i>
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+
+        {{-- =========================================================
+             PETITES ACTIONS
+        ========================================================== --}}
+        <div class="row g-4 mt-1">
+
+
+            {{-- =====================================================
+                 ACTION 02 — READING SESSION
+            ====================================================== --}}
+            <div
+                class="col-lg-4"
+                data-aos="fade-up"
+            >
+
+                <article class="gp-action-card">
+
+                    <div class="gp-action-card-media">
+
+                        <img
+                            src="{{ asset('front/images/reading-session.jpg') }}"
+                            alt="Push Reading Session"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('gp-action-card-fallback');"
+                        >
+
+                        <div class="gp-action-card-overlay"></div>
+
+
+                        <span class="gp-action-card-number">
+                            02
+                        </span>
+
+
+                        <div class="gp-action-card-icon">
+
+                            <i class="bi bi-book-half"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="gp-action-card-body">
+
+                        <span class="gp-action-category">
+                            Read • Learn • Exchange
+                        </span>
+
+
+                        <h3>
+                            Push Reading Session
+                        </h3>
+
+
+                        <p>
+
+                            Des rencontres autour de la lecture
+                            pour développer la réflexion,
+                            partager des connaissances et créer
+                            une véritable culture d'apprentissage.
+
+                        </p>
+
+
+                        <a
+                            href="{{ url('/actions#reading-session') }}"
+                            class="gp-link"
+                        >
+
+                            Découvrir
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+
+            {{-- =====================================================
+                 ACTION 03 — MASTERCLASS
+            ====================================================== --}}
+            <div
+                class="col-lg-4"
+                data-aos="fade-up"
+                data-aos-delay="100"
+            >
+
+                <article class="gp-action-card gp-action-card-dark">
+
+                    <div class="gp-action-card-media">
+
+                        <img
+                            src="{{ asset('front/images/masterclass.jpg') }}"
+                            alt="Masterclass Generation PUSH"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('gp-action-card-fallback');"
+                        >
+
+                        <div class="gp-action-card-overlay"></div>
+
+
+                        <span class="gp-action-card-number">
+                            03
+                        </span>
+
+
+                        <div class="gp-action-card-icon">
+
+                            <i class="bi bi-mic-fill"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="gp-action-card-body">
+
+                        <span class="gp-action-category">
+                            Learn from experience
+                        </span>
+
+
+                        <h3>
+                            Masterclasses
+                        </h3>
+
+
+                        <p>
+
+                            Des sessions pratiques animées
+                            par des professionnels, entrepreneurs
+                            et leaders qui transmettent leurs
+                            expériences et leurs compétences.
+
+                        </p>
+
+
+                        <a
+                            href="{{ url('/actions#masterclass') }}"
+                            class="gp-link"
+                        >
+
+                            Voir les masterclasses
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+
+
+            {{-- =====================================================
+                 ACTION 04 — COACHING
+            ====================================================== --}}
+            <div
+                class="col-lg-4"
+                data-aos="fade-up"
+                data-aos-delay="200"
+            >
+
+                <article class="gp-action-card">
+
+                    <div class="gp-action-card-media">
+
+                        <img
+                            src="{{ asset('front/images/coaching.jpg') }}"
+                            alt="Coaching Generation PUSH"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('gp-action-card-fallback');"
+                        >
+
+                        <div class="gp-action-card-overlay"></div>
+
+
+                        <span class="gp-action-card-number">
+                            04
+                        </span>
+
+
+                        <div class="gp-action-card-icon">
+
+                            <i class="bi bi-person-check-fill"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="gp-action-card-body">
+
+                        <span class="gp-action-category">
+                            Focus • Progress • Achieve
+                        </span>
+
+
+                        <h3>
+                            Coaching
+                        </h3>
+
+
+                        <p>
+
+                            Un accompagnement destiné à aider
+                            les jeunes à clarifier leurs objectifs,
+                            développer leurs compétences et
+                            progresser avec méthode.
+
+                        </p>
+
+
+                        <a
+                            href="{{ url('/actions#coaching') }}"
+                            class="gp-link"
+                        >
+
+                            Découvrir le coaching
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </div>
+
+
+
+        {{-- =========================================================
+             CTA BAS DE SECTION
+        ========================================================== --}}
+        <div
+            class="gp-actions-bottom"
+            data-aos="fade-up"
+        >
+
+            <div>
+
+                <span>
+                    Trouve l'expérience qui peut te faire avancer.
+                </span>
+
+                <strong>
+                    Ton prochain PUSH commence ici.
+                </strong>
+
+            </div>
+
+
+            <a
+                href="{{ url('/actions') }}"
+                class="gp-btn-dark"
+            >
+
+                Explorer toutes nos actions
+
+                <i class="bi bi-arrow-up-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+@endsection
+
+

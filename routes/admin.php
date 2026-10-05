@@ -9,11 +9,11 @@ use App\Http\Controllers\Admin\Programs\FormationController;
 use App\Http\Controllers\Admin\Programs\CourseController;
 use App\Http\Controllers\Admin\Programs\LibraryController;
 
-use App\Http\Controllers\Admin\Events\ConferenceController;
-use App\Http\Controllers\Admin\Events\MasterclassController;
-use App\Http\Controllers\Admin\Events\CoachingController;
-use App\Http\Controllers\Admin\Events\ReservationController;
-use App\Http\Controllers\Admin\Events\TicketController;
+// use App\Http\Controllers\Admin\Events\ConferenceController;
+// use App\Http\Controllers\Admin\Events\MasterclassController;
+// use App\Http\Controllers\Admin\Events\CoachingController;
+// use App\Http\Controllers\Admin\Events\ReservationController;
+// use App\Http\Controllers\Admin\Events\TicketController;
 
 use App\Http\Controllers\Admin\Payments\TransactionController;
 use App\Http\Controllers\Admin\Payments\SubscriptionController;
@@ -220,103 +220,103 @@ Route::prefix('admin')
             ->group(function () {
 
                 // CONFÉRENCES
-                Route::name('conferences.')
-                    ->prefix('conferences')
-                    ->controller(ConferenceController::class)
-                    ->group(function () {
+                // Route::name('conferences.')
+                //     ->prefix('conferences')
+                //     ->controller(ConferenceController::class)
+                //     ->group(function () {
 
-                        Route::get('/', 'index')
-                            ->name('index');
+                //         Route::get('/', 'index')
+                //             ->name('index');
 
-                        Route::post('/', 'store')
-                            ->name('store');
+                //         Route::post('/', 'store')
+                //             ->name('store');
 
-                        Route::put('/{conference}', 'update')
-                            ->name('update');
+                //         Route::put('/{conference}', 'update')
+                //             ->name('update');
 
-                        Route::delete('/{conference}', 'destroy')
-                            ->name('destroy');
-                    });
+                //         Route::delete('/{conference}', 'destroy')
+                //             ->name('destroy');
+                //     });
 
 
                 // MASTERCLASSES
-                Route::name('masterclasses.')
-                    ->prefix('masterclasses')
-                    ->controller(MasterclassController::class)
-                    ->group(function () {
+                // Route::name('masterclasses.')
+                //     ->prefix('masterclasses')
+                //     ->controller(MasterclassController::class)
+                //     ->group(function () {
 
-                        Route::get('/', 'index')
-                            ->name('index');
+                //         Route::get('/', 'index')
+                //             ->name('index');
 
-                        Route::post('/', 'store')
-                            ->name('store');
+                //         Route::post('/', 'store')
+                //             ->name('store');
 
-                        Route::put('/{masterclass}', 'update')
-                            ->name('update');
+                //         Route::put('/{masterclass}', 'update')
+                //             ->name('update');
 
-                        Route::delete('/{masterclass}', 'destroy')
-                            ->name('destroy');
-                    });
+                //         Route::delete('/{masterclass}', 'destroy')
+                //             ->name('destroy');
+                //     });
 
 
                 // COACHING
-                Route::name('coaching.')
-                    ->prefix('coaching')
-                    ->controller(CoachingController::class)
-                    ->group(function () {
+                // Route::name('coaching.')
+                //     ->prefix('coaching')
+                //     ->controller(CoachingController::class)
+                //     ->group(function () {
 
-                        Route::get('/', 'index')
-                            ->name('index');
+                //         Route::get('/', 'index')
+                //             ->name('index');
 
-                        Route::post('/', 'store')
-                            ->name('store');
+                //         Route::post('/', 'store')
+                //             ->name('store');
 
-                        Route::put('/{coaching}', 'update')
-                            ->name('update');
+                //         Route::put('/{coaching}', 'update')
+                //             ->name('update');
 
-                        Route::delete('/{coaching}', 'destroy')
-                            ->name('destroy');
-                    });
+                //         Route::delete('/{coaching}', 'destroy')
+                //             ->name('destroy');
+                //     });
 
 
                 // RÉSERVATIONS
-                Route::name('reservations.')
-                    ->prefix('reservations')
-                    ->controller(ReservationController::class)
-                    ->group(function () {
+                // Route::name('reservations.')
+                //     ->prefix('reservations')
+                //     ->controller(ReservationController::class)
+                //     ->group(function () {
 
-                        Route::get('/', 'index')
-                            ->name('index');
+                //         Route::get('/', 'index')
+                //             ->name('index');
 
-                        Route::post('/', 'store')
-                            ->name('store');
+                //         Route::post('/', 'store')
+                //             ->name('store');
 
-                        Route::put('/{reservation}', 'update')
-                            ->name('update');
+                //         Route::put('/{reservation}', 'update')
+                //             ->name('update');
 
-                        Route::delete('/{reservation}', 'destroy')
-                            ->name('destroy');
-                    });
+                //         Route::delete('/{reservation}', 'destroy')
+                //             ->name('destroy');
+                //     });
 
 
                 // BILLETS
-                Route::name('tickets.')
-                    ->prefix('tickets')
-                    ->controller(TicketController::class)
-                    ->group(function () {
+                // Route::name('tickets.')
+                //     ->prefix('tickets')
+                //     ->controller(TicketController::class)
+                //     ->group(function () {
 
-                        Route::get('/', 'index')
-                            ->name('index');
+                //         Route::get('/', 'index')
+                //             ->name('index');
 
-                        Route::post('/', 'store')
-                            ->name('store');
+                //         Route::post('/', 'store')
+                //             ->name('store');
 
-                        Route::put('/{ticket}', 'update')
-                            ->name('update');
+                //         Route::put('/{ticket}', 'update')
+                //             ->name('update');
 
-                        Route::delete('/{ticket}', 'destroy')
-                            ->name('destroy');
-                    });
+                //         Route::delete('/{ticket}', 'destroy')
+                //             ->name('destroy');
+                //     });
             });
 
 
@@ -440,29 +440,33 @@ Route::prefix('admin')
 
 
                 // CHAT ADMIN
-                Route::name('chat.')
-                    ->prefix('chat')
-                    ->controller(AdminChatController::class)
-                    ->group(function () {
+                // ================================================================
+// CHAT ADMIN
+// ================================================================
 
-                        Route::get('/', 'index')
-                            ->name('index');
+Route::name('chat.')
+    ->prefix('chat')
+    ->controller(AdminChatController::class)
+    ->group(function () {
 
-                        Route::get('/{user}', 'show')
-                            ->name('show');
+        Route::get('/', 'index')
+            ->name('index');
 
-                        Route::post('/{user}/reply', 'reply')
-                            ->name('reply');
+        Route::get('/{user}', 'show')
+            ->name('show');
 
-                        Route::post('/{user}/toggle', 'toggleAccess')
-                            ->name('toggle');
+        Route::post('/{user}/reply', 'reply')
+            ->name('reply');
 
-                        Route::put('/messages/{message}', 'updateMessage')
-                            ->name('messages.update');
+        Route::post('/{user}/toggle', 'toggleAccess')
+            ->name('toggle');
 
-                        Route::delete('/messages/{message}', 'destroyMessage')
-                            ->name('messages.destroy');
-                    });
+        Route::put('/messages/{message}', 'updateMessage')
+            ->name('messages.update');
+
+        Route::delete('/messages/{message}', 'destroyMessage')
+            ->name('messages.destroy');
+    });
             });
 
 
